@@ -1,4 +1,4 @@
-package com.example.groutine.global.config;
+package umc.product.global.config;
 
 
 import io.swagger.v3.oas.models.Components;
