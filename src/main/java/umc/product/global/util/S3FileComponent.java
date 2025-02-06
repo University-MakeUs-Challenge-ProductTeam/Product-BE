@@ -1,10 +1,10 @@
-package com.example.groutine.global.util;
+package umc.product.global.util;
 
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
-import com.example.groutine.global.common.exception.RestApiException;
-import com.example.groutine.global.common.exception.code.status.GlobalErrorStatus;
+import umc.product.global.common.exception.RestApiException;
+import umc.product.global.common.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,8 +1,8 @@
-package com.example.groutine.global.common.exception;
+package umc.product.global.common.exception;
 
-import com.example.groutine.global.common.base.BaseResponse;
-import com.example.groutine.global.common.exception.code.BaseCodeDto;
-import com.example.groutine.global.common.exception.code.status.GlobalErrorStatus;
+import umc.product.global.common.base.BaseResponse;
+import umc.product.global.common.exception.code.BaseCodeDto;
+import umc.product.global.common.exception.code.status.GlobalErrorStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;

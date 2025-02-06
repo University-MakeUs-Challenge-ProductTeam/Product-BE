@@ -1,7 +1,7 @@
-package com.example.groutine.global.config.security.auth;
+package umc.product.global.config.security.auth;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.service.MemberService;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -1,10 +1,10 @@
-package com.example.groutine.global.config.security;
+package umc.product.global.config.security;
 
-import com.example.groutine.domain.member.entity.Role;
-import com.example.groutine.global.config.security.auth.CustomAccessDeniedHandler;
-import com.example.groutine.global.config.security.auth.PrincipalDetailsService;
-import com.example.groutine.global.config.security.jwt.JwtAuthenticationFilter;
-import com.example.groutine.global.config.security.jwt.JwtExceptionFilter;
+import umc.product.domain.member.entity.Role;
+import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
+import umc.product.global.config.security.auth.PrincipalDetailsService;
+import umc.product.global.config.security.jwt.JwtAuthenticationFilter;
+import umc.product.global.config.security.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

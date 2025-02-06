@@ -1,4 +1,4 @@
-package com.example.groutine.domain.member.dto.response;
+package umc.product.domain.member.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

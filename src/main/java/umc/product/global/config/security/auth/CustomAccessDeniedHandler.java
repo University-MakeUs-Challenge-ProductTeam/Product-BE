@@ -1,4 +1,4 @@
-package com.example.groutine.global.config.security.auth;
+package umc.product.global.config.security.auth;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

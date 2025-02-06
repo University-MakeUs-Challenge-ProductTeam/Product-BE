@@ -1,8 +1,8 @@
-package com.example.groutine.global.config.security.jwt;
+package umc.product.global.config.security.jwt;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.service.MemberService;
-import com.example.groutine.global.config.security.auth.PrincipalDetails;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.service.MemberService;
+import umc.product.global.config.security.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

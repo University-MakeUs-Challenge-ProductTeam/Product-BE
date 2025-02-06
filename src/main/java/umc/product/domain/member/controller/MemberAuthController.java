@@ -1,13 +1,13 @@
-package com.example.groutine.domain.member.controller;
+package umc.product.domain.member.controller;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.entity.LoginType;
-import com.example.groutine.domain.member.dto.request.MemberSignUpRequest;
-import com.example.groutine.domain.member.dto.response.MemberGenerateTokenResponse;
-import com.example.groutine.domain.member.dto.response.MemberIdResponse;
-import com.example.groutine.domain.member.dto.response.MemberLoginResponse;
-import com.example.groutine.domain.member.service.MemberAuthService;
-import com.example.groutine.global.common.base.BaseResponse;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.dto.request.MemberSignUpRequest;
+import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
+import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.service.MemberAuthService;
+import umc.product.global.common.base.BaseResponse;
 import com.example.groutine.global.config.security.auth.CurrentMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,10 +1,10 @@
-package com.example.groutine.domain.member.mapper;
+package umc.product.domain.member.mapper;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.entity.LoginType;
-import com.example.groutine.domain.member.entity.Role;
-import com.example.groutine.domain.member.dto.response.MemberLoginResponse;
-import com.example.groutine.global.config.security.jwt.TokenInfo;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.global.config.security.jwt.TokenInfo;
 import org.springframework.stereotype.Component;
 
 @Component

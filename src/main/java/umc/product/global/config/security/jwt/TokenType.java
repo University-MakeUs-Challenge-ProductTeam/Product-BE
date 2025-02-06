@@ -1,4 +1,4 @@
-package com.example.groutine.global.config.security.jwt;
+package umc.product.global.config.security.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

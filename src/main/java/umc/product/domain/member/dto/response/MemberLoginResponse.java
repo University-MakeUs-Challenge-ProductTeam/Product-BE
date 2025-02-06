@@ -1,6 +1,6 @@
-package com.example.groutine.domain.member.dto.response;
+package umc.product.domain.member.dto.response;
 
-import com.example.groutine.domain.member.entity.Role;
+import umc.product.domain.member.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 

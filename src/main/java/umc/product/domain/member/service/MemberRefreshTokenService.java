@@ -1,7 +1,7 @@
-package com.example.groutine.domain.member.service;
+package umc.product.domain.member.service;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.repository.MemberRepository;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

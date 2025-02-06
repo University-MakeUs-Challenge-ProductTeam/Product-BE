@@ -1,6 +1,6 @@
-package com.example.groutine.global.config.security.auth;
+package umc.product.global.config.security.auth;
 
-import com.example.groutine.domain.member.entity.Member;
+import umc.product.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

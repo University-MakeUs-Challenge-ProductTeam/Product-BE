@@ -1,7 +1,7 @@
-package com.example.groutine.global.common.exception;
+package umc.product.global.common.exception;
 
-import com.example.groutine.global.common.exception.code.BaseCodeDto;
-import com.example.groutine.global.common.exception.code.BaseCodeInterface;
+import umc.product.global.common.exception.code.BaseCodeDto;
+import umc.product.global.common.exception.code.BaseCodeInterface;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor // 생성자를 만들어주는 어노테이션

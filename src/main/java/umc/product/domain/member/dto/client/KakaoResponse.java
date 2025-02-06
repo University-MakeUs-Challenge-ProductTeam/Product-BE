@@ -1,4 +1,4 @@
-package com.example.groutine.domain.member.dto.client;
+package umc.product.domain.member.dto.client;
 
 import lombok.Getter;
 

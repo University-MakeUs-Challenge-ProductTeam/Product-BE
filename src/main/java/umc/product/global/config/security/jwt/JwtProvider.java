@@ -1,4 +1,4 @@
-package com.example.groutine.global.config.security.jwt;
+package umc.product.global.config.security.jwt;
 
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;

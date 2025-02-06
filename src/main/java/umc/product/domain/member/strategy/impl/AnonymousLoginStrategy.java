@@ -1,16 +1,16 @@
-package com.example.groutine.domain.member.strategy.impl;
+package umc.product.domain.member.strategy.impl;
 
 
-import com.example.groutine.domain.member.entity.LoginType;
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.entity.Role;
-import com.example.groutine.domain.member.dto.response.MemberLoginResponse;
-import com.example.groutine.domain.member.mapper.MemberMapper;
-import com.example.groutine.domain.member.repository.MemberRepository;
-import com.example.groutine.domain.member.service.MemberService;
-import com.example.groutine.domain.member.strategy.LoginStrategy;
-import com.example.groutine.global.config.security.jwt.JwtProvider;
-import com.example.groutine.global.config.security.jwt.TokenInfo;
+import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.mapper.MemberMapper;
+import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.strategy.LoginStrategy;
+import umc.product.global.config.security.jwt.JwtProvider;
+import umc.product.global.config.security.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
     @Override
     public MemberLoginResponse login(String accessToken) {
         // Anonymous-specific logic
-        Optional<Member> getMember = Optional.ofNullable(memberRepository.findByClientIdAndLoginType(accessToken, LoginType.ANONYMOUS));
+        Optional<Member> getMember = memberRepository.findByClientIdAndLoginType(accessToken, LoginType.ANONYMOUS);
 
         if (getMember.isEmpty()) {
             return saveNewMember(accessToken, LoginType.ANONYMOUS);

@@ -1,11 +1,11 @@
-package com.example.groutine.domain.member.service;
+package umc.product.domain.member.service;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.entity.LoginType;
-import com.example.groutine.domain.member.dto.request.MemberSignUpRequest;
-import com.example.groutine.domain.member.dto.response.MemberGenerateTokenResponse;
-import com.example.groutine.domain.member.dto.response.MemberIdResponse;
-import com.example.groutine.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.dto.request.MemberSignUpRequest;
+import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
+import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.response.MemberLoginResponse;
 
 public interface MemberAuthService {
     // 소셜 로그인

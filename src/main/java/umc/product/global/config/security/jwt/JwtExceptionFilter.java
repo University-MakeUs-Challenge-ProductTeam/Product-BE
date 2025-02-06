@@ -1,6 +1,6 @@
-package com.example.groutine.global.config.security.jwt;
+package umc.product.global.config.security.jwt;
 
-import com.example.groutine.global.common.exception.RestApiException;
+import umc.product.global.common.exception.RestApiException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

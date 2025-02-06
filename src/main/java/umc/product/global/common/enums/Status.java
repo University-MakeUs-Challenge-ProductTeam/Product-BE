@@ -1,4 +1,4 @@
-package com.example.groutine.global.common.enums;
+package umc.product.global.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

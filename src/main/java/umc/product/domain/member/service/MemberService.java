@@ -1,10 +1,10 @@
-package com.example.groutine.domain.member.service;
+package umc.product.domain.member.service;
 
-import com.example.groutine.domain.member.entity.Member;
-import com.example.groutine.domain.member.repository.MemberRepository;
-import com.example.groutine.domain.member.status.MemberErrorStatus;
-import com.example.groutine.global.common.exception.RestApiException;
-import com.example.groutine.global.config.security.auth.PrincipalDetails;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.status.MemberErrorStatus;
+import umc.product.global.common.exception.RestApiException;
+import umc.product.global.config.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
