@@ -1,6 +1,6 @@
 package umc.product.domain.member.entity;
 
-import com.example.groutine.global.common.enums.Status;
+import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.product.global.common.base.BaseEntity;

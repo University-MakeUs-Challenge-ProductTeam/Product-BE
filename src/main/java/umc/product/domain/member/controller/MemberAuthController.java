@@ -8,7 +8,7 @@ import umc.product.domain.member.dto.response.MemberIdResponse;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.domain.member.service.MemberAuthService;
 import umc.product.global.common.base.BaseResponse;
-import com.example.groutine.global.config.security.auth.CurrentMember;
+import umc.product.global.config.security.auth.CurrentMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
