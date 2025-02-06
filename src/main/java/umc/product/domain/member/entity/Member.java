@@ -1,15 +1,9 @@
-package com.example.groutine.domain.member.entity;
+package umc.product.domain.member.entity;
 
-import com.example.groutine.domain.challenge.entity.Challenge;
-import com.example.groutine.domain.participation.entity.ChallengeMember;
-import com.example.groutine.domain.participation.entity.ChallengeMissionVerification;
-import com.example.groutine.global.common.base.BaseEntity;
 import com.example.groutine.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import umc.product.global.common.base.BaseEntity;
 
 @Entity
 @Getter
@@ -43,22 +37,12 @@ public class Member extends BaseEntity {
 
     private String clientId;
 
-    // todo 편의상 DB에 저장, 실제로는 저장하지 않게 해야 함
+    // todo 편의상 일단 DB에 저장, 실제로는 저장하지 않게 해야 함
     @Setter
     private String refreshToken;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private MemberLoginInfo memberLoginInfo;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ChallengeMember> challengeMemberList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<ChallengeMissionVerification> challengeMissionVerificationList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Challenge> challengeList = new ArrayList<>();
-
 
     @Builder
     public Member(String name, String email, LoginType loginType, String clientId) {

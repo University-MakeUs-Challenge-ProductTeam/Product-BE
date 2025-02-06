@@ -1,4 +1,4 @@
-package com.example.groutine.domain.member.entity;
+package umc.product.domain.member.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
