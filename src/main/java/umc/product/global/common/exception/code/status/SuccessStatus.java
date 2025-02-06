@@ -1,10 +1,11 @@
-package com.example.groutine.global.common.exception.code.status;
+package umc.product.groutine.global.common.exception.code.status;
 
-import com.example.groutine.global.common.exception.code.BaseCodeDto;
-import com.example.groutine.global.common.exception.code.BaseCodeInterface;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import umc.product.global.common.exception.code.BaseCodeDto;
+import umc.product.global.common.exception.code.BaseCodeInterface;
 
 @Getter
 @AllArgsConstructor
