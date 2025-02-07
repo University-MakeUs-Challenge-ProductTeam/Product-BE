@@ -40,7 +40,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         //그 후 추가 정보를 입력받아 저장하는 메서드
         Member loginMember = memberService.findById(member.getId());
 
-        // 기본 정보 저장 로직 작성 필요
+        // todo: 기본 정보 저장 로직 작성 필요
         loginMember.setName(request.getName());
 
         return new MemberIdResponse(memberService.saveEntity(loginMember).getId());

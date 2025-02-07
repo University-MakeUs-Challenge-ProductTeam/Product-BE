@@ -45,9 +45,9 @@ public class Member extends BaseEntity {
     private MemberLoginInfo memberLoginInfo;
 
     @Builder
-    public Member(String name, String email, LoginType loginType, String clientId) {
+    public Member(String name, String email, Role role, LoginType loginType, String clientId) {
         this.name = name;
-        this.role = Role.MEMBER;
+        this.role = role;
         this.loginType = loginType;
         this.clientId = clientId;
         this.status = Status.ACTIVE;
