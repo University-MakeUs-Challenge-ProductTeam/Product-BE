@@ -7,9 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Role {
     ADMIN("관리자", 0),
-    MEMBER("일반 멤버", 1),
-    BUSINESS("사업자", 1),
-    GUEST("비회원", 2);
+    CENTRAL_ADMIN("중앙 운영진", 1),
+    BRANCH_ADMIN("지부 운영진", 2),
+    UNIVERSITY_ADMIN("교내 운영진", 3),
+    CHALLENGER("일반 챌린저", 4),
+    GUEST("비회원", 5);
 
     private final String toKorean;
     private final int priority;

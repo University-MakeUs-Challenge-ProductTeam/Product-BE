@@ -41,7 +41,10 @@ public class SecurityConfig {
                         .requestMatchers("/members/sign-up").permitAll()
                         .requestMatchers("/members/login").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_"+Role.ADMIN)
-                        .requestMatchers("/owner/**").hasAuthority("ROLE_"+Role.BUSINESS)
+                        // "/central-admin" 엔트포인트는 마지막 "/" 없어서 매칭이 안됨
+                        .requestMatchers("/**/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/**/branch-admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/**/university-admin/**").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler))
