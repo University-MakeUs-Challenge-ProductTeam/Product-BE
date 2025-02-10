@@ -1,5 +1,6 @@
 package umc.product.domain.member.controller;
 
+import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.LoginType;
 import umc.product.domain.member.dto.request.MemberSignUpRequest;
@@ -26,20 +27,33 @@ import org.springframework.web.bind.annotation.*;
 public class MemberAuthController {
     private final MemberAuthService memberAuthService;
 
-    @Operation(summary = "소셜 로그인 API", description = "네이버, 카카오, 구글 로그인을 수행하는 API입니다.")
+    @Operation(summary = "소셜 로그인 API", description = "네이버, 카카오, 구글 로그인을 수행하는 API입니다. 소셜 로그인은 일반 챌린저 용입니다. (비회원 로그인은 기능에 없으나, 태스트 하기 편하라고 남겨둠니다.)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "COMMON200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "AUTH007", description = "외부 소셜 서버와의 통신 에러" , content =
+            @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @PostMapping("/social/login")
+    public BaseResponse<MemberLoginResponse> socialLogin(@RequestHeader(value = "accessToken") String accessToken,
+                                                         @RequestParam(value = "loginType") LoginType loginType) {
+        return BaseResponse.onSuccess(memberAuthService.socialLogin(accessToken, loginType));
+
+    }
+
+    @Operation(summary = "자체 로그인 API", description = "자체 로그인을 수행하는 API 입니다. 자체 로그인은 총괄, 중앙 운영진, 학교 계정 전용입니다..")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "COMMON200", description = "로그인 성공"),
             @ApiResponse(responseCode = "AUTH007", description = "외부 소셜 서버와의 통신 에러" , content =
             @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @PostMapping("/login")
-    public BaseResponse<MemberLoginResponse> socialLogin(@RequestParam(value = "accessToken") String accessToken,
-                                                         @RequestParam(value = "loginType") LoginType loginType) {
-        return BaseResponse.onSuccess(memberAuthService.socialLogin(accessToken, loginType));
+    public BaseResponse<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
+        return BaseResponse.onSuccess(memberAuthService.login(request));
 
     }
 
-    @Operation(summary = "회원가입 API", description = "최초 멤버 정보를 등록하는 API입니다.")
+    // todo : 챌린저 회원가입, 새로운 학교 회원가입 나누기 + 초대 코드 로직 추가 후 개발
+    @Operation(summary = "회원가입 API", description = "최초 멤버 정보를 등록하는 API입니다. 챌린저 회원가입 플로우 구현은 아직 미완성 입니다.")
     @ApiResponses( value = {
             @ApiResponse(responseCode = "COMMON200", description = "성공"),
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),

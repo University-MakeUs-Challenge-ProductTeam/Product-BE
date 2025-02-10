@@ -1,5 +1,6 @@
 package umc.product.domain.member.service;
 
+import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.LoginType;
 import umc.product.domain.member.dto.request.MemberSignUpRequest;
@@ -30,6 +31,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Transactional
     public MemberLoginResponse socialLogin(String accessToken, LoginType loginType) {
         return loginContext.executeStrategy(accessToken, loginType);
+    }
+
+    // 자체 로그인을 수행하는 함수
+    @Override
+    @Transactional(readOnly = true)
+    public MemberLoginResponse login(MemberLoginRequest request) {
+        return loginContext.executeStrategy(request);
     }
 
     // 회원가입을 수행하는 함수

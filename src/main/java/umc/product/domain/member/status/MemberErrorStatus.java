@@ -12,7 +12,9 @@ public enum MemberErrorStatus implements BaseCodeInterface {
 
     EMPTY_MEMBER(HttpStatus.NOT_FOUND, "MEMBER404", "회원을 찾을 수 없습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER401", "로그인을 하지 않았습니다."),
-    AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "MEMBER401", "로그인 정보를 찾을 수 없습니다.")
+    AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "MEMBER401", "로그인 정보를 찾을 수 없습니다."),
+    PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "MEMBER402", "비밀번호가 일치하지 않습니다.")
+
     ;
 
     private final HttpStatus httpStatus;
