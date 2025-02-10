@@ -1,6 +1,7 @@
 package umc.product.domain.member.strategy.impl;
 
 
+import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.Role;
@@ -39,6 +40,12 @@ public class AnonymousLoginStrategy implements LoginStrategy {
         TokenInfo tokenInfo = generateToken(member);
 
         return memberMapper.toLoginMember(member, tokenInfo, isServiceMember, member.getRole());
+    }
+
+    @Override
+    public MemberLoginResponse login(MemberLoginRequest request) {
+        // todo : MemberLoginRequest  방식은 지원하지 않습니다. RestApiException으로 변경
+        throw new UnsupportedOperationException("MemberLoginRequest  방식은 지원하지 않습니다.");
     }
 
     private MemberLoginResponse saveNewMember(String clientId, LoginType loginType) {

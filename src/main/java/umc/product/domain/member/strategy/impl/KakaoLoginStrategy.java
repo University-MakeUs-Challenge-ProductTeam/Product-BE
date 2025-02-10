@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import umc.product.domain.member.client.KakaoMemberClient;
 import umc.product.domain.member.dto.client.KakaoResponse;
+import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.domain.member.entity.LoginType;
 import umc.product.domain.member.entity.Member;
@@ -59,6 +60,12 @@ public class KakaoLoginStrategy implements LoginStrategy {
         TokenInfo tokenInfo = generateToken(member);
 
         return memberMapper.toLoginMember(member, tokenInfo, isServiceMember, member.getRole());
+    }
+
+    @Override
+    public MemberLoginResponse login(MemberLoginRequest request) {
+        // todo : MemberLoginRequest  방식은 지원하지 않습니다. RestApiException으로 변경
+        throw new UnsupportedOperationException("MemberLoginRequest  방식은 지원하지 않습니다.");
     }
 
     private MemberLoginResponse saveNewMember(String clientId, LoginType loginType) {
