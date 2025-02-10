@@ -11,6 +11,7 @@ import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
+import umc.product.global.config.security.jwt.TokenInfo;
 import umc.product.global.config.security.jwt.TokenType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Override
     @Transactional
     public MemberLoginResponse socialLogin(String accessToken, LoginType loginType) {
+
+        // 소셜 로그인 수행
+        MemberLoginResponse response = loginContext.executeStrategy(accessToken, loginType);
+
+        // 리프레쉬 토큰 저장
+        refreshTokenService.saveRefreshToken(response.getRefreshToken(), response.getMemberId());
+
         return loginContext.executeStrategy(accessToken, loginType);
     }
 
@@ -37,6 +45,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Override
     @Transactional(readOnly = true)
     public MemberLoginResponse login(MemberLoginRequest request) {
+
+        // 로그인 수행
+        MemberLoginResponse response = loginContext.executeStrategy(request);
+
+        // 리프레쉬 토큰 저장
+        refreshTokenService.saveRefreshToken(response.getRefreshToken(), response.getMemberId());
+
         return loginContext.executeStrategy(request);
     }
 
@@ -65,42 +80,41 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (!jwtTokenProvider.validateToken(refreshToken))
             throw new RestApiException(AuthErrorStatus.EXPIRED_REFRESH_TOKEN);
 
-        //편의상 refreshToken을 DB에 저장 후 비교하는 방식으로 감 (비추천)
-        String savedRefreshToken = loginMember.getRefreshToken();
-
         // 디비에 저장된 refreshToken과 동일하지 않다면 유효하지 않음
-        if (!refreshToken.equals(savedRefreshToken))
+        if (!refreshTokenService.existRefreshToken(refreshToken, loginMember.getId()))
             throw new RestApiException(AuthErrorStatus.INVALID_REFRESH_TOKEN);
 
-        return new MemberGenerateTokenResponse(
-                jwtTokenProvider.generateToken(
-                        loginMember.getId().toString(), member.getRole().toString(), TokenType.ACCESS)
-        );
+        // 토큰 발행
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(loginMember.getId().toString(), member.getRole().toString());
+
+        // 리프레쉬 토큰 저장
+        refreshTokenService.saveRefreshToken(tokenInfo.refreshToken(), loginMember.getId());
+
+        return new MemberGenerateTokenResponse(tokenInfo.accessToken(), tokenInfo.refreshToken());
     }
 
     // 로그아웃 함수
     @Override
     @Transactional
     public MemberIdResponse logout(Member member) {
-        Member loginMember = memberService.findById(member.getId());
 
-        refreshTokenService.deleteRefreshToken(loginMember);
-        return new MemberIdResponse(loginMember.getId());
+        // refreshToken 삭제
+        refreshTokenService.deleteRefreshToken(member.getId());
+
+        return new MemberIdResponse(member.getId());
     }
 
     // 회원 탈퇴 함수
     @Override
     @Transactional
     public MemberIdResponse withdrawal(Member member) {
-        // 멤버 soft delete
-        Member loginMember = memberService.findById(member.getId());
 
         // refreshToken 삭제
-        refreshTokenService.deleteRefreshToken(loginMember);
+        refreshTokenService.deleteRefreshToken(member.getId());
 
         // 멤버 soft delete
-        loginMember.delete();
+        member.delete();
 
-        return new MemberIdResponse(loginMember.getId());
+        return new MemberIdResponse(member.getId());
     }
 }
