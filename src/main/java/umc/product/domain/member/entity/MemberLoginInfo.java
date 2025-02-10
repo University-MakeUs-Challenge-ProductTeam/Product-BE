@@ -17,7 +17,7 @@ public class MemberLoginInfo extends BaseEntity {
     private Long id;
 
     @NotNull
-    private String memberId;
+    private String memberLoginId;
 
     @NotNull
     private String password;

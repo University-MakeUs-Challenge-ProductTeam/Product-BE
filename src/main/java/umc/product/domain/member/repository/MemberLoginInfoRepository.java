@@ -6,5 +6,5 @@ import umc.product.domain.member.entity.MemberLoginInfo;
 import java.util.Optional;
 
 public interface MemberLoginInfoRepository extends JpaRepository<MemberLoginInfo, Long> {
-    Optional<MemberLoginInfo> findByMemberId(String memberId);
+    Optional<MemberLoginInfo> findByMemberLoginId(String memberLoginId);
 }

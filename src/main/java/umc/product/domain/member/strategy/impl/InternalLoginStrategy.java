@@ -40,7 +40,7 @@ public class InternalLoginStrategy implements LoginStrategy {
     @Override
     public MemberLoginResponse login(MemberLoginRequest request) {
         // 회원 조회
-        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberId(request.getMemberId())
+        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.getMemberId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
         Member member = memberLoginInfo.getMember();
 
