@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "인증 API", description = "멤버 인증 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/members/auth")
 public class MemberAuthController {
     private final MemberAuthService memberAuthService;
 
@@ -50,19 +50,6 @@ public class MemberAuthController {
     public BaseResponse<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
         return BaseResponse.onSuccess(memberAuthService.login(request));
 
-    }
-
-    // todo : 챌린저 회원가입, 새로운 학교 회원가입 나누기 + 초대 코드 로직 추가 후 개발
-    @Operation(summary = "회원가입 API", description = "최초 멤버 정보를 등록하는 API입니다. 챌린저 회원가입 플로우 구현은 아직 미완성 입니다.")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "COMMON200", description = "성공"),
-            @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
-            @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
-    })
-    @PostMapping
-    public BaseResponse<MemberIdResponse> signUp(@CurrentMember Member member,
-                                                 @Valid @RequestBody MemberSignUpRequest request) {
-        return BaseResponse.onSuccess(memberAuthService.signUp(member, request));
     }
 
     @Operation(summary = "accessToken 재발급 API", description = "refreshToken가 유효하다면 새로운 accessToken을 발급하는 API입니다.")
