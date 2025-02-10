@@ -33,8 +33,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("GAJI REST API Specifications")
-                .description("GAJI API 명세서입니다.")
+                .title("UMC Product REST API Specifications")
+                .description("UMC Product API 명세서입니다.")
                 .version("1.0.0");
     }
 }
