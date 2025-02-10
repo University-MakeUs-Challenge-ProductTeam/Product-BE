@@ -1,8 +1,10 @@
 package umc.product.global.util;
 
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import org.springframework.stereotype.Component;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.GlobalErrorStatus;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +14,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-//@Component
+@Component
 @Slf4j
-public class S3FileComponent {
+public class S3FileUtil {
     private final AmazonS3Client amazonS3Client; // AmazonS3Client 객체 주입
     @Value("${cloud.aws.s3.bucket}") // S3 버킷 이름
     private String bucket;
 
+    // 파일 업로드
     public String uploadFile(String category, MultipartFile multipartFile) {
         // 파일명
         String fileName = createFileName(category, Objects.requireNonNull(multipartFile.getOriginalFilename()));
@@ -62,13 +67,26 @@ public class S3FileComponent {
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
-    /**
-     * 파일명 생성
-     * @param category
-     * @param originalFileName
-     * @return 작명된 파일 이름
-     */
-    public String createFileName(String category, String originalFileName) {
+    // Presigned URL 생성 todo: 위에 직접 파일 올리는 거랑 공통 로직 분리하기
+    public String getPresignedUrl(String category, String originFileName) {
+        // 파일명
+        String fileName = createFileName(category, originFileName);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket, fileName);
+
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(getExpiration());  // 1시간 유효 기간 설정
+        return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
+    }
+
+    //이미지 삭제
+    public void deleteFile(String fileUrl) {
+        String[] deleteUrl = fileUrl.split("/", 4);
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, deleteUrl[3]));
+    }
+
+    //파일명 생성
+    private String createFileName(String category, String originalFileName) {
         int fileExtensionIndex = originalFileName.lastIndexOf(".");
         String fileExtension = originalFileName.substring(fileExtensionIndex);
         String fileName = originalFileName.substring(0, fileExtensionIndex);
@@ -81,12 +99,12 @@ public class S3FileComponent {
         return category + "/" + fileName + "_" + random + fileExtension;
     }
 
-    /**
-     * 이미지 삭제
-     * @param fileUrl
-     */
-    public void deleteFile(String fileUrl) {
-        String[] deleteUrl = fileUrl.split("/", 4);
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, deleteUrl[3]));
+    // 유효 기간 설정
+    // Presigned URL 유효 기간 설정 (1시간)
+    private Date getExpiration() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 1);  // 현재 시간에 1시간 추가
+        return calendar.getTime();
     }
+
 }
