@@ -1,5 +1,6 @@
 package umc.product.domain.member.service;
 
+import umc.product.domain.member.dto.request.MemberCodeRequest;
 import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.dto.request.MemberSignUpRequest;
 import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
@@ -13,6 +14,5 @@ public interface MemberService {
     MemberIdResponse signUp(MemberSignUpRequest request);
     public Member findById(Long id);
     public Member saveEntity(Member member);
-    public Member getCurrentMember();
 
 }

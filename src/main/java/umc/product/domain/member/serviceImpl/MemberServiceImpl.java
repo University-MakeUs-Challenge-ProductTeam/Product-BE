@@ -8,7 +8,6 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberLoginInfoRepository;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;

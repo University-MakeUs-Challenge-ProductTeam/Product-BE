@@ -35,7 +35,6 @@ public class MemberAuthController {
     public BaseResponse<MemberLoginResponse> socialLogin(@RequestHeader(value = "accessToken") String accessToken,
                                                          @RequestParam(value = "loginType") LoginType loginType) {
         return BaseResponse.onSuccess(memberAuthService.socialLogin(accessToken, loginType));
-
     }
 
     @Operation(summary = "자체 로그인 API", description = "자체 로그인을 수행하는 API 입니다. 자체 로그인은 총괄, 중앙 운영진, 학교 계정 전용입니다..")
