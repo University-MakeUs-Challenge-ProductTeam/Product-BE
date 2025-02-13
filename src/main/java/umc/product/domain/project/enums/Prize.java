@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Prize {
 
-    FIRST("1등"),
-    SECOND("2등"),
-    THIRD("3등")
+    FIRST("대상"),
+    SECOND("최우수상"),
+    THIRD("우수상")
     ;
-    private final String prize;
+    private final String name;
 }
