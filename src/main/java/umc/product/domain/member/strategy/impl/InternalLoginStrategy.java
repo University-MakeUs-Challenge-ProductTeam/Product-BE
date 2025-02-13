@@ -5,20 +5,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
-import umc.product.domain.member.entity.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.entity.Role;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberLoginInfoRepository;
-import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.MemberService;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
-
-import java.util.Optional;
 
 import static umc.product.domain.member.status.MemberErrorStatus.AUTHENTICATION_FAILED;
 import static umc.product.domain.member.status.MemberErrorStatus.PASSWORD_MISMATCH;
@@ -44,7 +38,6 @@ public class InternalLoginStrategy implements LoginStrategy {
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
         Member member = memberLoginInfo.getMember();
 
-        // 비밀번호 검증
         if (!passwordEncoder.matches(request.getPassword(), member.getMemberLoginInfo().getPassword())) {
             throw new RestApiException(PASSWORD_MISMATCH);
         }

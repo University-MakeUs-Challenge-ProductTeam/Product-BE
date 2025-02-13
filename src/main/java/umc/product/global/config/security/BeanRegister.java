@@ -1,6 +1,6 @@
 package umc.product.global.config.security;
 
-import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.serviceImpl.MemberServiceImpl;
 import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
 import umc.product.global.config.security.jwt.JwtAuthenticationFilter;
 import umc.product.global.config.security.jwt.JwtExceptionFilter;
@@ -31,7 +31,7 @@ public class BeanRegister {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtProvider jwtProvider, MemberService memberService) {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtProvider jwtProvider, MemberServiceImpl memberService) {
         return new JwtAuthenticationFilter(jwtProvider, memberService);
     }
 

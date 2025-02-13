@@ -2,13 +2,13 @@ package umc.product.domain.member.strategy.impl;
 
 
 import umc.product.domain.member.dto.request.MemberLoginRequest;
-import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.serviceImpl.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
@@ -23,7 +23,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
 
     @Override
