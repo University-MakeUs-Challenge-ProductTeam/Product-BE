@@ -7,12 +7,12 @@ import umc.product.domain.member.client.KakaoMemberClient;
 import umc.product.domain.member.dto.client.KakaoResponse;
 import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
-import umc.product.domain.member.entity.LoginType;
+import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.serviceImpl.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
@@ -27,7 +27,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
     private final KakaoMemberClient kakaoMemberClient;
 

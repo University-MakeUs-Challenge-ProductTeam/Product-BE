@@ -1,6 +1,6 @@
 package umc.product.domain.member.dto.response;
 
-import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.entity.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
 

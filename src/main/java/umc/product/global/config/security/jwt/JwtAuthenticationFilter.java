@@ -1,7 +1,7 @@
 package umc.product.global.config.security.jwt;
 
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.serviceImpl.MemberServiceImpl;
 import umc.product.global.config.security.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     // 오직 인증 정보를 설정하는 역할만 수행
 
     private final JwtProvider jwtTokenProvider;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

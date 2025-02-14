@@ -1,14 +1,14 @@
 package umc.product.domain.member.entity;
 
+import lombok.*;
 import umc.product.global.common.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberLoginInfo extends BaseEntity {
 

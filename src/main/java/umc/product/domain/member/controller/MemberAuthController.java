@@ -2,8 +2,7 @@ package umc.product.domain.member.controller;
 
 import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.LoginType;
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
+import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.MemberIdResponse;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +35,6 @@ public class MemberAuthController {
     public BaseResponse<MemberLoginResponse> socialLogin(@RequestHeader(value = "accessToken") String accessToken,
                                                          @RequestParam(value = "loginType") LoginType loginType) {
         return BaseResponse.onSuccess(memberAuthService.socialLogin(accessToken, loginType));
-
     }
 
     @Operation(summary = "자체 로그인 API", description = "자체 로그인을 수행하는 API 입니다. 자체 로그인은 총괄, 중앙 운영진, 학교 계정 전용입니다..")

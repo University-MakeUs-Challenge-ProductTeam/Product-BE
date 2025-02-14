@@ -1,7 +1,6 @@
 package umc.product.global.config.security;
 
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import umc.product.domain.member.entity.Role;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
 import umc.product.global.config.security.auth.PrincipalDetailsService;
 import umc.product.global.config.security.jwt.JwtAuthenticationFilter;
@@ -40,11 +39,12 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                         .requestMatchers("/s3/**").permitAll()
                         .requestMatchers("/members/auth/**").permitAll()
+                        .requestMatchers("/members/signup").permitAll()
                         .requestMatchers("/members/login").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_"+Role.ADMIN)
                         .requestMatchers("web/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .requestMatchers("web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("web/university-admin/**").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("web/university-admin/**", "/members/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler))

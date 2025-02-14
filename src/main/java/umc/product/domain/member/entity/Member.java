@@ -1,65 +1,61 @@
 package umc.product.domain.member.entity;
 
+import umc.product.domain.event.entity.Event;
+import umc.product.domain.event.entity.ParticipationEvent;
+import umc.product.domain.member.entity.enums.Gender;
+import umc.product.domain.member.entity.enums.LoginType;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.product.global.common.base.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
-
+    // todo: 엔티티 추가되면 매핑 추가
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
-    private String name;
-
-    @Setter
-    private String profileImageUrl;
-
-    @Setter
-    private String birth;
-
-    @Setter
-    private Gender gender;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private String name;
+
+    private String nikeName;
+
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    private String avatar_url;
+
+    private String birth;
+
+    private Gender gender;
+
     private String clientId;
 
-    // todo 편의상 일단 DB에 저장, 실제로는 저장하지 않게 해야 함
-    @Setter
-    private String refreshToken;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
+    @Setter
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private MemberLoginInfo memberLoginInfo;
 
-    @Builder
-    public Member(String name, String email, Role role, LoginType loginType, String clientId) {
-        this.name = name;
-        this.role = role;
-        this.loginType = loginType;
-        this.clientId = clientId;
-        this.status = Status.ACTIVE;
-    }
+    @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
+    private List<ParticipationEvent> participationEventList = new ArrayList<>();
 
     public void changeRole(Role role) {
         this.role = role;
     }
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
 
 }
