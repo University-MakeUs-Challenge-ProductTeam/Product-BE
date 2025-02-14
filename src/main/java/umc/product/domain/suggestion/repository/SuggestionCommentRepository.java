@@ -18,7 +18,7 @@ public interface SuggestionCommentRepository extends JpaRepository<SuggestionCom
     @Query("select sc  " +
             "from SuggestionComment sc " +
             "where sc.suggestion.id = :suggestionId and sc.depth = 0 " +
-            "and sc.deletedAt = null " +
+            "and sc.deletedAt is null " +
             "order by sc.createdAt desc ")
     List<SuggestionComment> findSuggestionCommentsById(@Param("suggestionId") Long suggestionId);
 }
