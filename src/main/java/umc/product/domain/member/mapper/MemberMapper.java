@@ -14,7 +14,7 @@ public class MemberMapper {
         return Member.builder()
                 .birth(request.getBirth())
                 .email(request.getEmail())
-                .avatar_url(request.getAvatar_url())
+                .avatarUrl(request.getAvatar_url())
                 .name(request.getName())
                 .gender(request.getGender())
                 .nikeName(request.getNikeName())
