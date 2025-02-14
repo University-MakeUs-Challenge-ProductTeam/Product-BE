@@ -19,7 +19,7 @@ public class MemberLoginInfo extends BaseEntity {
     @NotNull
     private String memberLoginId;
 
-    @NotNull
+
     private String password;
 
     @OneToOne(fetch = FetchType.LAZY)
