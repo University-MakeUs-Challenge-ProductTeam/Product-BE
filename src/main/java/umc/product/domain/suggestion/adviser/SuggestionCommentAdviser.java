@@ -30,7 +30,7 @@ public class SuggestionCommentAdviser {
 
     public SuggestionCommentIdResponse deleteSuggestionComment(Member member, Long suggestionCommentId) {
         SuggestionComment suggestionComment = suggestionCommentService.findSuggestionComment(suggestionCommentId);
-        suggestionComment = suggestionCommentService.deleteSuggestionComment(suggestionComment);
+        suggestionComment = suggestionCommentService.deleteSuggestionComment(member, suggestionComment);
 
         return suggestionCommentMapper.toSuggestionCommentIdResponse(suggestionComment);
     }

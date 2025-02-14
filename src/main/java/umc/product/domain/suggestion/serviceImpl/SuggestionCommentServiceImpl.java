@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.suggestion.dto.request.SuggestionCommentRequest;
 import umc.product.domain.suggestion.entity.Suggestion;
 import umc.product.domain.suggestion.entity.SuggestionComment;
@@ -16,6 +17,7 @@ import umc.product.global.common.exception.RestApiException;
 import java.util.List;
 
 import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_COMMENT_NOT_EXIST;
+import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
 
 @Service
 @AllArgsConstructor
@@ -61,7 +63,12 @@ public class SuggestionCommentServiceImpl implements SuggestionCommentService {
 
     @Transactional
     @Override
-    public SuggestionComment deleteSuggestionComment(SuggestionComment suggestionComment) {
+    public SuggestionComment deleteSuggestionComment(Member member, SuggestionComment suggestionComment) {
+        if (!suggestionComment.getMember().getId().equals(member.getId())||
+                member.getRole().equals(Role.GUEST) ||
+                member.getRole().equals(Role.CHALLENGER)) {
+            throw new RestApiException(SUGGESTION_NOT_AUTH);
+        }
         suggestionComment.delete();
         return suggestionComment;
     }

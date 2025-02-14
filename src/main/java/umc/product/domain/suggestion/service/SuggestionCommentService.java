@@ -20,5 +20,5 @@ public interface SuggestionCommentService {
     public SuggestionComment patchSuggestionComment(SuggestionComment suggestionComment,
                                                     SuggestionCommentRequest suggestionCommentRequest);
 
-    public SuggestionComment deleteSuggestionComment(SuggestionComment suggestionComment);
+    public SuggestionComment deleteSuggestionComment(Member member, SuggestionComment suggestionComment);
 }
