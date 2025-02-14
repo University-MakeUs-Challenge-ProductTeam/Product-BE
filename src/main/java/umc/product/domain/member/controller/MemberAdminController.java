@@ -22,7 +22,7 @@ import umc.product.global.common.base.BaseResponse;
 @Tag(name = "Admin API", description = "Admin 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/members/admin")
 public class MemberAdminController {
     private final MemberService memberService;
     private final MemberAdminService memberAdminService;
@@ -33,7 +33,7 @@ public class MemberAdminController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @PostMapping("/signup/admin")
+    @PostMapping("/signup")
     public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody MemberSignUpRequest request) {
         return BaseResponse.onSuccess(memberService.signUp(request));
     }
