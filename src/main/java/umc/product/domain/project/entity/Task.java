@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.product.domain.project.entity.mapping.ProjectTask;
+import umc.product.domain.project.enums.Phase;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Task extends BaseEntity { // 과제
 
     @Column(nullable = false)
     private boolean finishStatus;
+
+    @Enumerated(EnumType.STRING)
+    private Phase phase;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectTask> projectTasks = new ArrayList<>();
