@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import umc.product.domain.member.entity.MemberProject;
 import umc.product.domain.project.entity.mapping.ProjectTask;
 import umc.product.domain.project.entity.mapping.ProjectUniversity;
 import umc.product.domain.project.enums.Prize;
@@ -60,9 +61,10 @@ public class Project extends BaseEntity { // 프로젝트
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectTask> projectTasks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberProject> memberProjects = new ArrayList<>();
+
     // Part 연관 관계 매핑 추가 예정
 
     // Branch 연관 관계 매핑 추가 예정
-
-    // MemberProject 연관 관계 매핑 추가 예정
 }
