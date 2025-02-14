@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.suggestion.dto.request.SuggestionCommentRequest;
 import umc.product.domain.suggestion.entity.enums.SuggestionTarget;
 import umc.product.global.common.base.BaseEntity;
 
@@ -19,9 +20,6 @@ public class SuggestionComment extends BaseEntity {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    private String content;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -42,4 +40,13 @@ public class SuggestionComment extends BaseEntity {
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SuggestionComment> childComments = new ArrayList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "suggestion_id")
+    private Suggestion suggestion;
+
+    public void updateSuggestionComment(SuggestionCommentRequest suggestionCommentRequest) {
+        this.comment = suggestionCommentRequest.getComment();
+    }
 }
