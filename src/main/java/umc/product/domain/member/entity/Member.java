@@ -1,7 +1,7 @@
 package umc.product.domain.member.entity;
 
-//import umc.product.domain.event.entity.Event;
-//import umc.product.domain.event.entity.ParticipationEvent;
+import umc.product.domain.event.entity.Event;
+import umc.product.domain.event.entity.ParticipationEvent;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
@@ -51,8 +51,8 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private MemberLoginInfo memberLoginInfo;
 
-//    @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
-//    private List<ParticipationEvent> participationEventList = new ArrayList<>();
+    @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
+    private List<ParticipationEvent> participationEventList = new ArrayList<>();
 
     public void changeRole(Role role) {
         this.role = role;

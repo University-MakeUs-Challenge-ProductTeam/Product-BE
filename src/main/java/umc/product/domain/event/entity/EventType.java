@@ -1,4 +1,4 @@
-package umc.product.domain.event.entity.event;
+package umc.product.domain.event.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
