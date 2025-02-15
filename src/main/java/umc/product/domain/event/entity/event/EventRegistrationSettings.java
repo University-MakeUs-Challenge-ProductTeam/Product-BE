@@ -32,7 +32,8 @@ public class EventRegistrationSettings extends BaseEntity {
 
     private LocalDateTime cancellationDeadline;  // 취소 가능 기한
 
-    @OneToMany(mappedBy = "eventRegistrationSettings", cascade = CascadeType.ALL)
+    @OneToMany
+    @JoinColumn(name = "allowed_semester_id")
     private List<Semester> allowedSemester = new ArrayList<>();  // 참여 가능 기수
 
     @ElementCollection

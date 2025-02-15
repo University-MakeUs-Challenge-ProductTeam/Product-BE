@@ -27,14 +27,14 @@ public class ParticipationEvent extends BaseEntity {
     private Member participationMember;
 
     // 역할 책임 분리를 위해 ParticipationEvent을 EventFormAnswer에서 분리해서 일대일 관계로 설정
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "responseEvent", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "participationEvent", cascade = CascadeType.ALL)
     @JoinColumn(name = "event_form_response_id")
-    private EventFormResponse eventFormResponse; // 해당 참가 이벤트에 대한 신청 폼 응답
+    private EventFormResponse response; // 해당 참가 이벤트에 대한 신청 폼 응답
 
     @Builder
     public ParticipationEvent(Event event, Member participationMember, EventFormResponse eventFormResponse) {
         this.event = event;
         this.participationMember = participationMember;
-        this.eventFormResponse = eventFormResponse;
+        this.response = eventFormResponse;
     }
 }
