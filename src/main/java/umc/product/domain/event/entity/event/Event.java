@@ -56,7 +56,7 @@ public class Event extends BaseEntity {
     private List<String> images = new ArrayList<>();  // 이미지 경로 리스트
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<ParticipationEvent> participationEvents; // 이벤트를 참가한 사람들
+    private List<ParticipationEvent> participationEvents = new ArrayList<>(); // 이벤트를 참가한 사람들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.ALL)

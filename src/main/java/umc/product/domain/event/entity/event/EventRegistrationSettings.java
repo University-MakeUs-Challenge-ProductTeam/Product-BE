@@ -11,6 +11,7 @@ import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,17 +33,17 @@ public class EventRegistrationSettings extends BaseEntity {
     private LocalDateTime cancellationDeadline;  // 취소 가능 기한
 
     @OneToMany(mappedBy = "eventRegistrationSettings", cascade = CascadeType.ALL)
-    private List<Semester> allowedSemester;  // 참여 가능 기수
+    private List<Semester> allowedSemester = new ArrayList<>();  // 참여 가능 기수
 
     @ElementCollection
     @CollectionTable(name = "event_allowed_parts", joinColumns = @JoinColumn(name = "registration_settings_id"))
     @Enumerated(EnumType.STRING)
-    private List<Part> allowedParts;  // 참여 가능 파트
+    private List<Part> allowedParts = new ArrayList<>();  // 참여 가능 파트
 
     @ElementCollection
     @CollectionTable(name = "event_allowed_roles", joinColumns = @JoinColumn(name = "registration_settings_id"))
     @Enumerated(EnumType.STRING)
-    private List<Role> allowedRoles;  // 참여 가능 역할
+    private List<Role> allowedRoles = new ArrayList<>();  // 참여 가능 역할
 
     @Builder
     public EventRegistrationSettings(Event event, LocalDateTime registrationStartDate, LocalDateTime registrationEndDate, LocalDateTime cancellationDeadline, List<Semester> allowedSemester, List<Part> allowedParts, List<Role> allowedRoles) {

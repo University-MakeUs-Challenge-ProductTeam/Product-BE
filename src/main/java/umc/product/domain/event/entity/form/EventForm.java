@@ -9,6 +9,7 @@ import umc.product.domain.event.entity.participation.EventFormResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.global.common.base.BaseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,10 +28,10 @@ public class EventForm extends BaseEntity {
     private String description;  // 폼 설명
 
     @OneToMany(mappedBy = "eventForm")
-    private List<EventFormQuestion> questions;  // 폼에 포함된 문항들
+    private List<EventFormQuestion> questions = new ArrayList<>();  // 폼에 포함된 문항들
 
     @OneToMany(mappedBy = "eventForm")
-    private List<EventFormResponse> responses;  // 폼에 대한 응답들
+    private List<EventFormResponse> responses = new ArrayList<>();  // 폼에 대한 응답들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY)

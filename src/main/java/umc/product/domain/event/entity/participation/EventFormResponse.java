@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.global.common.base.BaseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +27,7 @@ public class EventFormResponse extends BaseEntity {
     private Long userId;  // 응답을 제출한 사용자 ID
 
     @OneToMany(mappedBy = "response")
-    private List<EventFormAnswer> answers;  // 응답에 포함된 답변들
+    private List<EventFormAnswer> answers = new ArrayList<>(); ;  // 응답에 포함된 답변들
 
     // 역할 책임 분리를 위해 ParticipationEvent을 EventFormResponse에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY)
