@@ -1,13 +1,13 @@
-package umc.product.domain.event.entity;
+package umc.product.domain.event.entity.participation;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.event.entity.form.EventForm;
 import umc.product.global.common.base.BaseEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

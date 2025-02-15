@@ -1,10 +1,11 @@
-package umc.product.domain.event.entity;
+package umc.product.domain.event.entity.participation;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseEntity;
 

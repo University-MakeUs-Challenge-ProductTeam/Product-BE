@@ -1,4 +1,4 @@
-package umc.product.domain.event.entity;
+package umc.product.domain.event.entity.form;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
