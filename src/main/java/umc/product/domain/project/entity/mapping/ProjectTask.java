@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.project.entity.Project;
-import umc.product.domain.project.entity.Task;
+import umc.product.domain.task.entity.Task;
 import umc.product.global.common.base.BaseEntity;
 
 @Entity

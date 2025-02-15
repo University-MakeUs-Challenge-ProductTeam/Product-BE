@@ -1,4 +1,4 @@
-package umc.product.domain.project.entity;
+package umc.product.domain.task.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
