@@ -5,7 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.event.entity.participation.EventFormAnswer;
 import umc.product.global.common.base.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,18 +30,21 @@ public class EventFormQuestion extends BaseEntity {
     private ResponseType responseType;  // 문항 유형 (TEXT, FILE_UPLOAD, RADIO, CHECKBOX 등)
 
     @Column(nullable = true)
-    private Integer order;  // 문항 순서
+    private Integer questionOrder;  // 문항 순서
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_form_id", nullable = false)
     private EventForm eventForm;  // 해당 문항이 속한 신청 폼
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<EventFormAnswer> answers = new ArrayList<>();  // 문항에 대한 답변들
+
     @Builder
-    public EventFormQuestion(String questionTitle, String questionContent, ResponseType responseType, Integer order, EventForm eventForm) {
+    public EventFormQuestion(String questionTitle, String questionContent, ResponseType responseType, Integer questionOrder, EventForm eventForm) {
         this.questionTitle = questionTitle;
         this.questionContent = questionContent;
         this.responseType = responseType;
-        this.order = order;
+        this.questionOrder = questionOrder;
         this.eventForm = eventForm;
     }
 }
