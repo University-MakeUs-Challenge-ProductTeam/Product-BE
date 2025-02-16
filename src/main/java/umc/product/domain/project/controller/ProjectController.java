@@ -41,8 +41,8 @@ public class ProjectController {
                     description = "프로젝트 목록 조회 성공"
             )
     })
-    public BaseResponse<ProjectListResponse> getMyProjects( // todo : 페이징 사용 결정 필요 - 본인이 참여한 프로젝트 개수가 페이징을 써야될 정도로 많지는 않을 것 같음
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public BaseResponse<ProjectResponse> getMyProjects( // todo : 페이징 사용 결정 필요 - 본인이 참여한 프로젝트 개수가 페이징을 써야될 정도로 많지는 않을 것 같음
+                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
 //            @RequestParam(name = "cursor", required = false) Long cursor,
 //            @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
@@ -112,7 +112,7 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "semesterId", description = "기수 id, path variable 입니다")
     })
-    public BaseResponse<ProjectListResponse> getAllProjects(
+    public BaseResponse<ProjectResponse> getAllProjects(
             @PathVariable Long semesterId,
             @RequestParam(name = "cursor", required = false) Long cursor,
             @RequestParam(name = "size", defaultValue = "10") Integer size) {
