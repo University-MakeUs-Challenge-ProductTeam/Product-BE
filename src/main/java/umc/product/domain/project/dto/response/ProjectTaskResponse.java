@@ -1,7 +1,6 @@
 package umc.product.domain.project.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +17,10 @@ public class ProjectTaskListResponse {
 
     @Schema(description = "프로젝트 과제 목록 리스트")
     private final List<ProjectTaskResponse> projectTaskResponses;
+
+    public static ProjectTaskListResponse from(List<ProjectTaskResponse> recommendResponses){
+        return new ProjectTaskListResponse(recommendResponses);
+    }
 
     @Schema(description = "과제 정보 DTO")
     @Getter
@@ -36,5 +39,17 @@ public class ProjectTaskListResponse {
 
         @Schema(description = "완료 상태", example = "false")
         private boolean finishStatus;
+
+        public static ProjectTaskResponse of(Part part,
+                                             Phase phase,
+                                             String content,
+                                             boolean finishStatus) {
+            return ProjectTaskResponse.builder()
+                    .part(part)
+                    .phase(phase)
+                    .content(content)
+                    .finishStatus(finishStatus)
+                    .build();
+        }
     }
 }
