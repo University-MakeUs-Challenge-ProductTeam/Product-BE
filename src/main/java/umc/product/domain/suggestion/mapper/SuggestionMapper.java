@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.suggestion.dto.query.MySuggestionQueryDto;
 import umc.product.domain.suggestion.dto.query.SuggestionQueryDto;
 import umc.product.domain.suggestion.dto.request.SuggestionRequest;
-import umc.product.domain.suggestion.dto.response.SuggestionCommentsResponse;
-import umc.product.domain.suggestion.dto.response.SuggestionDetailResponse;
-import umc.product.domain.suggestion.dto.response.SuggestionGetResponse;
-import umc.product.domain.suggestion.dto.response.SuggestionIdResponse;
+import umc.product.domain.suggestion.dto.response.*;
 import umc.product.domain.suggestion.entity.Suggestion;
 import umc.product.domain.suggestion.entity.SuggestionComment;
 
@@ -37,6 +35,14 @@ public class SuggestionMapper {
 
     public SuggestionGetResponse toSuggestionGetResponse(Page<SuggestionQueryDto> suggestions) {
         return SuggestionGetResponse.builder()
+                .totalPage(suggestions.getTotalPages())
+                .page(suggestions.getNumber())
+                .suggestions(suggestions.getContent())
+                .build();
+    }
+
+    public MySuggestionGetResponse toMySuggestionGetResponse(Page<MySuggestionQueryDto> suggestions) {
+        return MySuggestionGetResponse.builder()
                 .totalPage(suggestions.getTotalPages())
                 .page(suggestions.getNumber())
                 .suggestions(suggestions.getContent())

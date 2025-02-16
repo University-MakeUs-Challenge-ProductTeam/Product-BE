@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.suggestion.dto.query.MySuggestionQueryDto;
 import umc.product.domain.suggestion.dto.query.SuggestionQueryDto;
 import umc.product.domain.suggestion.dto.request.SuggestionRequest;
 import umc.product.domain.suggestion.entity.Suggestion;
@@ -68,7 +69,12 @@ public class SuggestionServiceImpl implements SuggestionService {
 
     @Override
     public Page<SuggestionQueryDto> getSuggestion(Member member, Pageable pageable) {
-        return suggestionRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return suggestionRepository.findSuggestion(pageable);
+    }
+
+    @Override
+    public Page<MySuggestionQueryDto> getMySuggestion(Member member, Pageable pageable) {
+        return suggestionRepository.findMySuggestion(member.getId(), pageable);
     }
 
 
