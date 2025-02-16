@@ -41,6 +41,8 @@ public class SuggestionCommentServiceImpl implements SuggestionCommentService {
     @Override
     public SuggestionComment postSuggestionComment(Member member, Long suggestionId, Long suggestionCommentId, SuggestionCommentRequest suggestionCommentRequest) {
         Suggestion suggestion = suggestionService.findSuggestionById(suggestionId);
+        suggestion.updateSuggestionStatus(true);
+
         Integer maxBundleId = suggestionCommentRepository.findMaxBundleId().orElse(null);
         SuggestionComment suggestionComment;
         if (suggestionCommentId == null) { //최초댓글

@@ -5,9 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.suggestion.dto.query.MySuggestionQueryDto;
 import umc.product.domain.suggestion.dto.query.SuggestionQueryDto;
 import umc.product.domain.suggestion.dto.request.SuggestionRequest;
+import umc.product.domain.suggestion.dto.response.MySuggestionGetResponse;
 import umc.product.domain.suggestion.dto.response.SuggestionDetailResponse;
 import umc.product.domain.suggestion.dto.response.SuggestionGetResponse;
 import umc.product.domain.suggestion.dto.response.SuggestionIdResponse;
@@ -16,12 +17,8 @@ import umc.product.domain.suggestion.entity.SuggestionComment;
 import umc.product.domain.suggestion.mapper.SuggestionMapper;
 import umc.product.domain.suggestion.service.SuggestionCommentService;
 import umc.product.domain.suggestion.service.SuggestionService;
-import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
-
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_EXIST;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +46,11 @@ public class SuggestionAdviser {
     public SuggestionGetResponse getSuggestion(Member member, Pageable pageable) {
         Page<SuggestionQueryDto> suggestions = suggestionService.getSuggestion(member, pageable);
         return suggestionMapper.toSuggestionGetResponse(suggestions);
+    }
+
+    public MySuggestionGetResponse getMySuggestion(Member member, Pageable pageable) {
+        Page<MySuggestionQueryDto> suggestions = suggestionService.getMySuggestion(member, pageable);
+        return suggestionMapper.toMySuggestionGetResponse(suggestions);
     }
 
     public SuggestionDetailResponse getSuggestionDetail(Member member, Long suggestionId) {

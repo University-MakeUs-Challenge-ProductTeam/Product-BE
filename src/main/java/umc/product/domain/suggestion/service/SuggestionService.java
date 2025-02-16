@@ -3,6 +3,7 @@ package umc.product.domain.suggestion.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.suggestion.dto.query.MySuggestionQueryDto;
 import umc.product.domain.suggestion.dto.query.SuggestionQueryDto;
 import umc.product.domain.suggestion.dto.request.SuggestionRequest;
 import umc.product.domain.suggestion.entity.Suggestion;
@@ -22,6 +23,9 @@ public interface SuggestionService {
 
     public Page<SuggestionQueryDto> getSuggestion(Member member,
                                                   Pageable pageable);
+
+    public Page<MySuggestionQueryDto> getMySuggestion(Member member,
+                                                      Pageable pageable);
 
 
     public Suggestion patchSuggestionStatus(Member member,
