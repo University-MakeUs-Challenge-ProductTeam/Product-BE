@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.request.ProjectModifyRequest;
 import umc.product.domain.project.dto.request.TaskCompleteRequest;
 import umc.product.domain.project.dto.response.*;
+import umc.product.domain.project.service.ProjectQueryService;
 import umc.product.global.common.base.BaseResponse;
+import umc.product.global.config.security.auth.CurrentMember;
 import umc.product.global.config.security.auth.PrincipalDetails;
 
 import java.util.List;
@@ -25,6 +28,8 @@ import java.util.List;
 @RequestMapping("/projects")
 @Validated
 public class ProjectController {
+
+    private final ProjectQueryService projectQueryService;
 
     @GetMapping("/my")
     @Operation(summary = "본인 참여 프로젝트 목록 조회 API", description = "본인이 참여한 프로젝트에 대한 목록을 조회하는 API입니다.")
@@ -81,17 +86,17 @@ public class ProjectController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "프로젝트 인원 리스트 조회 성공"
+                    description = "프로젝트 과제 리스트 조회 성공"
             )
     })
     @Parameters({
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
-    public BaseResponse<ProjectTaskListResponse> getProjectTasks(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
+    public BaseResponse<List<ProjectTaskResponse>> getProjectTasks(
+            @CurrentMember Member member,
             @PathVariable Long projectId) {
-
-        return BaseResponse.onSuccess(null);
+        List<ProjectTaskResponse> response = projectQueryService.getTasks(member, projectId);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/{semesterId}")
