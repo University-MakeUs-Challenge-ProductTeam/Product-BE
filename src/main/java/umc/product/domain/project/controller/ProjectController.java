@@ -15,6 +15,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.request.ProjectModifyRequest;
 import umc.product.domain.project.dto.request.TaskCompleteRequest;
 import umc.product.domain.project.dto.response.*;
+import umc.product.domain.project.service.ProjectCommandService;
 import umc.product.domain.project.service.ProjectQueryService;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectQueryService projectQueryService;
+    private final ProjectCommandService projectCommandService;
 
     @GetMapping("/my")
     @Operation(summary = "본인 참여 프로젝트 목록 조회 API", description = "본인이 참여한 프로젝트에 대한 목록을 조회하는 API입니다.")
@@ -180,7 +182,7 @@ public class ProjectController {
     public BaseResponse<Void> completeTask(
             @Valid @RequestBody TaskCompleteRequest request,
             @PathVariable Long projectId) {
-
+        projectCommandService.completeTask(projectId, request);
         return BaseResponse.onSuccess(null);
     }
 }
