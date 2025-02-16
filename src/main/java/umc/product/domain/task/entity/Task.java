@@ -35,3 +35,4 @@ public class Task extends BaseEntity { // 과제
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectTask> projectTasks = new ArrayList<>();
 }
+
