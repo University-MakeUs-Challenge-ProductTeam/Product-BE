@@ -76,8 +76,8 @@ public class ProjectController {
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
     public BaseResponse<List<ProjectMemberResponse>> getProjectMembers(@PathVariable Long projectId) {
-
-        return BaseResponse.onSuccess(null);
+        List<ProjectMemberResponse> response = projectQueryService.getProjectMembers(projectId);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/{projectId}/tasks")

@@ -1,6 +1,8 @@
 package umc.product.domain.project.repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.branch.entity.QBranch;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.QMember;
 import umc.product.domain.member.entity.QMemberProject;
 import umc.product.domain.member.entity.QMemberProjectPart;
 import umc.product.domain.member.entity.enums.Part;
@@ -41,6 +44,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
     private final QBranch branch = QBranch.branch;
     private final QProjectUniversity projUniv = QProjectUniversity.projectUniversity;
     private final QUniversity univ = QUniversity.university;
+    private final QMember member = QMember.member;
 
     @Override
     public List<ProjectTaskResponse> getTasks(Member member, Long projectId) {
@@ -164,5 +168,23 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
         LocalDate endDate = tuple.get(project.endDate);
 
         return startDate + " ~ " + (endDate != null ? endDate : "ing");
+    }
+
+    @Override
+    public List<ProjectMemberResponse> getProjectMembers(Long projectId) {
+        return jpaQueryFactory
+                .from(memberProject)
+                .join(memberProject.member, member)
+                .join(memberProject.parts, memberProjectPart)
+                .where(memberProject.project.id.eq(projectId))
+                .transform(GroupBy.groupBy(member.id)
+                        .list(Projections.constructor(
+                                ProjectMemberResponse.class,
+                                member.id,
+                                member.nikeName,
+                                member.name,
+                                GroupBy.list(memberProjectPart.part)
+                        ))
+                );
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.response.ProjectInfoResponse;
+import umc.product.domain.project.dto.response.ProjectMemberResponse;
 import umc.product.domain.project.dto.response.ProjectResponse;
 import umc.product.domain.project.dto.response.ProjectTaskResponse;
 import umc.product.domain.project.entity.Project;
@@ -65,5 +66,23 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
             log.error("프로젝트 조회 관련 에러, memberId: {}, projectId: {}", member.getId(), projectId, e);
             throw new ProjectException(ProjectErrorStatus.PROJECT_NOT_FOUND);
         }
+    }
+
+    @Override
+    public List<ProjectMemberResponse> getProjectMembers(Long projectId) {
+
+        projectRepository.findById(projectId)
+                .orElseThrow(() -> {
+                    log.error("프로젝트 조회 관련 에러, projectId: {}", projectId);
+                    return new ProjectException(ProjectErrorStatus.PROJECT_NOT_FOUND);
+                });
+
+        List<ProjectMemberResponse> response = projectRepository.getProjectMembers(projectId);
+
+        if (response.isEmpty()) {
+            log.error("해당 프로젝트에 참여한 사용자가 없는 에러, projectId: {}", projectId);
+            throw new ProjectException(ProjectErrorStatus.PROJECT_MEMBER_NOT_FOUND);
+        }
+        return response;
     }
 }
