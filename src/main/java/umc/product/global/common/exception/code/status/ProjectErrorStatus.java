@@ -16,6 +16,7 @@ public enum ProjectErrorStatus implements BaseCodeInterface {
     TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "TASK404", "과제를 찾을 수 없습니다."),
     TASK_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "TASK_STATUS_404", "과제 수행 여부를 찾을 수 없습니다."),
     PROJECT_DURATION_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_DURATION_404", "프로젝트 기간을 찾을 수 없습니다."),
+    PROJECT_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_MEMBER_404", "프로젝트에 참여한 사용자를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
