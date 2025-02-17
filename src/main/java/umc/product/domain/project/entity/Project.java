@@ -58,16 +58,16 @@ public class Project extends BaseEntity { // 프로젝트
     private Prize prize;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectUniversity> projectUniversities = new ArrayList<>();
+    private List<ProjectUniversity> projectUniversityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectTask> projectTasks = new ArrayList<>();
+    private List<ProjectTask> projectTaskList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    private List<MemberProject> memberProjectList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ProjectPart> parts = new ArrayList<>();
+    private List<ProjectPart> projectPartList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)

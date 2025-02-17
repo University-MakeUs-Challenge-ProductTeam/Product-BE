@@ -29,5 +29,5 @@ public class University extends BaseEntity {
     private boolean isActive;
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectUniversity> projectUniversities = new ArrayList<>();
+    private List<ProjectUniversity> projectUniversityList = new ArrayList<>();
 }

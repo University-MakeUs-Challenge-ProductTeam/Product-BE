@@ -30,5 +30,5 @@ public class Branch extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Project> projects = new ArrayList<>();
+    private List<Project> projectList = new ArrayList<>();
 }
