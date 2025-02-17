@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProjectCustomRepository {
 
-    List<ProjectTaskResponse> getTasksQueryDSL(Member member, Long projectId);
+    List<ProjectTaskResponse> getTasks(Member member, Long projectId);
     List<ProjectResponse> getMyProjects(Member member);
 }

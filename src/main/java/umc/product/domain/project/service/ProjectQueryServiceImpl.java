@@ -31,7 +31,7 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     @Override
     public List<ProjectTaskResponse> getTasks(Member member, Long projectId) {
         try {
-            return projectRepository.getTasksQueryDSL(member, projectId);
+            return projectRepository.getTasks(member, projectId);
         } catch (Exception e) {
             log.error("과제 조회 관련 에러, projectId: {}, memberId: {}", projectId, member.getId(), e);
             throw new ProjectException(ProjectErrorStatus.TASK_NOT_FOUND);

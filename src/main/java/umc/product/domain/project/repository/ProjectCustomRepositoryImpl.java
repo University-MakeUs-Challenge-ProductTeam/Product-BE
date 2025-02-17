@@ -36,7 +36,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
     private final QProjectPart projectPart = QProjectPart.projectPart;
 
     @Override
-    public List<ProjectTaskResponse> getTasksQueryDSL(Member member, Long projectId) {
+    public List<ProjectTaskResponse> getTasks(Member member, Long projectId) {
 
         return jpaQueryFactory
                 .select(new QProjectTaskResponse(
