@@ -1,10 +1,11 @@
 package umc.product.domain.project.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Schema(description = "내 프로젝트에 대한 정보 조회 응답 DTO")
 @Getter
@@ -31,9 +32,10 @@ public class ProjectInfoResponse {
     private String imgUrl;
 
     @Schema(description = "기수", example = "7기")
-    private String semester;
+    private String semester; // todo : Semester ENUM 타입으로 변경 예정 - Branch의 semester 필드 가져오기
 
-    // todo : university 추가 예정
+    @Schema(description = "참여 학교", example = "[\"가천대학교\", \"경희대학교\", \"명지대학교\"]")
+    private List<String> university;
 
     @Schema(description = "개발 기간", example = "2025.xx.xx ~ 2025.xx.xx")
     private String duration;
