@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import umc.product.domain.branch.entity.Branch;
 import umc.product.domain.member.entity.MemberProject;
 import umc.product.domain.member.entity.MemberProjectPart;
 import umc.product.domain.project.entity.mapping.ProjectTask;
 import umc.product.domain.project.entity.mapping.ProjectUniversity;
 import umc.product.domain.project.enums.Prize;
+import umc.product.domain.task.entity.Task;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDate;
@@ -45,7 +47,6 @@ public class Project extends BaseEntity { // 프로젝트
     @Column(nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
     private LocalDate endDate;
 
     @Column(nullable = false)
@@ -57,16 +58,18 @@ public class Project extends BaseEntity { // 프로젝트
     private Prize prize;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectUniversity> projectUniversities = new ArrayList<>();
+    private List<ProjectUniversity> projectUniversityList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectTask> projectTasks = new ArrayList<>();
+    private List<ProjectTask> projectTaskList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    private List<MemberProject> memberProjectList = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ProjectPart> parts = new ArrayList<>();
+    private List<ProjectPart> projectPartList = new ArrayList<>();
 
-    // Branch 연관 관계 매핑 추가 예정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 }

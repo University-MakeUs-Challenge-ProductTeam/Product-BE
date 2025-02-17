@@ -55,7 +55,7 @@ public class Member extends BaseEntity {
 //    private List<ParticipationEvent> participationEventList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    private List<MemberProject> memberProjectList = new ArrayList<>();
 
     public void changeRole(Role role) {
         this.role = role;

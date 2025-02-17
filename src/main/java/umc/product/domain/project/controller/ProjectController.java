@@ -41,12 +41,9 @@ public class ProjectController {
                     description = "프로젝트 목록 조회 성공"
             )
     })
-    public BaseResponse<ProjectListResponse> getMyProjects( // todo : 페이징 사용 결정 필요 - 본인이 참여한 프로젝트 개수가 페이징을 써야될 정도로 많지는 않을 것 같음
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-//            @RequestParam(name = "cursor", required = false) Long cursor,
-//            @RequestParam(name = "size", defaultValue = "10") Integer size) {
-
-        return BaseResponse.onSuccess(null);
+    public BaseResponse<List<ProjectResponse>> getMyProjects(@CurrentMember Member member) {
+        List<ProjectResponse> response = projectQueryService.getMyProjects(member);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/my/{projectId}")
@@ -61,10 +58,10 @@ public class ProjectController {
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
     public BaseResponse<ProjectInfoResponse> getMyProject(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @CurrentMember Member member,
             @PathVariable Long projectId) {
-
-        return BaseResponse.onSuccess(null);
+        ProjectInfoResponse response = projectQueryService.getMyProject(member, projectId);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/{projectId}/members")
@@ -79,8 +76,8 @@ public class ProjectController {
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
     public BaseResponse<List<ProjectMemberResponse>> getProjectMembers(@PathVariable Long projectId) {
-
-        return BaseResponse.onSuccess(null);
+        List<ProjectMemberResponse> response = projectQueryService.getProjectMembers(projectId);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/{projectId}/tasks")
@@ -112,7 +109,7 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "semesterId", description = "기수 id, path variable 입니다")
     })
-    public BaseResponse<ProjectListResponse> getAllProjects(
+    public BaseResponse<ProjectResponse> getAllProjects(
             @PathVariable Long semesterId,
             @RequestParam(name = "cursor", required = false) Long cursor,
             @RequestParam(name = "size", defaultValue = "10") Integer size) {

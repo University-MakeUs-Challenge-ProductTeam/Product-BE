@@ -28,5 +28,5 @@ public class MemberProject extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "memberProject", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<MemberProjectPart> parts = new ArrayList<>();
+    private List<MemberProjectPart> memberProjectPartList = new ArrayList<>();
 }

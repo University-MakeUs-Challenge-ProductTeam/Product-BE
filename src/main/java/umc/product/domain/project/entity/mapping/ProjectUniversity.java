@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.project.entity.Project;
+import umc.product.domain.university.entity.University;
 import umc.product.global.common.base.BaseEntity;
 
 @Entity
@@ -20,5 +21,7 @@ public class ProjectUniversity extends BaseEntity {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    // University 연관 관계 매핑 추가 예정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id", nullable = false)
+    private University university;
 }
