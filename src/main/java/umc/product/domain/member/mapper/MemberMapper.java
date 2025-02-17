@@ -1,6 +1,7 @@
 package umc.product.domain.member.mapper;
 
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
+import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
@@ -8,9 +9,12 @@ import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.global.config.security.jwt.TokenInfo;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class MemberMapper {
-    public Member toMember(MemberSignUpRequest request){
+    public Member toMember(MemberAdminSignUpRequest request){
         return Member.builder()
                 .birth(request.getBirth())
                 .email(request.getEmail())
@@ -39,6 +43,23 @@ public class MemberMapper {
                 .refreshToken(tokenInfo.refreshToken())
                 .isServiceMember(isServiceMember)
                 .role(role)
+                .build();
+    }
+
+    public List<MemberSearchResponse> toSearchMembers(List<Member> members) {
+        return members.stream()
+                .map(this::toSearchMemberResponse).collect(Collectors.toList());
+    }
+
+    public MemberSearchResponse toSearchMemberResponse(Member member) {
+        return MemberSearchResponse.builder()
+                .memberId(member.getId())
+                .avatarUrl(member.getAvatarUrl())
+                .name(member.getName())
+                .nickName(member.getNikeName())
+                .university(member.getName()) //수정해야함
+                .role(member.getRole().getToKorean())
+                .status(member.getStatus())
                 .build();
     }
 }

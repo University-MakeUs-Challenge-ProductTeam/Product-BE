@@ -4,7 +4,7 @@ import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.domain.member.service.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
@@ -101,5 +101,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         member.delete();
 
         return new MemberIdResponse(member.getId());
+    }
+
+    @Override
+    public void verifyMemberCode(String code) {
+        return;
     }
 }

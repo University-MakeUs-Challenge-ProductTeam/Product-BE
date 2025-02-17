@@ -3,9 +3,8 @@ package umc.product.domain.member.service;
 import umc.product.domain.member.dto.request.MemberLoginRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
 import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 
 public interface MemberAuthService {
@@ -19,5 +18,7 @@ public interface MemberAuthService {
     MemberIdResponse logout(Member member);
     // 회원 탈퇴
     MemberIdResponse withdrawal(Member member);
+
+    void verifyMemberCode(String code);
 
 }

@@ -7,7 +7,7 @@ import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.enums.Status;
 
 @Getter
-public class MemberSignUpRequest {
+public class MemberAdminSignUpRequest {
     private Role role;
     private String name;
     private String nikeName;

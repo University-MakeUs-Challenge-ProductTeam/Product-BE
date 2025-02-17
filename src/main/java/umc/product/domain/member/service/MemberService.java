@@ -1,18 +1,18 @@
 package umc.product.domain.member.service;
 
-import umc.product.domain.member.dto.request.MemberCodeRequest;
-import umc.product.domain.member.dto.request.MemberLoginRequest;
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
-import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.MemberIdResponse;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import org.springframework.data.domain.Pageable;
+import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.entity.enums.LoginType;
+import umc.product.domain.member.entity.enums.Role;
+
+import java.util.List;
 
 public interface MemberService {
-    MemberIdResponse signUp(MemberSignUpRequest request);
+    MemberIdResponse signUp(MemberAdminSignUpRequest request);
     public Member findById(Long id);
     public Member saveEntity(Member member);
+    public List<MemberSearchResponse> findMembers(Member member, Pageable pageable, String semester, Role role, String part);
 
 }

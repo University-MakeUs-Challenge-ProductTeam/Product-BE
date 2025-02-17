@@ -1,11 +1,14 @@
 package umc.product.domain.member.serviceImpl;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
-import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
@@ -19,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -31,7 +36,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberIdResponse signUp(MemberSignUpRequest request) {
+    public MemberIdResponse signUp(MemberAdminSignUpRequest request) {
         Member member = memberMapper.toMember(request);
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
         member.setMemberLoginInfo(memberLoginInfo);
@@ -46,6 +51,12 @@ public class MemberServiceImpl implements MemberService {
     // 회원 저장
     public Member saveEntity(Member member) {
         return memberRepository.save(member);
+    }
+
+    @Override
+    public List<MemberSearchResponse> findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
+        List<Member> members =  memberRepository.findMembers(pageable, semester, role, part);
+        return memberMapper.toSearchMembers(members);
     }
 
     public Member getCurrentMember() {

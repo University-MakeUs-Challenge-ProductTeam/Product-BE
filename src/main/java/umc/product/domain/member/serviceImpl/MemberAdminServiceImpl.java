@@ -1,29 +1,35 @@
 package umc.product.domain.member.serviceImpl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.MemberCodeRequest;
-import umc.product.domain.member.dto.request.MemberSignUpRequest;
-import umc.product.domain.member.dto.response.MemberCodeResponse;
-import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.MemberLoginInfo;
+import umc.product.domain.member.mapper.MemberInfoMapper;
+import umc.product.domain.member.mapper.MemberMapper;
+import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.MemberAdminService;
-import umc.product.domain.member.service.MemberCodeService;
 
-import java.util.Random;
 @Service
 @AllArgsConstructor
 public class MemberAdminServiceImpl implements MemberAdminService {
-    private final MemberCodeService memberCodeService;
+    private final MemberRepository memberRepository;
+
+    private final MemberMapper memberMapper;
+    private final MemberInfoMapper memberInfoMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberCodeResponse generateCode(MemberCodeRequest request) {
-        return memberCodeService.saveCode(request, generateVerificationCode());
+    public MemberIdResponse signUp(MemberAdminSignUpRequest request) {
+        Member member = memberMapper.toMember(request);
+        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
+        member.setMemberLoginInfo(memberLoginInfo);
+        return new MemberIdResponse(saveEntity(member).getId());
     }
-
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 1000000000 + random.nextInt(900000000); // 10자리 숫자 생성
-        return String.valueOf(code);
+    public Member saveEntity(Member member) {
+        return memberRepository.save(member);
     }
 }

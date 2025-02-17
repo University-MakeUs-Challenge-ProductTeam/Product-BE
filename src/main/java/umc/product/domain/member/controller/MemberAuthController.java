@@ -1,10 +1,12 @@
 package umc.product.domain.member.controller;
 
+import umc.product.domain.member.adviser.MemberAuthAdviser;
 import umc.product.domain.member.dto.request.MemberLoginRequest;
+import umc.product.domain.member.dto.response.code.MemberCodeRoleResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.MemberLoginResponse;
 import umc.product.domain.member.service.MemberAuthService;
 import umc.product.global.common.base.BaseResponse;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/members/auth")
 public class MemberAuthController {
     private final MemberAuthService memberAuthService;
+    private final MemberAuthAdviser memberAuthAdviser;
 
     @Operation(summary = "소셜 로그인 API", description = "네이버, 카카오, 구글 로그인을 수행하는 API입니다. 소셜 로그인은 일반 챌린저 용입니다. (비회원 로그인은 기능에 없으나, 태스트 하기 편하라고 남겨둠니다.)")
     @ApiResponses(value = {
@@ -46,7 +49,6 @@ public class MemberAuthController {
     @PostMapping("/login")
     public BaseResponse<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
         return BaseResponse.onSuccess(memberAuthService.login(request));
-
     }
 
     @Operation(summary = "accessToken 재발급 API", description = "refreshToken가 유효하다면 새로운 accessToken을 발급하는 API입니다.")
@@ -76,6 +78,11 @@ public class MemberAuthController {
     @DeleteMapping
     public BaseResponse<MemberIdResponse> withdrawal(@CurrentMember Member member) {
         return BaseResponse.onSuccess(memberAuthService.withdrawal(member));
+    }
+
+    @GetMapping("/code")
+    public BaseResponse<MemberCodeRoleResponse> verifyMemberCode(@RequestParam String code) {
+        return BaseResponse.onSuccess(memberAuthAdviser.verifyMemberCode(code));
     }
 
 }
