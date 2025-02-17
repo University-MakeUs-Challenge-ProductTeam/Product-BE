@@ -1,7 +1,7 @@
 package umc.product.domain.project.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +10,6 @@ import java.util.List;
 @Schema(description = "내 프로젝트에 대한 정보 조회 응답 DTO")
 @Getter
 @Builder
-@AllArgsConstructor
 public class ProjectInfoResponse {
 
     @Schema(description = "프로젝트 id", example = "1")
@@ -45,4 +44,22 @@ public class ProjectInfoResponse {
 
     @Schema(description = "출시 링크", example = "https://{domain-name}")
     private String publishLink;
+
+    @QueryProjection
+    public ProjectInfoResponse(Long projectId, String title, String slogan,
+                               String description, String logoUrl, String imgUrl,
+                               String semester, List<String> university, String duration,
+                               boolean publishStatus, String publishLink) {
+        this.projectId = projectId;
+        this.title = title;
+        this.slogan = slogan;
+        this.description = description;
+        this.logoUrl = logoUrl;
+        this.imgUrl = imgUrl;
+        this.semester = semester;
+        this.university = university;
+        this.duration = duration;
+        this.publishStatus = publishStatus;
+        this.publishLink = publishLink;
+    }
 }

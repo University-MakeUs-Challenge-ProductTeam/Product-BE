@@ -58,10 +58,10 @@ public class ProjectController {
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
     public BaseResponse<ProjectInfoResponse> getMyProject(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @CurrentMember Member member,
             @PathVariable Long projectId) {
-
-        return BaseResponse.onSuccess(null);
+        ProjectInfoResponse response = projectQueryService.getMyProject(member, projectId);
+        return BaseResponse.onSuccess(response);
     }
 
     @GetMapping("/{projectId}/members")
