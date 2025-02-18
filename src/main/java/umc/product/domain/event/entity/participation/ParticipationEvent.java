@@ -6,8 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,6 +23,13 @@ public class ParticipationEvent extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_form_id", nullable = false)
+    private EventForm eventForm;  // 해당 참가가 속한 신청 폼
+
+    @OneToMany(mappedBy = "participationEvent")
+    private List<EventFormAnswer> answerList = new ArrayList<>();   // 응답에 포함된 답변들
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
@@ -26,15 +37,13 @@ public class ParticipationEvent extends BaseEntity {
     @JoinColumn(name = "participation_mamber_id", nullable = false)
     private Member participationMember;
 
-    // 역할 책임 분리를 위해 ParticipationEvent을 EventFormAnswer에서 분리해서 일대일 관계로 설정
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "participationEvent", cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_form_response_id")
-    private EventFormResponse response; // 해당 참가 이벤트에 대한 신청 폼 응답
-
     @Builder
-    public ParticipationEvent(Event event, Member participationMember, EventFormResponse eventFormResponse) {
+    public ParticipationEvent(Event event, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
         this.event = event;
         this.participationMember = participationMember;
-        this.response = eventFormResponse;
+        this.eventForm = eventForm;
+
+        //널 방지
+        this.answerList = (answerList != null) ? answerList : new ArrayList<>();
     }
 }

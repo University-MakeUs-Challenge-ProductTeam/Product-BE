@@ -34,26 +34,27 @@ public class EventRegistrationSettings extends BaseEntity {
 
     @OneToMany
     @JoinColumn(name = "allowed_semester_id")
-    private List<Semester> allowedSemester = new ArrayList<>();  // 참여 가능 기수
+    private List<Semester> allowedSemesterList = new ArrayList<>();  // 참여 가능 기수
 
     @ElementCollection
     @CollectionTable(name = "event_allowed_parts", joinColumns = @JoinColumn(name = "registration_settings_id"))
     @Enumerated(EnumType.STRING)
-    private List<Part> allowedParts = new ArrayList<>();  // 참여 가능 파트
+    private List<Part> allowedPartList = new ArrayList<>();  // 참여 가능 파트
 
     @ElementCollection
     @CollectionTable(name = "event_allowed_roles", joinColumns = @JoinColumn(name = "registration_settings_id"))
     @Enumerated(EnumType.STRING)
-    private List<Role> allowedRoles = new ArrayList<>();  // 참여 가능 역할
+    private List<Role> allowedRoleList = new ArrayList<>();  // 참여 가능 역할
 
     @Builder
-    public EventRegistrationSettings(Event event, LocalDateTime registrationStartDate, LocalDateTime registrationEndDate, LocalDateTime cancellationDeadline, List<Semester> allowedSemester, List<Part> allowedParts, List<Role> allowedRoles) {
+    public EventRegistrationSettings(Event event, LocalDateTime registrationStartDate, LocalDateTime registrationEndDate, LocalDateTime cancellationDeadline, List<Semester> allowedSemesterList, List<Part> allowedPartList, List<Role> allowedRoleList) {
         this.event = event;
         this.registrationStartDate = registrationStartDate;
         this.registrationEndDate = registrationEndDate;
         this.cancellationDeadline = cancellationDeadline;
-        this.allowedSemester = allowedSemester;
-        this.allowedParts = allowedParts;
-        this.allowedRoles = allowedRoles;
+        // 빌더 패턴을 사용할 때, null 방지를 위해 초기값을 보장
+        this.allowedSemesterList = (allowedSemesterList != null) ? allowedSemesterList : new ArrayList<>();
+        this.allowedPartList = (allowedPartList != null) ? allowedPartList : new ArrayList<>();
+        this.allowedRoleList = (allowedRoleList != null) ? allowedRoleList : new ArrayList<>();
     }
 }

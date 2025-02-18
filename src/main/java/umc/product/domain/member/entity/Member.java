@@ -2,6 +2,8 @@ package umc.product.domain.member.entity;
 
 //import umc.product.domain.event.entity.Event;
 //import umc.product.domain.event.entity.ParticipationEvent;
+import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
@@ -51,8 +53,12 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private MemberLoginInfo memberLoginInfo;
 
-//    @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
-//    private List<ParticipationEvent> participationEventList = new ArrayList<>();
+    // 내가 참가한 이벤트
+    @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
+    private List<ParticipationEvent> participationEventList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
+    private List<Event> hostEventList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjectList = new ArrayList<>();
