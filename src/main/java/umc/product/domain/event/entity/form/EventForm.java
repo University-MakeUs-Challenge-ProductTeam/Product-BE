@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.product.domain.event.entity.participation.EventFormResponse;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class EventForm extends BaseEntity {
     private List<EventFormQuestion> questions = new ArrayList<>();  // 폼에 포함된 문항들
 
     @OneToMany(mappedBy = "eventForm")
-    private List<EventFormResponse> responses = new ArrayList<>();  // 폼에 대한 응답들
+    private List<ParticipationEvent> participationEvents = new ArrayList<>();  // 폼에 대한 응답들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY)
@@ -39,11 +39,11 @@ public class EventForm extends BaseEntity {
     private Event event;  // 해당 폼이 속한 행사
 
     @Builder
-    public EventForm(String formTitle, String description, List<EventFormQuestion> questions, List<EventFormResponse> responses, Event event) {
+    public EventForm(String formTitle, String description, List<EventFormQuestion> questions, List<ParticipationEvent> participationEvents, Event event) {
         this.formTitle = formTitle;
         this.description = description;
         this.questions = questions;
-        this.responses = responses;
+        this.participationEvents = participationEvents;
         this.event = event;
     }
 }
