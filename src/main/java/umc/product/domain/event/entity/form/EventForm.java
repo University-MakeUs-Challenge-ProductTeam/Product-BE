@@ -28,10 +28,10 @@ public class EventForm extends BaseEntity {
     private String description;  // 폼 설명
 
     @OneToMany(mappedBy = "eventForm")
-    private List<EventFormQuestion> questions = new ArrayList<>();  // 폼에 포함된 문항들
+    private List<EventFormQuestion> questionList = new ArrayList<>();  // 폼에 포함된 문항들
 
     @OneToMany(mappedBy = "eventForm")
-    private List<ParticipationEvent> participationEvents = new ArrayList<>();  // 폼에 대한 응답들
+    private List<ParticipationEvent> participationEventList = new ArrayList<>();  // 폼에 대한 응답들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY)
@@ -39,11 +39,13 @@ public class EventForm extends BaseEntity {
     private Event event;  // 해당 폼이 속한 행사
 
     @Builder
-    public EventForm(String formTitle, String description, List<EventFormQuestion> questions, List<ParticipationEvent> participationEvents, Event event) {
+    public EventForm(String formTitle, String description, List<EventFormQuestion> questionList, List<ParticipationEvent> participationEventList, Event event) {
         this.formTitle = formTitle;
         this.description = description;
-        this.questions = questions;
-        this.participationEvents = participationEvents;
         this.event = event;
+
+        // `null` 방지: null이면 빈 리스트로 초기화
+        this.questionList = (questionList != null) ? questionList : new ArrayList<>();
+        this.participationEventList = (participationEventList != null) ? participationEventList : new ArrayList<>();
     }
 }

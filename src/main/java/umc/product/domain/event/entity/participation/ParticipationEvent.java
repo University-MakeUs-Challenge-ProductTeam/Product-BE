@@ -27,7 +27,7 @@ public class ParticipationEvent extends BaseEntity {
     private EventForm eventForm;  // 해당 참가가 속한 신청 폼
 
     @OneToMany(mappedBy = "participationEvent")
-    private List<EventFormAnswer> answers = new ArrayList<>();   // 응답에 포함된 답변들
+    private List<EventFormAnswer> answerList = new ArrayList<>();   // 응답에 포함된 답변들
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
@@ -38,10 +38,12 @@ public class ParticipationEvent extends BaseEntity {
     private Member participationMember;
 
     @Builder
-    public ParticipationEvent(Event event, Member participationMember, EventForm eventForm, List<EventFormAnswer> answers) {
+    public ParticipationEvent(Event event, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
         this.event = event;
         this.participationMember = participationMember;
         this.eventForm = eventForm;
-        this.answers = answers;
+
+        //널 방지
+        this.answerList = (answerList != null) ? answerList : new ArrayList<>();
     }
 }
