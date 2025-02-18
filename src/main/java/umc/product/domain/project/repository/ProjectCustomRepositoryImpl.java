@@ -102,7 +102,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                                 .where(memberProjectCount.project.eq(project))
                 ))
                 .from(project)
-                .innerJoin(project.memberProjects, memberProject)
+                .innerJoin(project.memberProjectList, memberProject)
                 .where(memberProject.member.eq(member))
                 .groupBy(project.id, project.title, project.slogan, project.logoUrl, project.prize)
                 .fetch();
@@ -175,7 +175,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
         return jpaQueryFactory
                 .from(memberProject)
                 .join(memberProject.member, member)
-                .join(memberProject.parts, memberProjectPart)
+                .join(memberProject.memberProjectPartList, memberProjectPart)
                 .where(memberProject.project.id.eq(projectId))
                 .transform(GroupBy.groupBy(member.id)
                         .list(Projections.constructor(
