@@ -16,8 +16,8 @@ import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
 
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_COMMENT_NOT_EXIST;
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
+import static umc.product.domain.suggestion.status.SuggestionErrorStatus.SUGGESTION_COMMENT_NOT_EXIST;
+import static umc.product.domain.suggestion.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
 
 @Service
 @AllArgsConstructor
