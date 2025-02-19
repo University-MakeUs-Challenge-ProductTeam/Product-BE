@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.adviser.common.CommonMemberAdviser;
 import umc.product.domain.member.dto.response.common.MemberRoleResponse;
+import umc.product.domain.member.dto.response.common.MemberSearchResponse;
+import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
+import umc.product.global.config.security.auth.CurrentMember;
 
 @Tag(name = "멤버 API", description = "멤버 관련 API")
 @RestController
@@ -17,6 +20,17 @@ public class CommonMemberController {
     @GetMapping("/verify")
     public BaseResponse<MemberRoleResponse> verifyMemberCode(@RequestParam String code) {
         return BaseResponse.onSuccess(commonMemberAdviser.verifyMemberCode(code));
+    }
+
+    @GetMapping("/profile")
+    public BaseResponse<MemberSearchResponse> getMyProfile(@CurrentMember Member member) {
+        return BaseResponse.onSuccess(commonMemberAdviser.getMyProfile(member));
+    }
+
+    @GetMapping("/profile/{memberId}")
+    public BaseResponse<MemberSearchResponse> getProfile(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId) {
+        return BaseResponse.onSuccess(commonMemberAdviser.getProfile(memberId));
     }
 
 

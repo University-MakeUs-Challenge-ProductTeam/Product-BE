@@ -2,10 +2,13 @@ package umc.product.domain.member.serviceImpl.common;
 
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.mapper.MemberInfoMapper;
+import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.common.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.global.common.exception.RestApiException;
@@ -19,12 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberAuthServiceImpl implements MemberAuthService {
-
-    public final MemberServiceImpl memberService;
     public final MemberRefreshTokenServiceImpl refreshTokenService;
+    public final MemberRepository memberRepository;
 
     public final JwtProvider jwtTokenProvider;
     private final LoginContext loginContext;
+
+    private final MemberInfoMapper memberInfoMapper;
+
+    @Override
+    @Transactional
+    public Member signUp(Member member) {
+        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), null, member);
+        member.setMemberLoginInfo(memberLoginInfo);
+        return memberRepository.save(member);
+    }
 
     // 소셜 로그인을 수행하는 함수
     @Override
@@ -40,40 +52,23 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         return loginContext.executeStrategy(accessToken, loginType);
     }
 
-    // 자체 로그인을 수행하는 함수
-    @Override
-    @Transactional(readOnly = true)
-    public MemberLoginResponse login(AdminLoginRequest request) {
-
-        // 로그인 수행
-        MemberLoginResponse response = loginContext.executeStrategy(request);
-
-        // 리프레쉬 토큰 저장
-        refreshTokenService.saveRefreshToken(response.getRefreshToken(), response.getMemberId());
-
-        return loginContext.executeStrategy(request);
-    }
-
     // 새로운 액세스 토큰 발급 함수
     @Override
     @Transactional
-    public MemberGenerateTokenResponse generateNewAccessToken(String refreshToken, Member member) {
-
-        Member loginMember = memberService.findById(member.getId());
-
+    public MemberGenerateTokenResponse generateNewAccessToken(String refreshToken, Member member){
         // 만료된 refreshToken인지 확인
         if (!jwtTokenProvider.validateToken(refreshToken))
             throw new RestApiException(AuthErrorStatus.EXPIRED_REFRESH_TOKEN);
 
         // 디비에 저장된 refreshToken과 동일하지 않다면 유효하지 않음
-        if (!refreshTokenService.existRefreshToken(refreshToken, loginMember.getId()))
+        if (!refreshTokenService.existRefreshToken(refreshToken, member.getId()))
             throw new RestApiException(AuthErrorStatus.INVALID_REFRESH_TOKEN);
 
         // 토큰 발행
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(loginMember.getId().toString(), member.getRole().toString());
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(member.getId().toString(), member.getRole().toString());
 
         // 리프레쉬 토큰 저장
-        refreshTokenService.saveRefreshToken(tokenInfo.refreshToken(), loginMember.getId());
+        refreshTokenService.saveRefreshToken(tokenInfo.refreshToken(), member.getId());
 
         return new MemberGenerateTokenResponse(tokenInfo.accessToken(), tokenInfo.refreshToken());
     }

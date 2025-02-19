@@ -1,4 +1,4 @@
-package umc.product.domain.member.serviceImpl.common;
+package umc.product.domain.member.serviceImpl.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import umc.product.domain.member.entity.MemberCode;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberCodeMapper;
 import umc.product.domain.member.repository.MemberCodeRepository;
-import umc.product.domain.member.service.common.MemberCodeService;
+import umc.product.domain.member.service.admin.AdminCodeService;
 import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import static umc.product.global.common.exception.code.status.CodeErrorStatus.NO
 
 @Service
 @AllArgsConstructor
-public class MemberCodeServiceImpl implements MemberCodeService {
+public class MemberCodeServiceImpl implements AdminCodeService {
     private final MemberCodeRepository memberCodeRepository;
     private MemberCodeMapper memberCodeMapper;
     @Override
@@ -33,7 +33,7 @@ public class MemberCodeServiceImpl implements MemberCodeService {
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCodeResponse(memberCode.getCode());
+        return memberCodeMapper.toMemberCodeResponse(memberCode);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MemberCodeServiceImpl implements MemberCodeService {
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCodeResponse(memberCode.getCode());
+        return memberCodeMapper.toMemberCodeResponse(memberCode);
     }
 
     @Override
@@ -58,13 +58,5 @@ public class MemberCodeServiceImpl implements MemberCodeService {
     @Override
     public String createChallengerCode() {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 5).toUpperCase();
-    }
-
-    @Override
-    public MemberRoleResponse verifyMemberCode(String code) {
-        MemberCode memberCode = memberCodeRepository.findById(code)
-                .orElseThrow(()-> new RestApiException(NOT_VAILD_CODE));
-
-        return memberCodeMapper.toMemberRoleResponse(memberCode.getRoles());
     }
 }

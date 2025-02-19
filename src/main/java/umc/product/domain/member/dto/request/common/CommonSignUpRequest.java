@@ -17,4 +17,5 @@ public class CommonSignUpRequest {
     private Gender gender;
     private String clientId;
     private String password;
+    private String code;
 }

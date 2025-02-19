@@ -7,11 +7,14 @@ import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.MemberCode;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
+import umc.product.domain.member.repository.MemberCodeRepository;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.common.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
@@ -25,24 +28,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static umc.product.global.common.exception.code.status.CodeErrorStatus.NOT_VAILD_CODE;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
-
-    private final MemberMapper memberMapper;
-    private final MemberInfoMapper memberInfoMapper;
-
-    private final PasswordEncoder passwordEncoder;
-
-    @Override
-    @Transactional
-    public MemberIdResponse signUp(CommonSignUpRequest request) {
-        Member member = memberMapper.toCommonMember(request, null);
-        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
-        member.setMemberLoginInfo(memberLoginInfo);
-        return new MemberIdResponse(saveEntity(member).getId());
-    }
+    private final MemberCodeRepository memberCodeRepository;
 
     public Member findById(Long id) throws UsernameNotFoundException {
         return memberRepository.findById(id)
@@ -52,6 +44,14 @@ public class MemberServiceImpl implements MemberService {
     // 회원 저장
     public Member saveEntity(Member member) {
         return memberRepository.save(member);
+    }
+
+    @Override
+    public MemberCode verifyMemberCode(String code) {
+        MemberCode memberCode = memberCodeRepository.findById(code)
+                .orElseThrow(()-> new RestApiException(NOT_VAILD_CODE));
+
+        return memberCode;
     }
 
     public Member getCurrentMember() {

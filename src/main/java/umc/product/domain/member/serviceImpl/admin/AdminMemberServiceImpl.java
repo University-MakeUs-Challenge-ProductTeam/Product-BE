@@ -13,6 +13,7 @@ import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
+import umc.product.domain.member.repository.MemberCustomRepository;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.admin.AdminAuthService;
 import umc.product.domain.member.service.admin.AdminMemberService;
@@ -24,11 +25,12 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminMemberServiceImpl implements AdminMemberService {
     private final MemberRepository memberRepository;
+    private final MemberCustomRepository memberCustomRepository;
 
     private final MemberMapper memberMapper;
     @Override
     public AdminMemberListResponse findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
-        List<Member> members =  memberRepository.findMembers(pageable, semester, role, part);
+        List<Member> members =  memberCustomRepository.findMembers(pageable,member, semester, role, part);
         return memberMapper.toAdminMemberListResponse(members);
     }
 

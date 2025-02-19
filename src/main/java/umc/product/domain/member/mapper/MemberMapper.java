@@ -3,6 +3,7 @@ package umc.product.domain.member.mapper;
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
@@ -17,6 +18,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
+
+    public MemberIdResponse toMemberIdResponse(Long memberId) {
+        return MemberIdResponse.builder()
+                .memberId(memberId)
+                .build();
+    }
     public Member toAdminMember(AdminSignUpRequest request, String avatarUrl){
         return Member.builder()
                 .birth(request.getBirth())
