@@ -1,12 +1,16 @@
 package umc.product.domain.member.controller.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.admin.AdminAuthAdviser;
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
@@ -30,9 +34,10 @@ public class AdminAuthController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @PostMapping("/signup")
-    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody AdminSignUpRequest request) {
-        return BaseResponse.onSuccess(adminAuthAdviser.signUp(request));
+    @PostMapping( path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public BaseResponse<MemberIdResponse> signUp(@RequestPart AdminSignUpRequest request,  // JSON 형식 데이터를 처리
+                                                 @RequestPart("file") MultipartFile file) {
+        return BaseResponse.onSuccess(adminAuthAdviser.signUp(file, request));
     }
 
     @PostMapping("/login")
