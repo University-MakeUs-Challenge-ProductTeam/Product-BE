@@ -73,7 +73,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
         member.changeRole(Role.GUEST);
         Member newMember = memberService.saveEntity(member);
         TokenInfo tokenInfo = generateToken(newMember);
-        return memberMapper.toLoginMember(newMember, tokenInfo, false, Role.GUEST);
+        return memberMapper.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {

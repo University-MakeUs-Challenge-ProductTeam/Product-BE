@@ -48,7 +48,7 @@ public class InternalLoginStrategy implements LoginStrategy {
         // 응답 객체 반환 (회원가입 완료된 멤버인지 판병)
         boolean isServiceMember = member.getName() != null;
 
-        return memberMapper.toLoginMember(member, tokenInfo, isServiceMember, member.getRole());
+        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
     }
 
     private TokenInfo generateToken(Member member) {

@@ -39,7 +39,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
         boolean isServiceMember = member.getName() != null;
         TokenInfo tokenInfo = generateToken(member);
 
-        return memberMapper.toLoginMember(member, tokenInfo, isServiceMember, member.getRole());
+        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
         member.changeRole(Role.GUEST);
         Member newMember = memberService.saveEntity(member);
         TokenInfo tokenInfo = generateToken(newMember);
-        return memberMapper.toLoginMember(newMember, tokenInfo, false, Role.GUEST);
+        return memberMapper.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {
