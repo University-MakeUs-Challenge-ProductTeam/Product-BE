@@ -20,7 +20,7 @@ import umc.product.global.config.security.auth.CurrentMember;
 @Tag(name = "어드민 건의함 API", description = "어드민 건의함 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/suggestion")
+@RequestMapping("/web/admin/suggestion")
 public class AdminSuggestionController {
     private final SuggestionAdviser suggestionAdviser;
     private final SuggestionCommentAdviser suggestionCommentAdviser;
