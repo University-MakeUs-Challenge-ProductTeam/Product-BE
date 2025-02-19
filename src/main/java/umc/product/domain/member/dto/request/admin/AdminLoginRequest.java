@@ -1,9 +1,9 @@
-package umc.product.domain.member.dto.request;
+package umc.product.domain.member.dto.request.admin;
 
 import lombok.Getter;
 
 @Getter
-public class MemberLoginRequest {
+public class AdminLoginRequest {
     private String memberId;
     private String password;
 }

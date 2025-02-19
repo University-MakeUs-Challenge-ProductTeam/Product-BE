@@ -1,14 +1,14 @@
 package umc.product.domain.member.service;
 
-import umc.product.domain.member.dto.request.code.MemberChallengerCodeRequest;
-import umc.product.domain.member.dto.request.code.MemberAdminCodeRequest;
-import umc.product.domain.member.dto.response.code.MemberCodeResponse;
-import umc.product.domain.member.dto.response.code.MemberCodeRoleResponse;
+import umc.product.domain.member.dto.request.challenger.ChallengerCodeRequest;
+import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
+import umc.product.domain.member.dto.response.common.MemberCodeResponse;
+import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 
 public interface MemberCodeService {
-    public MemberCodeResponse saveAdminCode(MemberAdminCodeRequest request, String code);
-    public MemberCodeResponse saveChallengerCode(MemberChallengerCodeRequest request, String code);
+    public MemberCodeResponse saveAdminCode(AdminCodeRequest request, String code);
+    public MemberCodeResponse saveChallengerCode(ChallengerCodeRequest request, String code);
     public String createAdminCode();
     public String createChallengerCode();
-    public MemberCodeRoleResponse verifyMemberCode(String code);
+    public MemberRoleResponse verifyMemberCode(String code);
 }

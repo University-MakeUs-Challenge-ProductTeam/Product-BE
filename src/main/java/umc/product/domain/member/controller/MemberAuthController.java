@@ -1,13 +1,13 @@
 package umc.product.domain.member.controller;
 
 import umc.product.domain.member.adviser.MemberAuthAdviser;
-import umc.product.domain.member.dto.request.MemberLoginRequest;
-import umc.product.domain.member.dto.response.code.MemberCodeRoleResponse;
+import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
+import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
+import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.domain.member.service.MemberAuthService;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -47,7 +47,7 @@ public class MemberAuthController {
             @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @PostMapping("/login")
-    public BaseResponse<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
+    public BaseResponse<MemberLoginResponse> login(@RequestBody AdminLoginRequest request) {
         return BaseResponse.onSuccess(memberAuthService.login(request));
     }
 
@@ -81,7 +81,7 @@ public class MemberAuthController {
     }
 
     @GetMapping("/code")
-    public BaseResponse<MemberCodeRoleResponse> verifyMemberCode(@RequestParam String code) {
+    public BaseResponse<MemberRoleResponse> verifyMemberCode(@RequestParam String code) {
         return BaseResponse.onSuccess(memberAuthAdviser.verifyMemberCode(code));
     }
 

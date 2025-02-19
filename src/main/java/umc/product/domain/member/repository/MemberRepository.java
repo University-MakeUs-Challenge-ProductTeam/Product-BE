@@ -3,7 +3,6 @@ package umc.product.domain.member.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import org.springframework.data.jpa.repository.JpaRepository;

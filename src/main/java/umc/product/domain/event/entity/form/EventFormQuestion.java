@@ -37,14 +37,17 @@ public class EventFormQuestion extends BaseEntity {
     private EventForm eventForm;  // 해당 문항이 속한 신청 폼
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<EventFormAnswer> answers = new ArrayList<>();  // 문항에 대한 답변들
+    private List<EventFormAnswer> answerList = new ArrayList<>();  // 문항에 대한 답변들
 
     @Builder
-    public EventFormQuestion(String questionTitle, String questionContent, ResponseType responseType, Integer questionOrder, EventForm eventForm) {
+    public EventFormQuestion(String questionTitle, String questionContent, ResponseType responseType, Integer questionOrder, EventForm eventForm, List<EventFormAnswer> answerList) {
         this.questionTitle = questionTitle;
         this.questionContent = questionContent;
         this.responseType = responseType;
         this.questionOrder = questionOrder;
         this.eventForm = eventForm;
+
+        //널 방지
+        this.answerList = (answerList != null) ? answerList : new ArrayList<>();
     }
 }

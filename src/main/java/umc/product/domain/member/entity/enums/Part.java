@@ -9,7 +9,7 @@ public enum Part {
     ANDROID("Android"),
     IOS("IOS"),
     SPRING("Spring"),
-    NODE("NodeJS"),
+    NODE("Node.js"),
     DESIGN("Design"),
     WEB("Web"),
     PLAN("Plan");

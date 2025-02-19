@@ -1,4 +1,4 @@
-package umc.product.domain.member.dto.response.member;
+package umc.product.domain.member.dto.response.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

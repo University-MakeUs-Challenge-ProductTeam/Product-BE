@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-@RedisHash(value = "code", timeToLive = 60*60*24) // 1일
+@RedisHash(value = "code", timeToLive = 60*30) // 30분
 public class MemberCode {
     @Id
     @Indexed

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SuggestionCommentRepository extends JpaRepository<SuggestionComment, Long> {
-
     @Query(value = "SELECT COALESCE(MAX(sc.bundleId), 0) FROM SuggestionComment sc")
     Optional<Integer> findMaxBundleId();
 

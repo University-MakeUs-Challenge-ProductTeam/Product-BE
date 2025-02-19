@@ -1,23 +1,23 @@
 package umc.product.domain.member.mapper;
 
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.response.code.MemberCodeResponse;
-import umc.product.domain.member.dto.response.code.MemberCodeRoleResponse;
+import umc.product.domain.member.dto.response.common.MemberCodeResponse;
+import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.entity.enums.Role;
 
 import java.util.List;
 
 @Component
 public class MemberCodeMapper {
-    public MemberCodeResponse toMemberCode(String code){
+    public MemberCodeResponse toMemberCodeResponse(String code){
         return MemberCodeResponse.builder()
                 .code(code)
                 .build();
     }
 
-    public MemberCodeRoleResponse toMemberCodeRole(List<Role> roles) {
-        return MemberCodeRoleResponse.builder()
-                .roles(roles)
+    public MemberRoleResponse toMemberRoleResponse(List<Role> roles) {
+        return MemberRoleResponse.builder()
+                .roleList(roles)
                 .build();
     }
 }

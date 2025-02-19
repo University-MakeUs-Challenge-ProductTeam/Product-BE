@@ -1,11 +1,12 @@
 package umc.product.domain.member.mapper;
 
-import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
-import umc.product.domain.member.dto.response.member.MemberSearchResponse;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
+import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.global.config.security.jwt.TokenInfo;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-    public Member toMember(MemberAdminSignUpRequest request){
+    public Member toMember(AdminSignUpRequest request){
         return Member.builder()
                 .birth(request.getBirth())
                 .email(request.getEmail())
@@ -36,7 +37,7 @@ public class MemberMapper {
                 .build();
     }
 
-    public MemberLoginResponse toLoginMember(final Member member, TokenInfo tokenInfo, boolean isServiceMember, Role role) {
+    public MemberLoginResponse toLoginMemberResponse(final Member member, TokenInfo tokenInfo, boolean isServiceMember, Role role) {
         return MemberLoginResponse.builder()
                 .memberId(member.getId())
                 .accessToken(tokenInfo.accessToken())
@@ -46,9 +47,12 @@ public class MemberMapper {
                 .build();
     }
 
-    public List<MemberSearchResponse> toSearchMembers(List<Member> members) {
-        return members.stream()
+    public AdminMemberListResponse toAdminMemberListResponse(List<Member> memberList) {
+        List<MemberSearchResponse> memberSearchResponse = memberList.stream()
                 .map(this::toSearchMemberResponse).collect(Collectors.toList());
+        return AdminMemberListResponse.builder()
+                .memberList(memberSearchResponse)
+                .build();
     }
 
     public MemberSearchResponse toSearchMemberResponse(Member member) {

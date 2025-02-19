@@ -1,4 +1,4 @@
-package umc.product.domain.member.dto.request;
+package umc.product.domain.member.dto.request.admin;
 
 import lombok.Getter;
 import umc.product.domain.member.entity.enums.Gender;
@@ -7,7 +7,7 @@ import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.enums.Status;
 
 @Getter
-public class MemberAdminSignUpRequest {
+public class AdminSignUpRequest {
     private Role role;
     private String name;
     private String nikeName;

@@ -53,10 +53,10 @@ public class Event extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "event_images", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "image_url")
-    private List<String> images = new ArrayList<>();  // 이미지 경로 리스트
+    private List<String> imageList = new ArrayList<>();  // 이미지 경로 리스트
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<ParticipationEvent> participationEvents = new ArrayList<>(); // 이벤트를 참가한 사람들
+    private List<ParticipationEvent> participationEventList = new ArrayList<>(); // 이벤트를 참가한 사람들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.ALL)
@@ -67,7 +67,7 @@ public class Event extends BaseEntity {
     private EventRegistrationSettings registrationSettings;  // 신청 관련 설정
 
     @Builder
-    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<String> images, List<ParticipationEvent> participationEvents, EventForm eventForm, EventRegistrationSettings registrationSettings) {
+    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<String> imageList, List<ParticipationEvent> participationEventList, EventForm eventForm, EventRegistrationSettings registrationSettings) {
         this.title = title;
         this.content = content;
         this.eventType = eventType;
@@ -77,10 +77,13 @@ public class Event extends BaseEntity {
         this.location = location;
         this.maxParticipants = maxParticipants;
         this.writer = writer;
-        this.images = images;
-        this.participationEvents = participationEvents;
         this.eventForm = eventForm;
         this.registrationSettings = registrationSettings;
+
+        // 널 방지
+        this.imageList = (imageList != null) ? imageList : new ArrayList<>();
+        this.participationEventList = (participationEventList != null) ? participationEventList : new ArrayList<>();
+
     }
 
 }

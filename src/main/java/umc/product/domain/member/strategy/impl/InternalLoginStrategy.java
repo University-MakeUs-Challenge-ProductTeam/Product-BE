@@ -3,8 +3,8 @@ package umc.product.domain.member.strategy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.request.MemberLoginRequest;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberMapper;
@@ -32,7 +32,7 @@ public class InternalLoginStrategy implements LoginStrategy {
     }
 
     @Override
-    public MemberLoginResponse login(MemberLoginRequest request) {
+    public MemberLoginResponse login(AdminLoginRequest request) {
         // 회원 조회
         MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.getMemberId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));

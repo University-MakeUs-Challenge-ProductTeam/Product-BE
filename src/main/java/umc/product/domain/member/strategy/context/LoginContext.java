@@ -1,8 +1,8 @@
 package umc.product.domain.member.strategy.context;
 
-import umc.product.domain.member.dto.request.MemberLoginRequest;
+import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.domain.member.strategy.impl.AnonymousLoginStrategy;
 import umc.product.domain.member.strategy.impl.InternalLoginStrategy;
@@ -44,7 +44,7 @@ public class LoginContext {
         return strategy.login(accessToken);
     }
 
-    public MemberLoginResponse executeStrategy(MemberLoginRequest request) {
+    public MemberLoginResponse executeStrategy(AdminLoginRequest request) {
         LoginType loginType = LoginType.INTERNAL;
         LoginStrategy strategy = strategyMap.get(loginType);
         if (strategy == null) {

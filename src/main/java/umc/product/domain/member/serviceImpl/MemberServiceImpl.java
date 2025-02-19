@@ -3,9 +3,10 @@ package umc.product.domain.member.serviceImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberSearchResponse;
+import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.Role;
@@ -36,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberIdResponse signUp(MemberAdminSignUpRequest request) {
+    public MemberIdResponse signUp(AdminSignUpRequest request) {
         Member member = memberMapper.toMember(request);
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
         member.setMemberLoginInfo(memberLoginInfo);
@@ -54,9 +55,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberSearchResponse> findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
+    public AdminMemberListResponse findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
         List<Member> members =  memberRepository.findMembers(pageable, semester, role, part);
-        return memberMapper.toSearchMembers(members);
+        return memberMapper.toAdminMemberListResponse(members);
     }
 
     public Member getCurrentMember() {

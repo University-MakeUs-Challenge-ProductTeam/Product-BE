@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.global.common.base.BaseResponse;
 
@@ -23,7 +23,9 @@ public class MemberController {
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
     @PostMapping("/signup")
-    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody MemberAdminSignUpRequest request) {
+    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody AdminSignUpRequest request) {
         return null;
     }
+
+
 }

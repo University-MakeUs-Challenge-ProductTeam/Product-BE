@@ -1,11 +1,11 @@
 package umc.product.domain.member.serviceImpl;
 
-import umc.product.domain.member.dto.request.MemberLoginRequest;
+import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.MemberGenerateTokenResponse;
+import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.MemberLoginResponse;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.domain.member.service.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.global.common.exception.RestApiException;
@@ -43,7 +43,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     // 자체 로그인을 수행하는 함수
     @Override
     @Transactional(readOnly = true)
-    public MemberLoginResponse login(MemberLoginRequest request) {
+    public MemberLoginResponse login(AdminLoginRequest request) {
 
         // 로그인 수행
         MemberLoginResponse response = loginContext.executeStrategy(request);

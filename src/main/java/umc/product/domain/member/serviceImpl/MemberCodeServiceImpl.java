@@ -2,10 +2,10 @@ package umc.product.domain.member.serviceImpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.code.MemberChallengerCodeRequest;
-import umc.product.domain.member.dto.request.code.MemberAdminCodeRequest;
-import umc.product.domain.member.dto.response.code.MemberCodeResponse;
-import umc.product.domain.member.dto.response.code.MemberCodeRoleResponse;
+import umc.product.domain.member.dto.request.challenger.ChallengerCodeRequest;
+import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
+import umc.product.domain.member.dto.response.common.MemberCodeResponse;
+import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.entity.MemberCode;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberCodeMapper;
@@ -25,19 +25,19 @@ public class MemberCodeServiceImpl implements MemberCodeService {
     private final MemberCodeRepository memberCodeRepository;
     private MemberCodeMapper memberCodeMapper;
     @Override
-    public MemberCodeResponse saveAdminCode(MemberAdminCodeRequest request, String code) {
+    public MemberCodeResponse saveAdminCode(AdminCodeRequest request, String code) {
         MemberCode memberCode = MemberCode.builder()
                 .code(code)
                 .university(request.getUniversity())
-                .roles(request.getRoles())  //권한 원하는대로 부여 가능, 가입시에 자동으로 넣을거임
+                .roles(request.getRoleList())  //권한 원하는대로 부여 가능, 가입시에 자동으로 넣을거임
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCode(memberCode.getCode());
+        return memberCodeMapper.toMemberCodeResponse(memberCode.getCode());
     }
 
     @Override
-    public MemberCodeResponse saveChallengerCode(MemberChallengerCodeRequest request, String code) {
+    public MemberCodeResponse saveChallengerCode(ChallengerCodeRequest request, String code) {
         MemberCode memberCode = MemberCode.builder()
                 .code(code)
                 .university(request.getUniversity())
@@ -45,7 +45,7 @@ public class MemberCodeServiceImpl implements MemberCodeService {
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCode(memberCode.getCode());
+        return memberCodeMapper.toMemberCodeResponse(memberCode.getCode());
     }
 
     @Override
@@ -61,10 +61,10 @@ public class MemberCodeServiceImpl implements MemberCodeService {
     }
 
     @Override
-    public MemberCodeRoleResponse verifyMemberCode(String code) {
+    public MemberRoleResponse verifyMemberCode(String code) {
         MemberCode memberCode = memberCodeRepository.findById(code)
                 .orElseThrow(()-> new RestApiException(NOT_VAILD_CODE));
 
-        return memberCodeMapper.toMemberCodeRole(memberCode.getRoles());
+        return memberCodeMapper.toMemberRoleResponse(memberCode.getRoles());
     }
 }

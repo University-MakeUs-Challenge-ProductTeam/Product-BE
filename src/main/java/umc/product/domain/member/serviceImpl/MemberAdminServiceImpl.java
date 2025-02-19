@@ -3,7 +3,7 @@ package umc.product.domain.member.serviceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.MemberAdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
@@ -23,7 +23,7 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberIdResponse signUp(MemberAdminSignUpRequest request) {
+    public MemberIdResponse signUp(AdminSignUpRequest request) {
         Member member = memberMapper.toMember(request);
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
         member.setMemberLoginInfo(memberLoginInfo);
