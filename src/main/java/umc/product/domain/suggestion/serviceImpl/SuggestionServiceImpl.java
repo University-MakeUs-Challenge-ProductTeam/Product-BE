@@ -16,8 +16,8 @@ import umc.product.domain.suggestion.repository.SuggestionRepository;
 import umc.product.domain.suggestion.service.SuggestionService;
 import umc.product.global.common.exception.RestApiException;
 
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
-import static umc.product.global.common.exception.code.status.SuggestionErrorStatus.SUGGESTION_NOT_EXIST;
+import static umc.product.domain.suggestion.status.SuggestionErrorStatus.SUGGESTION_NOT_AUTH;
+import static umc.product.domain.suggestion.status.SuggestionErrorStatus.SUGGESTION_NOT_EXIST;
 
 @Service
 @AllArgsConstructor

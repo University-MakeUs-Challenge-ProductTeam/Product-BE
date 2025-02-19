@@ -41,15 +41,15 @@ public class SecurityConfig {
                         .requestMatchers("/members/signup", "/members/auth/login").permitAll()
                         .requestMatchers("/members/login").permitAll()
                         //Admin
-                        .requestMatchers("/members/admin/signup", "/members/auth/login").permitAll()
-                        .requestMatchers("/admin/**", "/members/admin/**").hasAuthority("ROLE_"+Role.ADMIN)
-                        .requestMatchers("/admin/suggestion/**").hasAuthority("ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/admin/auth/login", "/web/admin/auth/signup").permitAll()
                         //Challenger
-                        .requestMatchers("/common/suggestion/**").hasAnyAuthority("ROLE_"+Role.CHALLENGER)  //건의함 작성은 챌린저만 가능(추가 가능)
+                        .requestMatchers("/challenger/suggestion/**").hasAnyAuthority("ROLE_"+Role.CHALLENGER)  //건의함 작성은 챌린저만 가능(추가 가능)
 
-                        .requestMatchers("web/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("web/university-admin/**", "members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        //Admin Security
+                        .requestMatchers("/web/admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/university-admin/**", "/members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler))

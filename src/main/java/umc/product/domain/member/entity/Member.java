@@ -1,12 +1,10 @@
 package umc.product.domain.member.entity;
 
-//import umc.product.domain.event.entity.Event;
-//import umc.product.domain.event.entity.ParticipationEvent;
-import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.university.entity.University;
 import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,6 +44,7 @@ public class Member extends BaseEntity {
 
     private String clientId;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -53,15 +52,15 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
     private MemberLoginInfo memberLoginInfo;
 
-    // 내가 참가한 이벤트
     @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
     private List<ParticipationEvent> participationEventList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
-    private List<Event> hostEventList = new ArrayList<>();
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberProject> memberProjectList = new ArrayList<>();
+    private List<MemberProject> memberProjects = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "university_id")
+    private University university;
 
     public void changeRole(Role role) {
         this.role = role;
