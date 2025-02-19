@@ -9,10 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
-import umc.product.domain.member.dto.request.challenger.ChallengerCodeRequest;
+import umc.product.domain.member.dto.request.common.CommonCodeRequest;
 import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberCodeResponse;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.base.BaseResponse;
@@ -44,7 +45,7 @@ public class AdminMemberController {
     })
     @PostMapping("/create/challenger-code")
     public BaseResponse<MemberCodeResponse> createChallengerCode(@CurrentMember Member member,
-                                                                 @Valid @RequestBody ChallengerCodeRequest request) {
+                                                                 @Valid @RequestBody CommonCodeRequest request) {
         return BaseResponse.onSuccess(adminMemberAdviser.createChallengerCode(request));
     }
 
@@ -57,5 +58,12 @@ public class AdminMemberController {
                                                                @RequestParam(required = false) Role role,
                                                                @RequestParam(required = false) String part) {
         return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(member, PageRequest.of(page,size), semester, role, part));
+    }
+
+    @Operation(summary = "챌린저 OUT(삼진아웃) API", description = "챌린저 OUT(삼진아웃)하는 API입니다.")
+    @PatchMapping("/{memberId}")
+    public BaseResponse<MemberIdResponse> outChallenger(@CurrentMember Member member,
+                                                        @PathVariable(name = "memberId") Long memberId) {
+        return BaseResponse.onSuccess(adminMemberAdviser.outChallenger(memberId));
     }
 }
