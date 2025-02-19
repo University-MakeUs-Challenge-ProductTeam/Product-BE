@@ -1,0 +1,39 @@
+package umc.product.domain.member.controller.admin;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import umc.product.domain.member.adviser.admin.AdminAuthAdviser;
+import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.global.common.base.BaseResponse;
+
+@Tag(name = "어드민 Member 공통 로직 API", description = "Admin Member 관련 API")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/web/admin")
+public class AdminAuthController {
+    private final AdminAuthAdviser adminAuthAdviser;
+
+    @Operation(summary = "ADMIN 회원가입 API", description = "최초 ADMIN 멤버 정보를 등록하는 API입니다")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "COMMON200", description = "성공"),
+            @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
+            @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
+    })
+    @PostMapping("/signup")
+    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody AdminSignUpRequest request) {
+        return BaseResponse.onSuccess(adminAuthAdviser.signUp(request));
+    }
+
+    @PostMapping("/login")
+    public BaseResponse<MemberLoginResponse> login(@RequestBody AdminLoginRequest request) {
+        return BaseResponse.onSuccess(adminAuthAdviser.login(request));
+    }
+}
