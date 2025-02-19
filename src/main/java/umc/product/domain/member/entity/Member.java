@@ -44,6 +44,7 @@ public class Member extends BaseEntity {
 
     private String clientId;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
 
