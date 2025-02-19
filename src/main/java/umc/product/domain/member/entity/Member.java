@@ -60,6 +60,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjects = new ArrayList<>();
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "university_id")
     private University university;

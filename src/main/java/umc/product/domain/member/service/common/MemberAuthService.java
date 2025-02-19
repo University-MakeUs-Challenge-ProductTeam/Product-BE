@@ -12,10 +12,9 @@ import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 
 public interface MemberAuthService {
+    Member signUp(Member member);
     // 소셜 로그인
     MemberLoginResponse socialLogin(final String accessToken, LoginType loginType);
-    // 자체 로그인
-    MemberLoginResponse login(AdminLoginRequest request);
     // 새로운 액세스 토큰 발급
     MemberGenerateTokenResponse generateNewAccessToken(String refreshToken, Member member);
     // 로그아웃

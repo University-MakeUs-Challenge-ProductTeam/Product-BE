@@ -11,5 +11,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class MemberRoleResponse {
+    String university;
     List<Role> roleList;
 }

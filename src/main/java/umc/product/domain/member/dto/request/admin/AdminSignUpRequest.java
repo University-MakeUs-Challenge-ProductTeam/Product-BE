@@ -13,6 +13,7 @@ public class AdminSignUpRequest {
     private String email;
     private String birth;
     private Gender gender;
+    private String university;
     private String clientId;
     private String password;
 }
