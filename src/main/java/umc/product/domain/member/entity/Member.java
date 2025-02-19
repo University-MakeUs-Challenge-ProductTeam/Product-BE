@@ -1,12 +1,9 @@
 package umc.product.domain.member.entity;
 
-//import umc.product.domain.event.entity.Event;
-//import umc.product.domain.event.entity.ParticipationEvent;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.university.entity.University;
 import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
