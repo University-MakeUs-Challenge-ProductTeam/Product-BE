@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Status {
     ACTIVE("활성화"),
     INACTIVE("비활성화"),
+    OUT("방출"),
     DELETED("삭제");
 
     private final String toKorean;
