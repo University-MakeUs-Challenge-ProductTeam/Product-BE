@@ -1,12 +1,14 @@
 package umc.product.domain.member.mapper;
 
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.global.common.enums.Status;
 import umc.product.global.config.security.jwt.TokenInfo;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +17,33 @@ import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-    public Member toMember(AdminSignUpRequest request){
+    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl){
         return Member.builder()
                 .birth(request.getBirth())
                 .email(request.getEmail())
-                .avatarUrl(request.getAvatar_url())
+                .avatarUrl(avatarUrl)
                 .name(request.getName())
                 .gender(request.getGender())
                 .nikeName(request.getNikeName())
                 .role(request.getRole())
                 .clientId(request.getClientId())
                 .loginType(LoginType.INTERNAL)
-                .status(request.getStatus())
+                .status(Status.ACTIVE)
+                .build();
+    }
+
+    public Member toCommonMember(CommonSignUpRequest request, String avatarUrl){
+        return Member.builder()
+                .birth(request.getBirth())
+                .email(request.getEmail())
+                .avatarUrl(avatarUrl)
+                .name(request.getName())
+                .gender(request.getGender())
+                .nikeName(request.getNikeName())
+                .role(request.getRole())
+                .clientId(request.getClientId())
+                .loginType(LoginType.INTERNAL)
+                .status(Status.ACTIVE)
                 .build();
     }
 
