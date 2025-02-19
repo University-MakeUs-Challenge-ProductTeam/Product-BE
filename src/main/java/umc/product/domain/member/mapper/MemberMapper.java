@@ -25,7 +25,7 @@ public class MemberMapper {
                 .nikeName(request.getNikeName())
                 .role(request.getRole())
                 .clientId(request.getClientId())
-                .loginType(request.getLoginType())
+                .loginType(LoginType.INTERNAL)
                 .status(request.getStatus())
                 .build();
     }

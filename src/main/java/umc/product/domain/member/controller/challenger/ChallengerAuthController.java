@@ -1,14 +1,13 @@
-package umc.product.domain.member.controller;
+package umc.product.domain.member.controller.challenger;
 
-import umc.product.domain.member.adviser.MemberAuthAdviser;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.common.MemberRoleResponse;
+import jakarta.validation.Valid;
+import umc.product.domain.member.adviser.challenger.ChallengerAuthAdviser;
+import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.common.MemberLoginResponse;
-import umc.product.domain.member.service.MemberAuthService;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +23,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members/auth")
-public class MemberAuthController {
-    private final MemberAuthService memberAuthService;
-    private final MemberAuthAdviser memberAuthAdviser;
+public class ChallengerAuthController {
+    private final ChallengerAuthAdviser challengerAuthAdviser;
+
+    @Operation(summary = "챌린저 회원가입 API", description = "챌린저 멤버 정보를 등록하는 API입니다")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "COMMON200", description = "성공"),
+            @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
+            @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
+    })
+    @PostMapping("/signup")
+    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody AdminSignUpRequest request) {
+        return null;
+    }
 
     @Operation(summary = "소셜 로그인 API", description = "네이버, 카카오, 구글 로그인을 수행하는 API입니다. 소셜 로그인은 일반 챌린저 용입니다. (비회원 로그인은 기능에 없으나, 태스트 하기 편하라고 남겨둠니다.)")
     @ApiResponses(value = {
@@ -37,18 +46,7 @@ public class MemberAuthController {
     @PostMapping("/social/login")
     public BaseResponse<MemberLoginResponse> socialLogin(@RequestHeader(value = "accessToken") String accessToken,
                                                          @RequestParam(value = "loginType") LoginType loginType) {
-        return BaseResponse.onSuccess(memberAuthService.socialLogin(accessToken, loginType));
-    }
-
-    @Operation(summary = "자체 로그인 API", description = "자체 로그인을 수행하는 API 입니다. 자체 로그인은 총괄, 중앙 운영진, 학교 계정 전용입니다..")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "COMMON200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "AUTH007", description = "외부 소셜 서버와의 통신 에러" , content =
-            @Content(schema = @Schema(implementation = BaseResponse.class)))
-    })
-    @PostMapping("/login")
-    public BaseResponse<MemberLoginResponse> login(@RequestBody AdminLoginRequest request) {
-        return BaseResponse.onSuccess(memberAuthService.login(request));
+        return BaseResponse.onSuccess(challengerAuthAdviser.socialLogin(accessToken, loginType));
     }
 
     @Operation(summary = "accessToken 재발급 API", description = "refreshToken가 유효하다면 새로운 accessToken을 발급하는 API입니다.")
@@ -59,7 +57,7 @@ public class MemberAuthController {
     @GetMapping("/token/refresh")
     public BaseResponse<MemberGenerateTokenResponse> regenerateToken(@CurrentMember Member member,
                                                                      @RequestHeader(value = "refreshToken") String refreshToken) {
-        return BaseResponse.onSuccess(memberAuthService.generateNewAccessToken(refreshToken, member));
+        return BaseResponse.onSuccess(challengerAuthAdviser.regenerateToken(refreshToken, member));
     }
 
     @Operation(summary = "로그아웃 API", description = "해당 유저의 refreshToken을 삭제하는 API입니다.")
@@ -68,7 +66,7 @@ public class MemberAuthController {
     })
     @DeleteMapping("/logout")
     public BaseResponse<MemberIdResponse> logout(@CurrentMember Member member) {
-        return BaseResponse.onSuccess(memberAuthService.logout(member));
+        return BaseResponse.onSuccess(challengerAuthAdviser.logout(member));
     }
 
     @Operation(summary = "회원 탈퇴 API", description = "해당 유저 정보를 삭제하는 API입니다.")
@@ -77,12 +75,7 @@ public class MemberAuthController {
     })
     @DeleteMapping
     public BaseResponse<MemberIdResponse> withdrawal(@CurrentMember Member member) {
-        return BaseResponse.onSuccess(memberAuthService.withdrawal(member));
-    }
-
-    @GetMapping("/code")
-    public BaseResponse<MemberRoleResponse> verifyMemberCode(@RequestParam String code) {
-        return BaseResponse.onSuccess(memberAuthAdviser.verifyMemberCode(code));
+        return BaseResponse.onSuccess(challengerAuthAdviser.withdrawal(member));
     }
 
 }
