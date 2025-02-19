@@ -1,6 +1,7 @@
 package umc.product.domain.member.entity;
 
 import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.member.converter.RoleConverter;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
@@ -24,7 +25,8 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = RoleConverter.class)
+    @Column(nullable = false)
     private Role role;
 
     private String name;

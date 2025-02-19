@@ -1,5 +1,7 @@
 package umc.product.domain.member.entity.enums;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,5 +16,6 @@ public enum Role {
     GUEST("비회원", 5);
 
     private final String toKorean;
+    @Getter
     private final int priority;
 }
