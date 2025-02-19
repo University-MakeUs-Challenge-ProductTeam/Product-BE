@@ -59,7 +59,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
         boolean isServiceMember = member.getName() != null;
         TokenInfo tokenInfo = generateToken(member);
 
-        return memberMapper.toLoginMember(member, tokenInfo, isServiceMember, member.getRole());
+        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
     }
 
     @Override
