@@ -4,6 +4,7 @@ import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.university.entity.University;
 import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,6 +56,10 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjects = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "university_id")
+    private University university;
 
     public void changeRole(Role role) {
         this.role = role;
