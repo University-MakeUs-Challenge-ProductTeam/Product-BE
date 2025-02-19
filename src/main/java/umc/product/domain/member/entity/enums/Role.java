@@ -16,6 +16,5 @@ public enum Role {
     GUEST("비회원", 5);
 
     private final String toKorean;
-    @Getter
     private final int priority;
 }
