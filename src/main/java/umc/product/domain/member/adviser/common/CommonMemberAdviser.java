@@ -1,13 +1,13 @@
-package umc.product.domain.member.adviser.challenger;
+package umc.product.domain.member.adviser.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.response.common.MemberRoleResponse;
-import umc.product.domain.member.service.MemberCodeService;
+import umc.product.domain.member.service.common.MemberCodeService;
 
 @Component
 @RequiredArgsConstructor
-public class ChallengerMemberAdviser {
+public class CommonMemberAdviser {
     private final MemberCodeService memberCodeService;
 
     public MemberRoleResponse verifyMemberCode(String code) {

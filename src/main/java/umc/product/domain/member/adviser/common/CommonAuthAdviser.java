@@ -1,21 +1,28 @@
-package umc.product.domain.member.adviser.challenger;
+package umc.product.domain.member.adviser.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
 import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.common.MemberLoginResponse;
-import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.service.MemberAuthService;
-import umc.product.domain.member.service.MemberCodeService;
+import umc.product.domain.member.service.common.MemberAuthService;
+import umc.product.domain.member.service.common.MemberService;
 
 @Component
 @RequiredArgsConstructor
-public class ChallengerAuthAdviser {
+public class CommonAuthAdviser {
     private final MemberAuthService memberAuthService;
+    private final MemberService memberService;
+    public MemberIdResponse signUp(MultipartFile file, CommonSignUpRequest request){
+        //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
+        //University 가져오기
+        //SemesterPart 생성
+        return memberService.signUp(request);
+    }
 
     public MemberLoginResponse socialLogin(String accessToken, LoginType loginType) { return memberAuthService.socialLogin(accessToken, loginType);}
 

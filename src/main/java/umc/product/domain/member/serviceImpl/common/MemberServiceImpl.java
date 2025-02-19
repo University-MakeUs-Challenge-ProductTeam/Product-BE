@@ -1,19 +1,19 @@
-package umc.product.domain.member.serviceImpl;
+package umc.product.domain.member.serviceImpl.common;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.MemberService;
+import umc.product.domain.member.service.common.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.auth.PrincipalDetails;
@@ -37,8 +37,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberIdResponse signUp(AdminSignUpRequest request) {
-        Member member = memberMapper.toMember(request);
+    public MemberIdResponse signUp(CommonSignUpRequest request) {
+        Member member = memberMapper.toCommonMember(request, null);
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
         member.setMemberLoginInfo(memberLoginInfo);
         return new MemberIdResponse(saveEntity(member).getId());
@@ -52,12 +52,6 @@ public class MemberServiceImpl implements MemberService {
     // 회원 저장
     public Member saveEntity(Member member) {
         return memberRepository.save(member);
-    }
-
-    @Override
-    public AdminMemberListResponse findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
-        List<Member> members =  memberRepository.findMembers(pageable, semester, role, part);
-        return memberMapper.toAdminMemberListResponse(members);
     }
 
     public Member getCurrentMember() {

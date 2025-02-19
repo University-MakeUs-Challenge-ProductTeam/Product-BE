@@ -1,11 +1,11 @@
-package umc.product.domain.member.serviceImpl;
+package umc.product.domain.member.serviceImpl.common;
 
 import umc.product.domain.member.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.repository.RefreshTokenRepository;
-import umc.product.domain.member.service.MemberRefreshTokenService;
+import umc.product.domain.member.service.common.MemberRefreshTokenService;
 
 import java.util.Optional;
 

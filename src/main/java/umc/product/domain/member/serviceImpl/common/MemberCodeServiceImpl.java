@@ -1,8 +1,8 @@
-package umc.product.domain.member.serviceImpl;
+package umc.product.domain.member.serviceImpl.common;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.challenger.ChallengerCodeRequest;
+import umc.product.domain.member.dto.request.common.CommonCodeRequest;
 import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
 import umc.product.domain.member.dto.response.common.MemberCodeResponse;
 import umc.product.domain.member.dto.response.common.MemberRoleResponse;
@@ -10,7 +10,7 @@ import umc.product.domain.member.entity.MemberCode;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberCodeMapper;
 import umc.product.domain.member.repository.MemberCodeRepository;
-import umc.product.domain.member.service.MemberCodeService;
+import umc.product.domain.member.service.common.MemberCodeService;
 import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class MemberCodeServiceImpl implements MemberCodeService {
     }
 
     @Override
-    public MemberCodeResponse saveChallengerCode(ChallengerCodeRequest request, String code) {
+    public MemberCodeResponse saveChallengerCode(CommonCodeRequest request, String code) {
         MemberCode memberCode = MemberCode.builder()
                 .code(code)
                 .university(request.getUniversity())

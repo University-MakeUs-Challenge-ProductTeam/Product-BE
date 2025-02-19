@@ -1,4 +1,4 @@
-package umc.product.domain.member.service;
+package umc.product.domain.member.service.common;
 
 import umc.product.domain.member.entity.RefreshToken;
 
