@@ -19,8 +19,8 @@ import umc.product.global.config.security.auth.CurrentMember;
 @Tag(name = "건의함 API", description = "건의함 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/challenger/suggestion")
-public class ChallengerSuggestionController {
+@RequestMapping("/common/suggestion")
+public class CommonSuggestionController {
     private final SuggestionAdviser suggestionAdviser;
     @Operation(summary = "건의함 작성 API", description = "건의함을 작성하는 API입니다")
     @ApiResponses( value = {
@@ -41,9 +41,9 @@ public class ChallengerSuggestionController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @PatchMapping("/")
+    @PatchMapping("/{suggestionId}")
     public BaseResponse<SuggestionIdResponse> patchSuggestion(@CurrentMember Member member,
-                                                              @RequestParam Long suggestionId,
+                                                              @PathVariable(name = "suggestionId") Long suggestionId,
                                                               @RequestBody SuggestionRequest suggestionRequest
     ) {
         return BaseResponse.onSuccess(suggestionAdviser.patchSuggestion(member, suggestionId, suggestionRequest));
@@ -55,9 +55,9 @@ public class ChallengerSuggestionController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @DeleteMapping("/")
+    @DeleteMapping("/{suggestionId}")
     public BaseResponse<SuggestionIdResponse> deleteSuggestion(@CurrentMember Member member,
-                                                               @RequestParam Long suggestionId
+                                                               @PathVariable(name = "suggestionId") Long suggestionId
     ) {
         return BaseResponse.onSuccess(suggestionAdviser.deleteSuggestion(member, suggestionId));
     }
@@ -82,9 +82,9 @@ public class ChallengerSuggestionController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @GetMapping("/detail")
+    @GetMapping("/detail/{suggestionId}")
     public BaseResponse<SuggestionDetailResponse> getSuggestionDetail(@CurrentMember Member member,
-                                                                      @RequestParam Long suggestionId
+                                                                      @PathVariable(name = "suggestionId") Long suggestionId
     ) {
         return BaseResponse.onSuccess(suggestionAdviser.getSuggestionDetail(member, suggestionId));
     }

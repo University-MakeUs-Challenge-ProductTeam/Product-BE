@@ -59,12 +59,12 @@ public class AdminSuggestionController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @PatchMapping("/comment")
+    @PatchMapping("/comment/{commentId}")
     public BaseResponse<SuggestionCommentIdResponse> patchSuggestionComment(@CurrentMember Member member,
-                                                                            @RequestParam Long suggestionCommentId,
+                                                                            @PathVariable(name = "commentId") Long commentId,
                                                                             @RequestBody SuggestionCommentRequest suggestionCommentRequest
     ) {
-        return BaseResponse.onSuccess(suggestionCommentAdviser.patchSuggestionComment(member, suggestionCommentId, suggestionCommentRequest));
+        return BaseResponse.onSuccess(suggestionCommentAdviser.patchSuggestionComment(member, commentId, suggestionCommentRequest));
     }
 
     @Operation(summary = "건의함 댓글 삭제 API", description = "건의함 댓글을 삭제하는 API입니다. ADMIN 전용")
@@ -73,11 +73,11 @@ public class AdminSuggestionController {
             @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생"),
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
-    @DeleteMapping("/comment")
+    @DeleteMapping("/comment/{commentId}")
     public BaseResponse<SuggestionCommentIdResponse> deleteSuggestionComment(@CurrentMember Member member,
-                                                                             @RequestParam Long suggestionCommentId
+                                                                             @PathVariable(name = "commentId") Long commentId
 
     ) {
-        return BaseResponse.onSuccess(suggestionCommentAdviser.deleteSuggestionComment(member, suggestionCommentId));
+        return BaseResponse.onSuccess(suggestionCommentAdviser.deleteSuggestionComment(member, commentId));
     }
 }

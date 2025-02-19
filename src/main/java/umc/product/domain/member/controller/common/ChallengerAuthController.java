@@ -1,8 +1,8 @@
-package umc.product.domain.member.controller.challenger;
+package umc.product.domain.member.controller.common;
 
 import jakarta.validation.Valid;
 import umc.product.domain.member.adviser.challenger.ChallengerAuthAdviser;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.challenger.ChallengerSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.common.MemberGenerateTokenResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "인증 API", description = "멤버 인증 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members/auth")
+@RequestMapping("/common/auth")
 public class ChallengerAuthController {
     private final ChallengerAuthAdviser challengerAuthAdviser;
 
@@ -33,7 +33,7 @@ public class ChallengerAuthController {
             @ApiResponse(responseCode = "BRANCH001", description = "대학교가 지부랑 연결되어 있지 않을 경우 발생")
     })
     @PostMapping("/signup")
-    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody AdminSignUpRequest request) {
+    public BaseResponse<MemberIdResponse> signUp(@Valid @RequestBody ChallengerSignUpRequest request) {
         return null;
     }
 
