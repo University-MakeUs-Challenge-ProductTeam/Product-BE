@@ -1,4 +1,4 @@
-package umc.product.domain.member.serviceImpl;
+package umc.product.domain.member.serviceImpl.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,11 +10,11 @@ import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.MemberAdminService;
+import umc.product.domain.member.service.admin.AdminAuthService;
 
 @Service
 @AllArgsConstructor
-public class MemberAdminServiceImpl implements MemberAdminService {
+public class AdminAuthServiceImpl implements AdminAuthService {
     private final MemberRepository memberRepository;
 
     private final MemberMapper memberMapper;
@@ -23,8 +23,8 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberIdResponse signUp(AdminSignUpRequest request) {
-        Member member = memberMapper.toMember(request);
+    public MemberIdResponse signUp(AdminSignUpRequest request, String avatarUrl) {
+        Member member = memberMapper.toAdminMember(request, avatarUrl);
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
         member.setMemberLoginInfo(memberLoginInfo);
         return new MemberIdResponse(saveEntity(member).getId());
