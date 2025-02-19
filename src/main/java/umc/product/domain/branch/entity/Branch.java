@@ -2,8 +2,8 @@ package umc.product.domain.branch.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
-import umc.product.domain.member.entity.MemberProject;
 import umc.product.domain.project.entity.Project;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;
@@ -22,9 +22,8 @@ public class Branch extends BaseEntity {
     @Column(name = "branch_id")
     private Long id;
 
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private Semester semester;
+    @Column(nullable = false)
+    private Integer semester;
 
     @Column(nullable = false)
     private String name;
