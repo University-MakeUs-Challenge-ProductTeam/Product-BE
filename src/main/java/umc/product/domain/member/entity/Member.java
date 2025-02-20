@@ -38,6 +38,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    @Setter
     private String avatarUrl;
 
     private String birth;

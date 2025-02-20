@@ -14,8 +14,8 @@ public class CommonSignUpRequest {
     private String email;
     private LoginType loginType;
     private String birth;
+    private String university;
     private Gender gender;
     private String clientId;
     private String password;
-    private String code;
 }

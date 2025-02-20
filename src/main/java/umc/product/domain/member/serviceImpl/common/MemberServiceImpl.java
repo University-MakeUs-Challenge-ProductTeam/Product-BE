@@ -54,6 +54,13 @@ public class MemberServiceImpl implements MemberService {
         return memberCode;
     }
 
+    @Transactional
+    @Override
+    public Member modifyMyProfileAvatar(Member member, String avatarUrl) {
+        member.setAvatarUrl(avatarUrl);
+        return memberRepository.save(member);
+    }
+
     public Member getCurrentMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

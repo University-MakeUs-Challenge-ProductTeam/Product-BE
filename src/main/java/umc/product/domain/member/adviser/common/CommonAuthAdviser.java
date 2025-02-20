@@ -12,17 +12,20 @@ import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.service.common.MemberAuthService;
 import umc.product.domain.member.service.common.MemberService;
+import umc.product.domain.university.entity.University;
+import umc.product.domain.university.service.UniversityService;
 
 @Component
 @RequiredArgsConstructor
 public class CommonAuthAdviser {
     private final MemberAuthService memberAuthService;
+    private final UniversityService universityService;
 
     private final MemberMapper memberMapper;
     public MemberIdResponse signUp(MultipartFile file, CommonSignUpRequest request){
         //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
-        //University 가져오기
         //SemesterPart 생성
+        University university = universityService.findUniversity(request.getUniversity());
         Member member = memberMapper.toCommonMember(request, null);
         Member newMember = memberAuthService.signUp(member);
         return memberMapper.toMemberIdResponse(newMember.getId());

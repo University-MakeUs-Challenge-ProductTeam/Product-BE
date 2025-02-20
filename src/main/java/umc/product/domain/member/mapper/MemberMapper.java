@@ -85,7 +85,7 @@ public class MemberMapper {
                 .avatarUrl(member.getAvatarUrl())
                 .name(member.getName())
                 .nickName(member.getNikeName())
-                .university(member.getName()) //수정해야함
+                .university(member.getUniversity().getName())
                 .role(member.getRole().getToKorean())
                 .status(member.getStatus())
                 .build();

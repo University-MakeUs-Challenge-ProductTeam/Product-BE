@@ -17,4 +17,5 @@ public interface MemberService {
     public Member findById(Long id);
     public Member saveEntity(Member member);
     public MemberCode verifyMemberCode(String code);
+    public Member modifyMyProfileAvatar(Member member, String avatarUrl);
 }

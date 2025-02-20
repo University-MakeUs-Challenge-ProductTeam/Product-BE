@@ -2,6 +2,8 @@ package umc.product.domain.member.adviser.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import umc.product.domain.file.service.FileService;
+import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
@@ -13,6 +15,7 @@ import umc.product.domain.member.service.common.MemberService;
 @RequiredArgsConstructor
 public class CommonMemberAdviser {
     private final MemberService memberService;
+    private final FileService fileService;
 
     private final MemberMapper memberMapper;
     private final MemberCodeMapper memberCodeMapper;
@@ -26,6 +29,12 @@ public class CommonMemberAdviser {
     public MemberSearchResponse getProfile(Long memberId) {
         Member member = memberService.findById(memberId);
         return  memberMapper.toSearchMemberResponse(member);
+    }
+
+    public MemberIdResponse modifyMyProfileAvatar(Member member) {
+        //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
+        Member modifyMember = memberService.modifyMyProfileAvatar(member, "");
+        return  memberMapper.toMemberIdResponse(modifyMember.getId());
     }
 
 
