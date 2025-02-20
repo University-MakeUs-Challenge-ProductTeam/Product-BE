@@ -24,9 +24,12 @@ public class MemberCustomRepositoryImpl implements umc.product.domain.member.rep
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
+            if(currentMember.getRole().equals(Role.UNIVERSITY_ADMIN)|| currentMember.getRole().equals(Role.BRANCH_ADMIN)){
+                builder.and(qMember.university.name.eq(currentMember.getUniversity().getName()));
+            }
             builder.and(qMember.role.gt(currentMember.getRole()));
         }
-        //학교별로 나누는 것도 해야함
+
         if (role != null) {
             builder.and(qMember.role.eq(role));
         }
