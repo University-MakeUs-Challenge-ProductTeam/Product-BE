@@ -131,7 +131,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                         project.description,
                         project.logoUrl,
                         project.imageUrl,
-                        branch.name,  // todo : branch.semester로 변경 예정
+                        branch.semester,
                         Expressions.constant(universityNames),
                         Expressions.constant(duration),
                         project.publishStatus,
