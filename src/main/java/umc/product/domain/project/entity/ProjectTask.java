@@ -1,4 +1,4 @@
-package umc.product.domain.project.entity.mapping;
+package umc.product.domain.project.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

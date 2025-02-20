@@ -10,11 +10,11 @@ import umc.product.domain.project.dto.response.ProjectMemberResponse;
 import umc.product.domain.project.dto.response.ProjectResponse;
 import umc.product.domain.project.dto.response.ProjectTaskResponse;
 import umc.product.domain.project.entity.Project;
-import umc.product.domain.project.exception.ProjectException;
+import umc.product.domain.project.status.ProjectException;
 import umc.product.domain.project.repository.ProjectRepository;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.GlobalErrorStatus;
-import umc.product.global.common.exception.code.status.ProjectErrorStatus;
+import umc.product.domain.project.status.ProjectErrorStatus;
 
 import java.util.List;
 

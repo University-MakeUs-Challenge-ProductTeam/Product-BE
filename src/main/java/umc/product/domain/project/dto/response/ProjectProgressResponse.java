@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.enums.Phase;
+import umc.product.domain.project.entity.enums.Phase;
 
 @Schema(description = "프로젝트 진행 상황 조회 응답 DTO")
 @Getter

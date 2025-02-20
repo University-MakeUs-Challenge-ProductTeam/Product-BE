@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.enums.Phase;
+import umc.product.domain.project.entity.enums.Phase;
 
 @Schema(description = "과제 완료를 위한 요청 DTO")
 @Getter

@@ -2,13 +2,10 @@ package umc.product.domain.project.dto.response;
 
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.enums.Phase;
-
-import java.util.List;
+import umc.product.domain.project.entity.enums.Phase;
 
 @Schema(description = "프로젝트 과제 정보 응답 DTO")
 @Getter

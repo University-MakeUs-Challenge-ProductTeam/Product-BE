@@ -1,7 +1,7 @@
 package umc.product.domain.task.repository;
 
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.enums.Phase;
+import umc.product.domain.project.entity.enums.Phase;
 
 public interface TaskCustomRepository {
 
