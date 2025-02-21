@@ -7,8 +7,10 @@ import umc.product.domain.member.dto.response.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 
-public interface AdminMemberService {
-    public AdminMemberListResponse findMembers(Member member, Pageable pageable, String semester, Role role, String part);
+import java.util.List;
 
-    public MemberIdResponse outChallenger(Member member);
+public interface AdminMemberService {
+    public List<Member> findMembers(Member member, Pageable pageable, String semester, Role role, String part);
+    public void outChallenger(Member member);
+    public List<Member> findMembersBySearchString(String searchString);
 }

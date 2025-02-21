@@ -10,9 +10,9 @@ import java.util.List;
 
 @Component
 public class MemberCodeMapper {
-    public MemberCodeResponse toMemberCodeResponse(MemberCode memberCode){
+    public MemberCodeResponse toMemberCodeResponse(String code){
         return MemberCodeResponse.builder()
-                .code(memberCode.getCode())
+                .code(code)
                 .build();
     }
 

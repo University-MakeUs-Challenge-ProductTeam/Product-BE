@@ -23,9 +23,9 @@ import static umc.product.global.common.exception.code.status.CodeErrorStatus.NO
 @AllArgsConstructor
 public class MemberCodeServiceImpl implements AdminCodeService {
     private final MemberCodeRepository memberCodeRepository;
-    private MemberCodeMapper memberCodeMapper;
+
     @Override
-    public MemberCodeResponse saveAdminCode(AdminCodeRequest request, String code) {
+    public void saveAdminCode(AdminCodeRequest request, String code) {
         MemberCode memberCode = MemberCode.builder()
                 .code(code)
                 .university(request.getUniversity())
@@ -33,11 +33,10 @@ public class MemberCodeServiceImpl implements AdminCodeService {
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCodeResponse(memberCode);
     }
 
     @Override
-    public MemberCodeResponse saveChallengerCode(CommonCodeRequest request, String code) {
+    public void saveChallengerCode(CommonCodeRequest request, String code) {
         MemberCode memberCode = MemberCode.builder()
                 .code(code)
                 .university(request.getUniversity())
@@ -45,7 +44,6 @@ public class MemberCodeServiceImpl implements AdminCodeService {
                 .build();
 
         memberCodeRepository.save(memberCode);
-        return memberCodeMapper.toMemberCodeResponse(memberCode);
     }
 
     @Override

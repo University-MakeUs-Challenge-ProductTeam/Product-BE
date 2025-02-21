@@ -29,15 +29,18 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final MemberMapper memberMapper;
     @Override
-    public AdminMemberListResponse findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
-        List<Member> members =  memberCustomRepository.findMembers(pageable,member, semester, role, part);
-        return memberMapper.toAdminMemberListResponse(members);
+    public List<Member> findMembers(Member member, Pageable pageable, String semester, Role role, String part) {
+        return memberCustomRepository.findMembers(pageable,member, semester, role, part);
     }
 
     @Transactional
     @Override
-    public MemberIdResponse outChallenger(Member member) {
+    public void outChallenger(Member member) {
         member.setStatus(Status.OUT);
-        return new MemberIdResponse(member.getId());
+    }
+
+    @Override
+    public List<Member> findMembersBySearchString(String searchString) {
+        return memberCustomRepository.findMembersBySearchString(searchString);
     }
 }

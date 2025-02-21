@@ -6,8 +6,8 @@ import umc.product.domain.member.dto.response.common.MemberCodeResponse;
 import umc.product.domain.member.dto.response.common.MemberRoleResponse;
 
 public interface AdminCodeService {
-    public MemberCodeResponse saveAdminCode(AdminCodeRequest request, String code);
-    public MemberCodeResponse saveChallengerCode(CommonCodeRequest request, String code);
+    public void saveAdminCode(AdminCodeRequest request, String code);
+    public void saveChallengerCode(CommonCodeRequest request, String code);
     public String createAdminCode();
     public String createChallengerCode();
 }
