@@ -14,6 +14,7 @@ import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
 import umc.product.domain.member.dto.response.common.MemberCodeResponse;
 import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.common.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.base.BaseResponse;
@@ -49,15 +50,29 @@ public class AdminMemberController {
         return BaseResponse.onSuccess(adminMemberAdviser.createChallengerCode(request));
     }
 
-    @GetMapping("/")
+    @GetMapping("/filter")
     //파라미터 수정해야함
-    public BaseResponse<AdminMemberListResponse> searchMembers(@CurrentMember Member member,
+    public BaseResponse<AdminMemberListResponse> filterSearchMembers(@CurrentMember Member member,
                                                                @RequestParam Integer page,
                                                                @RequestParam Integer size,
                                                                @RequestParam(required = false) String semester,
                                                                @RequestParam(required = false) Role role,
                                                                @RequestParam(required = false) String part) {
-        return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(member, PageRequest.of(page,size), semester, role, part));
+        return BaseResponse.onSuccess(adminMemberAdviser.filterSearchMembers(member, PageRequest.of(page,size), semester, role, part));
+    }
+
+    @GetMapping("/search")
+    //파라미터 수정해야함
+    public BaseResponse<AdminMemberListResponse> searchMembers(@CurrentMember Member member,
+                                                               @RequestParam(required = false) String searchString) {
+        return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(searchString));
+    }
+
+    @Operation(summary = "챌린저 프로필 수정 API", description = "챌린저 프로필 수정하는 API입니다.")
+    @PatchMapping("/modify/{memberId}")
+    public BaseResponse<MemberIdResponse> modifyMemberInfo(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId) {
+        return null;
     }
 
     @Operation(summary = "챌린저 OUT(삼진아웃) API", description = "챌린저 OUT(삼진아웃)하는 API입니다.")
