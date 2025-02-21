@@ -11,6 +11,7 @@ import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.common.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
+import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
@@ -32,9 +33,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     @Transactional
-    public Member signUp(Member member) {
+    public Member signUp(Member member, University university) {
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), null, member);
         member.setMemberLoginInfo(memberLoginInfo);
+        member.setUniversity(university);
         return memberRepository.save(member);
     }
 

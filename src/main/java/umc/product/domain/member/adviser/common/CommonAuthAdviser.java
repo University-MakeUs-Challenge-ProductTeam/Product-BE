@@ -27,7 +27,7 @@ public class CommonAuthAdviser {
         //SemesterPart 생성
         University university = universityService.findUniversity(request.getUniversity());
         Member member = memberMapper.toCommonMember(request, null);
-        Member newMember = memberAuthService.signUp(member);
+        Member newMember = memberAuthService.signUp(member, university);
         return memberMapper.toMemberIdResponse(newMember.getId());
     }
 

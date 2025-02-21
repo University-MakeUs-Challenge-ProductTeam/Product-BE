@@ -10,9 +10,10 @@ import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.university.entity.University;
 
 public interface MemberAuthService {
-    Member signUp(Member member);
+    Member signUp(Member member, University university);
     // 소셜 로그인
     MemberLoginResponse socialLogin(final String accessToken, LoginType loginType);
     // 새로운 액세스 토큰 발급
