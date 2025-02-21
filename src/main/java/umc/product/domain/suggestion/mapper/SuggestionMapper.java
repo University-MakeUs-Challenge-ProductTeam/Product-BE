@@ -61,7 +61,7 @@ public class SuggestionMapper {
                 .createdAt(suggestion.getCreatedAt())
                 .suggestionTarget(suggestion.getSuggestionTarget())
                 .memberName(suggestion.getMember().getName())
-                .memberNickName(suggestion.getMember().getNikeName())
+                .memberNickName(suggestion.getMember().getNickName())
                 .memberAvatarUrl(suggestion.getMember().getAvatarUrl())
                 .comments(suggestionCommentsResponseList)
                 .build();

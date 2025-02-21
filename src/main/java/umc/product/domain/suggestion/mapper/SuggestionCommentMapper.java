@@ -66,7 +66,7 @@ public class SuggestionCommentMapper {
                             .createdAt(comment.getCreatedAt())
                             .comments(childCommentsDTO)
                             .memberName(comment.getMember().getName())
-                            .memberNickName(comment.getMember().getNikeName())
+                            .memberNickName(comment.getMember().getNickName())
                             .memberAvatarUrl(comment.getMember().getAvatarUrl())
                             .build();
                 })

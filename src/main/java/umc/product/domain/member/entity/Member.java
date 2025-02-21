@@ -31,7 +31,7 @@ public class Member extends BaseEntity {
 
     private String name;
 
-    private String nikeName;
+    private String nickName;
 
     private String email;
 

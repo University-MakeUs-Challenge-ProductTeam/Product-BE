@@ -181,7 +181,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                         .list(Projections.constructor(
                                 ProjectMemberResponse.class,
                                 member.id,
-                                member.nikeName,
+                                member.nickName,
                                 member.name,
                                 GroupBy.list(memberProjectPart.part)
                         ))

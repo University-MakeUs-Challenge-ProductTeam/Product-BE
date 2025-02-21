@@ -47,4 +47,16 @@ public class MemberCustomRepositoryImpl implements umc.product.domain.member.rep
                 .limit(pageable.getPageSize())
                 .fetch();
     }
+
+    @Override
+    public List<Member> findMembersBySearchString(String searchString) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.name.eq(searchString));
+        builder.and(qMember.nickName.eq(searchString));
+
+        return jpaQueryFactory
+                .selectFrom(qMember)
+                .where(builder)
+                .fetch();
+    }
 }
