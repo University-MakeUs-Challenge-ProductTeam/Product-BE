@@ -33,7 +33,7 @@ public class CommonMemberController {
         return BaseResponse.onSuccess(commonMemberAdviser.getMyProfile(member));
     }
 
-    @PatchMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(path = "/profile/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(@CurrentMember Member member,
                                                                 @RequestPart("file") MultipartFile file) {
         return BaseResponse.onSuccess(commonMemberAdviser.modifyMyProfileAvatar(member));
