@@ -7,7 +7,7 @@ import umc.product.domain.university.repository.UniversityRepository;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
 
-import static umc.product.global.common.exception.code.status.GlobalErrorStatus._INTERNAL_SERVER_ERROR;
+import static umc.product.domain.university.status.UniversityErrorStatus.EMPTY_UNIVERSITY;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,6 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public University findUniversity(String universityName) {
         return universityRepository.findUniversityByName(universityName)
-                .orElseThrow(()-> new RestApiException(_INTERNAL_SERVER_ERROR));
+                .orElseThrow(()-> new RestApiException(EMPTY_UNIVERSITY));
     }
 }
