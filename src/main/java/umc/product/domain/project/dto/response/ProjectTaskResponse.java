@@ -7,7 +7,7 @@ import lombok.Getter;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.project.entity.enums.Phase;
 
-@Schema(description = "프로젝트 과제 정보 응답 DTO")
+@Schema(description = "프로젝트 과제 정보 DTO")
 @Getter
 @Builder
 public class ProjectTaskResponse {
