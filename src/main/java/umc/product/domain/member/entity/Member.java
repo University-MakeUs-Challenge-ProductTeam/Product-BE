@@ -5,6 +5,8 @@ import umc.product.domain.member.converter.RoleConverter;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.university.entity.University;
 import umc.product.global.common.enums.Status;
 import jakarta.persistence.*;
@@ -25,6 +27,7 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Convert(converter = RoleConverter.class)
     @Column(nullable = false)
     private Role role;
@@ -60,6 +63,16 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @Setter
+    private List<SemesterPart> memberSemesterPart = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @Setter
+    private List<SemesterPosition> memberSemesterPosition = new ArrayList<>();
 
     @Setter
     @ManyToOne
