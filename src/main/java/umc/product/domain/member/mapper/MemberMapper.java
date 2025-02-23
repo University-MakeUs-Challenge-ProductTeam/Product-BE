@@ -1,29 +1,15 @@
 package umc.product.domain.member.mapper;
 
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.common.MemberSearchResponse;
+import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
 import umc.product.global.common.enums.Status;
-import umc.product.global.config.security.jwt.TokenInfo;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-
-    public MemberIdResponse toMemberIdResponse(Long memberId) {
-        return MemberIdResponse.builder()
-                .memberId(memberId)
-                .build();
-    }
     public Member toAdminMember(AdminSignUpRequest request, String avatarUrl){
         return Member.builder()
                 .birth(request.getBirth())
@@ -32,14 +18,14 @@ public class MemberMapper {
                 .name(request.getName())
                 .gender(request.getGender())
                 .nickName(request.getNikeName())
-                .role(request.getRole())
                 .clientId(request.getClientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
+                .role(Role.BRANCH_ADMIN)
                 .build();
     }
 
-    public Member toCommonMember(CommonSignUpRequest request, String avatarUrl){
+    public Member toCommonMember(MemberSignUpRequest request, String avatarUrl){
         return Member.builder()
                 .birth(request.getBirth())
                 .email(request.getEmail())
@@ -47,9 +33,8 @@ public class MemberMapper {
                 .name(request.getName())
                 .gender(request.getGender())
                 .nickName(request.getNikeName())
-                .role(request.getRole())
                 .clientId(request.getClientId())
-                .loginType(LoginType.INTERNAL)
+                .loginType(request.getLoginType())
                 .status(Status.ACTIVE)
                 .build();
     }
@@ -58,36 +43,6 @@ public class MemberMapper {
         return Member.builder()
                 .clientId(clientId)
                 .loginType(loginType)
-                .build();
-    }
-
-    public MemberLoginResponse toLoginMemberResponse(final Member member, TokenInfo tokenInfo, boolean isServiceMember, Role role) {
-        return MemberLoginResponse.builder()
-                .memberId(member.getId())
-                .accessToken(tokenInfo.accessToken())
-                .refreshToken(tokenInfo.refreshToken())
-                .isServiceMember(isServiceMember)
-                .role(role)
-                .build();
-    }
-
-    public AdminMemberListResponse toAdminMemberListResponse(List<Member> memberList) {
-        List<MemberSearchResponse> memberSearchResponse = memberList.stream()
-                .map(this::toSearchMemberResponse).collect(Collectors.toList());
-        return AdminMemberListResponse.builder()
-                .memberList(memberSearchResponse)
-                .build();
-    }
-
-    public MemberSearchResponse toSearchMemberResponse(Member member) {
-        return MemberSearchResponse.builder()
-                .memberId(member.getId())
-                .avatarUrl(member.getAvatarUrl())
-                .name(member.getName())
-                .nickName(member.getNickName())
-                .university(member.getUniversity().getName())
-                .role(member.getRole().getToKorean())
-                .status(member.getStatus())
                 .build();
     }
 }
