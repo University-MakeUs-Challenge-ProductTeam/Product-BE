@@ -11,7 +11,7 @@ import umc.product.global.common.base.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SemesterPart extends BaseEntity {
+public class SemesterPosition extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +26,5 @@ public class SemesterPart extends BaseEntity {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    @Enumerated(EnumType.STRING)
-    private Part part;
-
-    // todo : branch 추가해서 연관관계 매핑하기
+    private String position;
 }
