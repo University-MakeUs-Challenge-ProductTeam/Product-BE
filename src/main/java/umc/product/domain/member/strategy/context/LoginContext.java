@@ -2,7 +2,7 @@ package umc.product.domain.member.strategy.context;
 
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.domain.member.strategy.impl.AnonymousLoginStrategy;
 import umc.product.domain.member.strategy.impl.InternalLoginStrategy;

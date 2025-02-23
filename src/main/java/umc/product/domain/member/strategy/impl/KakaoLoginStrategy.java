@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import umc.product.domain.member.client.KakaoMemberClient;
+import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.client.KakaoResponse;
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class KakaoLoginStrategy implements LoginStrategy {
 
     private final MemberRepository memberRepository;
+    private final MemberConverter memberConverter;
     private final MemberMapper memberMapper;
     private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
@@ -59,7 +61,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
         boolean isServiceMember = member.getName() != null;
         TokenInfo tokenInfo = generateToken(member);
 
-        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
+        return memberConverter.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
     }
 
     @Override
@@ -73,7 +75,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
         member.changeRole(Role.GUEST);
         Member newMember = memberService.saveEntity(member);
         TokenInfo tokenInfo = generateToken(newMember);
-        return memberMapper.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
+        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {
