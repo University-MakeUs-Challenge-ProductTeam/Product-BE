@@ -1,4 +1,4 @@
-package umc.product.domain.member.dto.response.common;
+package umc.product.domain.member.dto.response.member;
 
 import umc.product.domain.member.entity.enums.Role;
 import lombok.Builder;

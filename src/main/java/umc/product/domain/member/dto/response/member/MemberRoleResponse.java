@@ -1,4 +1,4 @@
-package umc.product.domain.member.dto.response.common;
+package umc.product.domain.member.dto.response.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberRoleResponse {
     String university;
-    List<Role> roleList;
+    List<MemberCodePropertiesResponse> memberCodePropertiesList;
 }

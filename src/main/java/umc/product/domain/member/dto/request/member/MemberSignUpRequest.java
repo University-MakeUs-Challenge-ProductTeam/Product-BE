@@ -1,14 +1,14 @@
-package umc.product.domain.member.dto.request.common;
+package umc.product.domain.member.dto.request.member;
 
 import lombok.Getter;
+import umc.product.domain.member.dto.response.member.MemberCodePropertiesResponse;
 import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.entity.enums.Role;
-import umc.product.global.common.enums.Status;
+
+import java.util.List;
 
 @Getter
-public class CommonSignUpRequest {
-    private Role role;      //교내 or 챌린저
+public class MemberSignUpRequest {
     private String name;
     private String nikeName;
     private String email;
@@ -17,5 +17,6 @@ public class CommonSignUpRequest {
     private String university;
     private Gender gender;
     private String clientId;
-    private String password;
+    private List<MemberSignUpSemesterRequest> semesterList;
+    private List<MemberCodePropertiesResponse> memberCodePropertiesList;
 }

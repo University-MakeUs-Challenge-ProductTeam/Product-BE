@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class MemberCustomRepositoryImpl implements umc.product.domain.member.rep
     private final QMember qMember = QMember.member;
 
     @Override
-    public List<Member> findMembers(Pageable pageable, Member currentMember, String semester, Role role, String part) {
+    public List<Member> findMembers(Pageable pageable, Member currentMember, String semester, Role role, Part part) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
@@ -34,10 +35,12 @@ public class MemberCustomRepositoryImpl implements umc.product.domain.member.rep
             builder.and(qMember.role.eq(role));
         }
         if (semester != null) {
-            builder.and(qMember.name.eq(semester));
+            builder.and(qMember.memberSemesterPart.any().semester.name.eq(semester)
+                        .or(qMember.memberSemesterPosition.any().semester.name.eq(semester))
+        );
         }
         if (part != null) {
-            builder.and(qMember.name.eq(part));
+            builder.and(qMember.memberSemesterPart.any().part.eq(part));
         }
 
         return jpaQueryFactory

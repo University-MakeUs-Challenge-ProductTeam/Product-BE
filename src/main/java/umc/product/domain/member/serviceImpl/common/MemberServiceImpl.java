@@ -1,20 +1,13 @@
 package umc.product.domain.member.serviceImpl.common;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.common.MemberRoleResponse;
+import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberCode;
-import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberCodeRepository;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.common.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
@@ -26,7 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static umc.product.global.common.exception.code.status.CodeErrorStatus.NOT_VAILD_CODE;
 
@@ -34,7 +28,15 @@ import static umc.product.global.common.exception.code.status.CodeErrorStatus.NO
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
-    private final MemberCodeRepository memberCodeRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
+
+    private final MemberMapper memberMapper;
+
+    @Override
+    public Member toCommonMember(MemberSignUpRequest request, String avatarUrl) {
+        return memberMapper.toCommonMember(request, avatarUrl);
+    }
 
     public Member findById(Long id) throws UsernameNotFoundException {
         return memberRepository.findById(id)
@@ -48,10 +50,30 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberCode verifyMemberCode(String code) {
-        MemberCode memberCode = memberCodeRepository.findById(code)
-                .orElseThrow(()-> new RestApiException(NOT_VAILD_CODE));
+        String key = "code:" + code;
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+        try {
+            // JSON -> Object 변환
+            Map<String, Object> properties = entries.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            e -> e.getKey().toString(),
+                            e -> {
+                                try {
+                                    return objectMapper.readValue(e.getValue().toString(), Object.class);
+                                } catch (JsonProcessingException ex) {
+                                    throw new RestApiException(NOT_VAILD_CODE);
+                                }
+                            }
+                    ));
 
-        return memberCode;
+            return MemberCode.builder()
+                    .code(code)
+                    .properties(properties)
+                    .build();
+
+        } catch (Exception e) {
+            throw new RestApiException(NOT_VAILD_CODE);
+        }
     }
 
     @Transactional
