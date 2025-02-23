@@ -44,20 +44,14 @@ public class SuggestionCommentMapper {
                 .build();
     }
 
-    public SuggestionCommentIdResponse toSuggestionCommentIdResponse(SuggestionComment suggestionComment) {
-        return SuggestionCommentIdResponse.builder()
-                .suggestionCommentId(suggestionComment.getId())
-                .build();
-    }
-
-    public List<SuggestionCommentsResponse> toPostDetailCommentResultDTO(List<SuggestionComment> comments, Long depth) {
+    public List<SuggestionCommentsResponse> toSuggestionDetailComment(List<SuggestionComment> comments, Long depth) {
 
         return comments.stream()
                 .filter(comment -> comment.getDepth().equals(depth))
                 .map(comment -> {
                     List<SuggestionCommentsResponse> childCommentsDTO =
                             comment.getChildComments() != null
-                                    ? toPostDetailCommentResultDTO(comment.getChildComments(), depth + 1)
+                                    ? toSuggestionDetailComment(comment.getChildComments(), depth + 1)
                                     : new ArrayList<>();
 
                     return SuggestionCommentsResponse.builder()
@@ -72,5 +66,4 @@ public class SuggestionCommentMapper {
                 })
                 .collect(Collectors.toList());
     }
-
 }
