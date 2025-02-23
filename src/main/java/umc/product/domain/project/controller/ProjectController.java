@@ -173,10 +173,9 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
-    public BaseResponse<Void> completeTask(
+    public BaseResponse<ProjectCompleteTaskResponse> completeTask(
             @Valid @RequestBody TaskCompleteRequest request,
             @PathVariable Long projectId) {
-        projectCommandService.completeTask(projectId, request);
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(projectCommandService.completeTask(projectId, request));
     }
 }
