@@ -3,7 +3,7 @@ package umc.product.domain.university.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
-import umc.product.domain.project.entity.mapping.ProjectUniversity;
+import umc.product.domain.project.entity.ProjectUniversity;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;

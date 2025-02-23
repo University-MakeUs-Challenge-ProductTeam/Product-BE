@@ -1,4 +1,4 @@
-package umc.product.domain.project.enums;
+package umc.product.domain.project.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.entity.mapping.ProjectTask;
-import umc.product.domain.project.enums.Phase;
+import umc.product.domain.project.entity.ProjectTask;
+import umc.product.domain.project.entity.enums.Phase;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;

@@ -18,12 +18,12 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.project.dto.response.*;
 import umc.product.domain.project.entity.QProject;
 import umc.product.domain.project.entity.QProjectPart;
-import umc.product.domain.project.entity.mapping.QProjectTask;
-import umc.product.domain.project.entity.mapping.QProjectUniversity;
-import umc.product.domain.project.exception.ProjectException;
+import umc.product.domain.project.entity.QProjectTask;
+import umc.product.domain.project.entity.QProjectUniversity;
+import umc.product.domain.project.status.ProjectException;
 import umc.product.domain.task.entity.QTask;
 import umc.product.domain.university.entity.QUniversity;
-import umc.product.global.common.exception.code.status.ProjectErrorStatus;
+import umc.product.domain.project.status.ProjectErrorStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -131,7 +131,7 @@ public class ProjectCustomRepositoryImpl implements ProjectCustomRepository {
                         project.description,
                         project.logoUrl,
                         project.imageUrl,
-                        branch.name,  // todo : branch.semester로 변경 예정
+                        branch.semester,
                         Expressions.constant(universityNames),
                         Expressions.constant(duration),
                         project.publishStatus,

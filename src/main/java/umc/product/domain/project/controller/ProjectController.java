@@ -15,13 +15,14 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.request.ProjectModifyRequest;
 import umc.product.domain.project.dto.request.TaskCompleteRequest;
 import umc.product.domain.project.dto.response.*;
+import umc.product.domain.project.dto.response.list.ProjectListResponse;
+import umc.product.domain.project.dto.response.list.ProjectMemberListResponse;
+import umc.product.domain.project.dto.response.list.ProjectTaskListResponse;
 import umc.product.domain.project.service.ProjectCommandService;
 import umc.product.domain.project.service.ProjectQueryService;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 import umc.product.global.config.security.auth.PrincipalDetails;
-
-import java.util.List;
 
 @Tag(name = "PROJECT API", description = "프로젝트 관련 API")
 @RestController
@@ -41,9 +42,8 @@ public class ProjectController {
                     description = "프로젝트 목록 조회 성공"
             )
     })
-    public BaseResponse<List<ProjectResponse>> getMyProjects(@CurrentMember Member member) {
-        List<ProjectResponse> response = projectQueryService.getMyProjects(member);
-        return BaseResponse.onSuccess(response);
+    public BaseResponse<ProjectListResponse> getMyProjects(@CurrentMember Member member) {
+        return BaseResponse.onSuccess(projectQueryService.getMyProjects(member));
     }
 
     @GetMapping("/my/{projectId}")
@@ -60,8 +60,7 @@ public class ProjectController {
     public BaseResponse<ProjectInfoResponse> getMyProject(
             @CurrentMember Member member,
             @PathVariable Long projectId) {
-        ProjectInfoResponse response = projectQueryService.getMyProject(member, projectId);
-        return BaseResponse.onSuccess(response);
+        return BaseResponse.onSuccess(projectQueryService.getMyProject(member, projectId));
     }
 
     @GetMapping("/{projectId}/members")
@@ -75,9 +74,8 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
-    public BaseResponse<List<ProjectMemberResponse>> getProjectMembers(@PathVariable Long projectId) {
-        List<ProjectMemberResponse> response = projectQueryService.getProjectMembers(projectId);
-        return BaseResponse.onSuccess(response);
+    public BaseResponse<ProjectMemberListResponse> getProjectMembers(@PathVariable Long projectId) {
+        return BaseResponse.onSuccess(projectQueryService.getProjectMembers(projectId));
     }
 
     @GetMapping("/{projectId}/tasks")
@@ -91,11 +89,10 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
-    public BaseResponse<List<ProjectTaskResponse>> getProjectTasks(
+    public BaseResponse<ProjectTaskListResponse> getProjectTasks(
             @CurrentMember Member member,
             @PathVariable Long projectId) {
-        List<ProjectTaskResponse> response = projectQueryService.getTasks(member, projectId);
-        return BaseResponse.onSuccess(response);
+        return BaseResponse.onSuccess(projectQueryService.getTasks(member, projectId));
     }
 
     @GetMapping("/{semesterId}")
@@ -176,10 +173,9 @@ public class ProjectController {
     @Parameters({
             @Parameter(name = "projectId", description = "프로젝트 id, path variable 입니다")
     })
-    public BaseResponse<Void> completeTask(
+    public BaseResponse<ProjectCompleteTaskResponse> completeTask(
             @Valid @RequestBody TaskCompleteRequest request,
             @PathVariable Long projectId) {
-        projectCommandService.completeTask(projectId, request);
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(projectCommandService.completeTask(projectId, request));
     }
 }

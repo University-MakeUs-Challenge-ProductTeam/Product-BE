@@ -1,4 +1,4 @@
-package umc.product.global.common.exception.code.status;
+package umc.product.domain.project.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

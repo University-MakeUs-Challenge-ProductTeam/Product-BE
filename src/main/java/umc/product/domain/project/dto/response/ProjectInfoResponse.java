@@ -30,8 +30,8 @@ public class ProjectInfoResponse {
     @Schema(description = "프로젝트 이미지", example = "https://{bucket-name}.s3.{region}.amazonaws.com/{folder-name}/{file-name}")
     private String imgUrl;
 
-    @Schema(description = "기수", example = "7기")
-    private String semester; // todo : Semester ENUM 타입으로 변경 예정 - Branch의 semester 필드 가져오기
+    @Schema(description = "기수", example = "7")
+    private Integer semester;
 
     @Schema(description = "참여 학교", example = "[\"가천대학교\", \"경희대학교\", \"명지대학교\"]")
     private List<String> university;
@@ -48,7 +48,7 @@ public class ProjectInfoResponse {
     @QueryProjection
     public ProjectInfoResponse(Long projectId, String title, String slogan,
                                String description, String logoUrl, String imgUrl,
-                               String semester, List<String> university, String duration,
+                               Integer semester, List<String> university, String duration,
                                boolean publishStatus, String publishLink) {
         this.projectId = projectId;
         this.title = title;

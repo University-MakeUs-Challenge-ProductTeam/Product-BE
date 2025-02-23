@@ -1,4 +1,4 @@
-package umc.product.domain.project.exception;
+package umc.product.domain.project.status;
 
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.BaseCodeInterface;

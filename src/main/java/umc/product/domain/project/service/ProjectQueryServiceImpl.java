@@ -7,14 +7,16 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.response.ProjectInfoResponse;
 import umc.product.domain.project.dto.response.ProjectMemberResponse;
-import umc.product.domain.project.dto.response.ProjectResponse;
-import umc.product.domain.project.dto.response.ProjectTaskResponse;
+import umc.product.domain.project.dto.response.list.ProjectListResponse;
+import umc.product.domain.project.dto.response.list.ProjectMemberListResponse;
+import umc.product.domain.project.dto.response.list.ProjectTaskListResponse;
 import umc.product.domain.project.entity.Project;
-import umc.product.domain.project.exception.ProjectException;
+import umc.product.domain.project.mapper.ProjectMapper;
+import umc.product.domain.project.status.ProjectException;
 import umc.product.domain.project.repository.ProjectRepository;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.GlobalErrorStatus;
-import umc.product.global.common.exception.code.status.ProjectErrorStatus;
+import umc.product.domain.project.status.ProjectErrorStatus;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.List;
 public class ProjectQueryServiceImpl implements ProjectQueryService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
     @Override
     public Project findById(Long projectId) {
@@ -33,9 +36,9 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     }
 
     @Override
-    public List<ProjectTaskResponse> getTasks(Member member, Long projectId) {
+    public ProjectTaskListResponse getTasks(Member member, Long projectId) {
         try {
-            return projectRepository.getTasks(member, projectId);
+            return projectMapper.toProjectTaskListResponse(projectRepository.getTasks(member, projectId));
         } catch (Exception e) {
             log.error("과제 조회 관련 에러, projectId: {}, memberId: {}", projectId, member.getId(), e);
             throw new ProjectException(ProjectErrorStatus.TASK_NOT_FOUND);
@@ -43,9 +46,9 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     }
 
     @Override
-    public List<ProjectResponse> getMyProjects(Member member) {
+    public ProjectListResponse getMyProjects(Member member) {
         try {
-            return projectRepository.getMyProjects(member);
+            return projectMapper.toProjectListResponse(projectRepository.getMyProjects(member));
         } catch (Exception e) {
             log.error("프로젝트 조회 관련 에러, memberId: {}", member.getId(), e);
             throw new ProjectException(ProjectErrorStatus.PROJECT_NOT_FOUND);
@@ -69,7 +72,7 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
     }
 
     @Override
-    public List<ProjectMemberResponse> getProjectMembers(Long projectId) {
+    public ProjectMemberListResponse getProjectMembers(Long projectId) {
 
         projectRepository.findById(projectId)
                 .orElseThrow(() -> {
@@ -77,12 +80,12 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
                     return new ProjectException(ProjectErrorStatus.PROJECT_NOT_FOUND);
                 });
 
-        List<ProjectMemberResponse> response = projectRepository.getProjectMembers(projectId);
+        List<ProjectMemberResponse> memberList = projectRepository.getProjectMembers(projectId);
 
-        if (response.isEmpty()) {
+        if (memberList.isEmpty()) {
             log.error("해당 프로젝트에 참여한 사용자가 없는 에러, projectId: {}", projectId);
             throw new ProjectException(ProjectErrorStatus.PROJECT_MEMBER_NOT_FOUND);
         }
-        return response;
+        return projectMapper.toProjectMemberListResponse(memberList);
     }
 }

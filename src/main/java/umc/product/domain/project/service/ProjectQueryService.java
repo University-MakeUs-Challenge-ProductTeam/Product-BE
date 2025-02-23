@@ -2,17 +2,15 @@ package umc.product.domain.project.service;
 
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.dto.response.ProjectInfoResponse;
-import umc.product.domain.project.dto.response.ProjectMemberResponse;
-import umc.product.domain.project.dto.response.ProjectResponse;
-import umc.product.domain.project.dto.response.ProjectTaskResponse;
+import umc.product.domain.project.dto.response.list.ProjectListResponse;
+import umc.product.domain.project.dto.response.list.ProjectMemberListResponse;
+import umc.product.domain.project.dto.response.list.ProjectTaskListResponse;
 import umc.product.domain.project.entity.Project;
-
-import java.util.List;
 
 public interface ProjectQueryService {
     Project findById(Long projectId);
-    List<ProjectTaskResponse> getTasks(Member member, Long projectId);
-    List<ProjectResponse> getMyProjects(Member member);
+    ProjectTaskListResponse getTasks(Member member, Long projectId);
+    ProjectListResponse getMyProjects(Member member);
     ProjectInfoResponse getMyProject(Member member, Long projectId);
-    List<ProjectMemberResponse> getProjectMembers(Long projectId);
+    ProjectMemberListResponse getProjectMembers(Long projectId);
 }

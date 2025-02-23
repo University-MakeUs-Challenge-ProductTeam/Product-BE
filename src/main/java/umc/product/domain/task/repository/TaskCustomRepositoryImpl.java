@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.entity.mapping.QProjectTask;
-import umc.product.domain.project.enums.Phase;
-import umc.product.domain.project.exception.ProjectException;
-import umc.product.global.common.exception.code.status.ProjectErrorStatus;
+import umc.product.domain.project.entity.QProjectTask;
+import umc.product.domain.project.entity.enums.Phase;
+import umc.product.domain.project.status.ProjectException;
+import umc.product.domain.project.status.ProjectErrorStatus;
 
 @Repository
 @RequiredArgsConstructor

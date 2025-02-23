@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.project.enums.Prize;
+import umc.product.domain.project.entity.enums.Prize;
 
-@Schema(description = "프로젝트 목록 조회 응답 DTO")
+@Schema(description = "본인 참여 단일 프로젝트 DTO")
 @Getter
 @Builder
 public class ProjectResponse {

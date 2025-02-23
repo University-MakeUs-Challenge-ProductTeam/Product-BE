@@ -6,11 +6,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.product.domain.branch.entity.Branch;
 import umc.product.domain.member.entity.MemberProject;
-import umc.product.domain.member.entity.MemberProjectPart;
-import umc.product.domain.project.entity.mapping.ProjectTask;
-import umc.product.domain.project.entity.mapping.ProjectUniversity;
-import umc.product.domain.project.enums.Prize;
-import umc.product.domain.task.entity.Task;
+import umc.product.domain.project.entity.enums.Prize;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDate;
