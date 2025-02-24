@@ -17,7 +17,7 @@ import umc.product.global.config.security.auth.CurrentMember;
 @Tag(name = "멤버 API", description = "멤버 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members/members")
+@RequestMapping("/members")
 public class MemberMemberController {
     private final MemberMemberAdviser memberMemberAdviser;
 
