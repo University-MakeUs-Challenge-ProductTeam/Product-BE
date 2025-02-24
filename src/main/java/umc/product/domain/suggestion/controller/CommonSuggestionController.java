@@ -70,10 +70,10 @@ public class CommonSuggestionController {
     })
     @GetMapping("/mine")
     public BaseResponse<MySuggestionGetResponse> getMySuggestion(@CurrentMember Member member,
-                                                                 @RequestParam Integer page,
+                                                                 @RequestParam Integer cursor,
                                                                  @RequestParam Integer size
     ) {
-        return BaseResponse.onSuccess(suggestionAdviser.getMySuggestion(member, PageRequest.of(page, size)));
+        return BaseResponse.onSuccess(suggestionAdviser.getMySuggestion(member, PageRequest.of(cursor, size)));
     }
 
     @Operation(summary = "건의함 세부사항 불러오기 API", description = "건의함의 세부사항 불러오는 API입니다. 어드민, 일반 사용자 겸용")

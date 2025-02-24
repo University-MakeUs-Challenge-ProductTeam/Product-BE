@@ -32,10 +32,10 @@ public class AdminSuggestionController {
     })
     @GetMapping("/list")
     public BaseResponse<SuggestionGetResponse> getSuggestion(@CurrentMember Member member,
-                                                             @RequestParam Integer page,
+                                                             @RequestParam Integer cursor,
                                                              @RequestParam Integer size
     ) {
-        return BaseResponse.onSuccess(suggestionAdviser.getSuggestion(member, PageRequest.of(page, size)));
+        return BaseResponse.onSuccess(suggestionAdviser.getSuggestion(member, PageRequest.of(cursor, size)));
     }
 
     @Operation(summary = "건의함 댓글 작성 API", description = "건의함 댓글을 작성하는 API입니다. ADMIN 전용")
