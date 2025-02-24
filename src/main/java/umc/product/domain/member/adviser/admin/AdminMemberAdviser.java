@@ -32,22 +32,22 @@ public class AdminMemberAdviser {
     private final MemberCodeConverter memberCodeConverter;
 
     public MemberCodeResponse createUniversityAdminCode(AdminCodeRequest request) {
+        universityService.findOrCreateUniversity(request.getUniversity());      //학교 생성 or 찾기
         String code = adminCodeService.createAdminCode();
-        University university = universityService.findOrCreateUniversity(request.getUniversity());      //학교 생성 or 찾기
         adminCodeService.saveAdminCode(request, code);
         return memberCodeConverter.toMemberCodeResponse(code);
     }
 
     public MemberCodeResponse createAdminCode(AdminCodeRequest request) {
+        universityService.findUniversity(request.getUniversity());
         String code = adminCodeService.createChallengerCode();
-        University university = universityService.findUniversity(request.getUniversity());
         adminCodeService.saveAdminCode(request, code);
         return memberCodeConverter.toMemberCodeResponse(code);
     }
 
     public MemberCodeResponse createChallengerCode(AdminCodeRequest request) {
+        universityService.findUniversity(request.getUniversity());
         String code = adminCodeService.createChallengerCode();
-        University university = universityService.findUniversity(request.getUniversity());
         adminCodeService.saveAdminCode(request, code);
         return memberCodeConverter.toMemberCodeResponse(code);
     }
