@@ -1,5 +1,8 @@
 package umc.product.global.config.security;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.MediaType;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
 import umc.product.global.config.security.auth.PrincipalDetailsService;
@@ -14,6 +17,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+
+import java.time.LocalDateTime;
+
+import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 
 @Configuration
 @EnableWebSecurity
@@ -57,13 +64,26 @@ public class SecurityConfig {
                         .requestMatchers("/web/university-admin/**", "/members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler))
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.accessDeniedHandler(customAccessDeniedHandler)
+                                         .authenticationEntryPoint(authenticationEntryPoint()))
                 .addFilterBefore(jwtExceptionFilter, LogoutFilter.class) // filter 등록시 등록되어있는 필터와 순서를 정의해야함
                 .addFilterBefore(jwtAuthenticationFilter, LogoutFilter.class)
                 .build();
     }
 
-
-
-
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(INVALID_ACCESS_TOKEN.getHttpStatus().value()); // 401
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(String.format(
+                    "{\"timestamp\": \"%s\", \"code\": \"%s\", \"message\": \"%s\"}",
+                    LocalDateTime.now(),
+                    INVALID_ACCESS_TOKEN.getCode().getCode(),
+                    INVALID_ACCESS_TOKEN.getMessage()
+            ));
+        };
+    }
 }
