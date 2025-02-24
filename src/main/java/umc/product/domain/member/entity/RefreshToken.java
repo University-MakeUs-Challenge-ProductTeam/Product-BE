@@ -18,8 +18,8 @@ public class RefreshToken { //redis에 저장할 객체
 
     @Id
     @Indexed // 인덱스를 걸어주면 조회할 때 빠르게 찾을 수 있음
-    private Long memberId;
-
+    private String memberId;
+    @Indexed
     private String refreshToken;
 
     /*

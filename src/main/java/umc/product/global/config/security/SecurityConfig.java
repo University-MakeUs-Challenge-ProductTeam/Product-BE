@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/members/login").permitAll()
                         //회원가입, 로그인
                         .requestMatchers("/web/admin/auth/login", "/web/admin/auth/signup").permitAll()
-                        .requestMatchers("/members/auth/signup", "/members/auth/social/login").permitAll()
+                        .requestMatchers("/members/auth/signup", "/members/auth/social/login", "/members/auth/token/refresh").permitAll()
 
                         //Challenger
                         .requestMatchers("/suggestion/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_ADMIN)

@@ -1,19 +1,22 @@
 package umc.product.domain.member.serviceImpl.common;
 
+import io.jsonwebtoken.Claims;
+import org.springframework.data.redis.core.RedisTemplate;
 import umc.product.domain.member.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.repository.RefreshTokenRepository;
 import umc.product.domain.member.service.common.MemberRefreshTokenService;
+import umc.product.global.config.security.jwt.JwtProvider;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService {
-
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtProvider jwtProvider;
 
     // memberId에 등록된 리프레쉬 토큰 지우고, 새로운 값 저장
     @Transactional
@@ -24,7 +27,7 @@ public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService 
         // 새로운 리프레쉬 토큰 저장
         return refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .memberId(memberId)
+                        .memberId(memberId.toString())
                         .refreshToken(refreshToken)
                         .build()
         );
@@ -34,7 +37,7 @@ public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService 
     @Transactional
     public void deleteRefreshToken(Long memberId) {
         // 리프레쉬 토큰이 없다면 무시
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMemberId(memberId);
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMemberId(memberId.toString());
         if (refreshToken.isEmpty()) {
             return;
         }
@@ -44,6 +47,11 @@ public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService 
     // memberId에 맞는 리프레쉬 토큰이 존재하는지 확인
     @Transactional(readOnly = true)
     public boolean existRefreshToken(String refreshToken, Long memberId) {
-        return refreshTokenRepository.existsByMemberIdAndRefreshToken(memberId, refreshToken);
+        return refreshTokenRepository.existsRefreshTokenByMemberIdAndRefreshToken(memberId.toString(), refreshToken);
+    }
+
+    @Override
+    public Claims getClaims(String refreshToken) {
+        return jwtProvider.getClaims(refreshToken);
     }
 }

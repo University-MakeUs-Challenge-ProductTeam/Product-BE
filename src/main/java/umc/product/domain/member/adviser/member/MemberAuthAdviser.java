@@ -1,5 +1,6 @@
 package umc.product.domain.member.adviser.member;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.service.common.MemberAuthService;
+import umc.product.domain.member.service.common.MemberRefreshTokenService;
 import umc.product.domain.member.service.common.MemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -34,6 +36,7 @@ public class MemberAuthAdviser {
     private final UniversityService universityService;
     private final SemesterService semesterService;
     private final SemesterPositionService semesterPositionService;
+    private final MemberRefreshTokenService memberRefreshTokenService;
 
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
@@ -61,7 +64,10 @@ public class MemberAuthAdviser {
         return memberAuthService.socialLogin(accessToken, loginType);
     }
 
-    public MemberGenerateTokenResponse regenerateToken(String refreshToken, Member member) {
+    public MemberGenerateTokenResponse regenerateToken(String refreshToken) {
+        Claims claims = memberRefreshTokenService.getClaims(refreshToken);
+        Long memberId = Long.parseLong(claims.get("memberId").toString());
+        Member member = memberService.findById(memberId);
         return memberAuthService.generateNewAccessToken(refreshToken, member);
     }
 

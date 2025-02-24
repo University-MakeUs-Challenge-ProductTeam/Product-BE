@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String>
 {
-    Optional<RefreshToken> findByMemberId(Long memberId);
-    boolean existsByMemberIdAndRefreshToken(Long memberId, String refreshToken);
+    Optional<RefreshToken> findByMemberId(String memberId);
+    boolean existsRefreshTokenByMemberIdAndRefreshToken(String memberId, String refreshToken);
 }
 
