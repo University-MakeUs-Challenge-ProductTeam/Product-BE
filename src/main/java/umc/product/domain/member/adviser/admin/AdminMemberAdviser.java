@@ -39,7 +39,7 @@ public class AdminMemberAdviser {
     }
 
     public MemberCodeResponse createAdminCode(AdminCodeRequest request) {
-        String code = adminCodeService.createAdminCode();
+        String code = adminCodeService.createChallengerCode();
         University university = universityService.findUniversity(request.getUniversity());
         adminCodeService.saveAdminCode(request, code);
         return memberCodeConverter.toMemberCodeResponse(code);

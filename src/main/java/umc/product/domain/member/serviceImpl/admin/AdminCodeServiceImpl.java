@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
 import umc.product.domain.member.service.admin.AdminCodeService;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -35,7 +36,14 @@ public class AdminCodeServiceImpl implements AdminCodeService {
 
     @Override
     public String createAdminCode() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6).toUpperCase();
+        SecureRandom secureRandom = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 10; i++) {
+            sb.append(secureRandom.nextInt(10)); // 0~9 사이의 숫자 생성
+        }
+
+        return sb.toString();
     }
 
     private void saveMemberCode(String code, Map<String, Object> properties) {

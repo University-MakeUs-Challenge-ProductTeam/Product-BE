@@ -52,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberCode verifyMemberCode(String code) {
         String key = "code:" + code;
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+        if (entries.isEmpty()) throw new RestApiException(NOT_VAILD_CODE);
         try {
             // JSON -> Object 변환
             Map<String, Object> properties = entries.entrySet().stream()
