@@ -37,13 +37,6 @@ public class AdminAuthController {
         return BaseResponse.onSuccess(adminAuthAdviser.login(request));
     }
 
-    @Operation(summary = "accessToken 재발급 API", description = "refreshToken가 유효하다면 새로운 accessToken을 발급하는 API입니다.")
-    @GetMapping("/token/refresh")
-    public BaseResponse<MemberGenerateTokenResponse> regenerateToken(@CurrentMember Member member,
-                                                                     @RequestHeader(value = "refreshToken") String refreshToken) {
-        return BaseResponse.onSuccess(adminAuthAdviser.regenerateToken(refreshToken, member));
-    }
-
     @Operation(summary = "로그아웃 API", description = "해당 유저의 refreshToken을 삭제하는 API입니다.")
     @DeleteMapping("/logout")
     public BaseResponse<MemberIdResponse> logout(@CurrentMember Member member) {

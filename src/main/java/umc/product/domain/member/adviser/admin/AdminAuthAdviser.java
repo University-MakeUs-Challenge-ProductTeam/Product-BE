@@ -40,10 +40,6 @@ public class AdminAuthAdviser {
         return adminAuthService.login(request);
     }
 
-    public MemberGenerateTokenResponse regenerateToken(String refreshToken, Member member) {
-        return memberAuthService.generateNewAccessToken(refreshToken, member);
-    }
-
     public MemberIdResponse logout(Member member) {return memberAuthService.logout(member);}
 
     public MemberIdResponse withdrawal(Member member) {return memberAuthService.withdrawal(member);}
