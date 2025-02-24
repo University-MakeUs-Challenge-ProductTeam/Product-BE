@@ -39,8 +39,4 @@ public class AdminAuthAdviser {
     public MemberLoginResponse login(AdminLoginRequest request) {
         return adminAuthService.login(request);
     }
-
-    public MemberIdResponse logout(Member member) {return memberAuthService.logout(member);}
-
-    public MemberIdResponse withdrawal(Member member) {return memberAuthService.withdrawal(member);}
 }
