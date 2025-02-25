@@ -30,6 +30,7 @@ public class AdminAuthAdviser {
 
     public MemberIdResponse signUp(MultipartFile file, AdminSignUpRequest request){
         //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
+        memberAuthService.verifyClientId(request.getClientId());
         University university = universityService.findUniversity(request.getUniversity());
         Member member = adminMemberService.toAdminMember(request, "");
         Member newMember = adminAuthService.signUp(member, request.getPassword(), university);

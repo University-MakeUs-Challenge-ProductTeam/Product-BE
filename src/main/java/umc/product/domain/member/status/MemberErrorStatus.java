@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum MemberErrorStatus implements BaseCodeInterface {
-    DUPLICATED_CLIENT_ID(HttpStatus.UNAUTHORIZED, "MEMBER400", "중복되는 아이디입니다."),
+    DUPLICATED_CLIENT_ID(HttpStatus.BAD_REQUEST, "MEMBER400", "중복되는 아이디입니다."),
     EMPTY_MEMBER(HttpStatus.NOT_FOUND, "MEMBER404", "회원을 찾을 수 없습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "MEMBER401", "로그인을 하지 않았습니다."),
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "MEMBER401", "로그인 정보를 찾을 수 없습니다."),

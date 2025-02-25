@@ -23,6 +23,6 @@ public interface MemberAuthService {
     // 회원 탈퇴
     MemberIdResponse withdrawal(Member member);
 
-    void verifyMemberCode(String code);
+    void verifyClientId(String clientId);
 
 }

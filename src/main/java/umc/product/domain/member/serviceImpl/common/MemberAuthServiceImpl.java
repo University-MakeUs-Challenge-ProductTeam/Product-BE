@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static umc.product.domain.member.status.MemberErrorStatus.DUPLICATED_CLIENT_ID;
+
 @Service
 @RequiredArgsConstructor
 public class MemberAuthServiceImpl implements MemberAuthService {
@@ -108,7 +110,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     }
 
     @Override
-    public void verifyMemberCode(String code) {
-        return;
+    public void verifyClientId(String clientId) {
+        if(memberRepository.existsMemberByClientId(clientId)) {
+            throw new RestApiException(DUPLICATED_CLIENT_ID);
+        }
     }
+
 }
