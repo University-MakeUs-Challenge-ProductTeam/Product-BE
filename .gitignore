@@ -37,3 +37,10 @@ out/
 .vscode/
 
 *.yml
+
+# .yml 파일을 무시하지 않도록 설정
+!.github/workflows/*.yml
+
+
+# appspec.yml 무시하지 않음
+!appspec.yml
