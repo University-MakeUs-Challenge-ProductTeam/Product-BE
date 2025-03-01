@@ -101,6 +101,6 @@ jobs:
       - name: Trigger CodeDeploy Deployment
         run: |
           aws deploy create-deployment \
-            --application-name modi-server \
-            --deployment-group-name modi-server-group \
-            --revision "{\"revisionType\":\"S3\",\"s3Location\":{\"bucket\":\"modi-service-bucket\",\"key\":\"deploy/deploy.zip\",\"bundleType\":\"zip\"}}"
+            --application-name umc-offcial-product \
+            --deployment-group-name ec2-instance \
+            --revision "{\"revisionType\":\"S3\",\"s3Location\":{\"bucket\":\"umc-offcial-product\",\"key\":\"deploy/deploy.zip\",\"bundleType\":\"zip\"}}"
