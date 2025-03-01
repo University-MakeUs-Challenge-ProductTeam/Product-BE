@@ -1,5 +1,5 @@
 version: 0.0
-os: ubuntu
+os: linux
 files:
   - source: /
     destination: /home/ec2-user/app # 애플리케이션 파일들이 위치한 경로
