@@ -11,5 +11,5 @@ import umc.product.domain.study.entity.enums.Check;
 public class StudyAttendanceRequest {
 
     @Schema(description = "참석 여부", example = "YES")
-    private Check attendance;
+    private String attendance;
 }
