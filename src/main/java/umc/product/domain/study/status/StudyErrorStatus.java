@@ -10,8 +10,8 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 @AllArgsConstructor
 public enum StudyErrorStatus implements BaseCodeInterface {
 
-    STUDY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER404", "해당 스터디에 속한 사용자가 존재하지 않습니다."),
-    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY404", "스터디가 존재하지 않습니다."),
+    STUDY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER404", "해당 스터디에 속한 사용자를 찾을 수 없습니다."),
+    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY404", "해당 스터디를 찾을 수 없습니다."),
     STUDY_NAME_EMPTY(HttpStatus.BAD_REQUEST, "STUDY_NAME400", "스터디 이름은 비어있으면 안 됩니다."),
     ;
 
