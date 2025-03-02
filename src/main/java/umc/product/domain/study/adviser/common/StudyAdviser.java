@@ -19,8 +19,9 @@ public class StudyAdviser {
     private final StudyQueryService studyQueryService;
     private final StudyCommandService studyCommandService;
 
+    // 스터디 정보 수정
     public StudyCommonResponse modifyStudy(Member member, StudyModifyRequest request, Long studyId) {
-        StudyMember studyMember = studyMemberQueryService.getStudyRole(member, studyId);
+        StudyMember studyMember = studyMemberQueryService.getStudyMember(member, studyId);
         Study study = studyQueryService.getStudy(studyId);
         return studyCommandService.modifyStudy(studyMember, request, study);
     }

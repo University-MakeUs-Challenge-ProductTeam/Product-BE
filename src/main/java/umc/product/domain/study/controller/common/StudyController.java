@@ -44,7 +44,7 @@ public class StudyController {
             @CurrentMember Member member,
             @Valid @RequestBody StudyModifyRequest request,
             @PathVariable Long studyId) {
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(studyAdviser.modifyStudy(member, request, studyId));
     }
 
     @PostMapping("/{studyId}/attendances/{week}")
