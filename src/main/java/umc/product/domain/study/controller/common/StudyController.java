@@ -64,8 +64,7 @@ public class StudyController {
             @Valid @RequestBody StudyAttendanceRequest request,
             @PathVariable Long studyId,
             @PathVariable int week) {
-
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(studyAdviser.checkAttendance(member, request, studyId, week));
     }
 
     @GetMapping("/{studyId}")
