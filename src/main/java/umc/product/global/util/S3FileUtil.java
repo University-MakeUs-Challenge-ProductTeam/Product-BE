@@ -45,7 +45,7 @@ public class S3FileUtil {
         } catch (IOException e) {
             // 파일 읽기 실패
             log.error(e.getMessage());
-            throw new RestApiException(GlobalErrorStatus._FALIED_READ_FILE);
+            throw new RestApiException(GlobalErrorStatus._FAILED_READ_FILE);
         }
 
         // Content-Length 설정
