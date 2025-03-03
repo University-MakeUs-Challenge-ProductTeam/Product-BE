@@ -49,19 +49,19 @@ public class SecurityConfig {
                         .requestMatchers("/members/login").permitAll()
                         //회원가입, 로그인
                         .requestMatchers("/web/admin/auth/login", "/web/admin/auth/signup").permitAll()
-                        .requestMatchers("/members/auth/signup", "/members/auth/social/login", "/members/auth/token/refresh").permitAll()
+                        .requestMatchers("/members/auth/signup", "/members/auth/social/login", "/members/auth/token/refresh", "members/code/verify").permitAll()
 
                         //Challenger
-                        .requestMatchers("/suggestion/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_ADMIN)
-                        .requestMatchers("/members/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_ADMIN)
+                        .requestMatchers("/suggestion/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_STAFF)
+                        .requestMatchers("/members/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_STAFF)
 
 
                         //Admin Web Security
-                        .requestMatchers("/web/admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/admin/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
 
                         .requestMatchers("/web/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("/web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.BRANCH_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("/web/university-admin/**", "/members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
+                        .requestMatchers("/web/university-admin/**", "/members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_STAFF, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling ->
