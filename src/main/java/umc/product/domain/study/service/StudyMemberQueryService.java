@@ -6,4 +6,6 @@ import umc.product.domain.study.entity.StudyMember;
 public interface StudyMemberQueryService {
 
     StudyMember getStudyMember(Member member, Long studyId);
+
+    StudyMember getStudyMemberFetch(Member member, Long studyId);
 }

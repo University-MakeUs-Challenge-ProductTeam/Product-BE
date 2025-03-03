@@ -23,4 +23,10 @@ public class StudyMemberQueryServiceImpl implements StudyMemberQueryService {
         return studyMemberRepository.findBySemesterPart_MemberAndStudy_Id(member, studyId)
                 .orElseThrow(() -> new RestApiException(StudyErrorStatus.STUDY_MEMBER_NOT_FOUND));
     }
+
+    @Override
+    public StudyMember getStudyMemberFetch(Member member, Long studyId) {
+        return studyMemberRepository.findBySemesterPart_MemberAndStudy_Id(member, studyId)
+                .orElseThrow(() -> new RestApiException(StudyErrorStatus.STUDY_MEMBER_NOT_FOUND));
+    }
 }
