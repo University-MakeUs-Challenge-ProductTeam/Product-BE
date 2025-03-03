@@ -37,7 +37,7 @@ public class AdminCodeAdviser {
     }
 
     public AdminCodeResponse createWebAdminCode(Member member, String universityName) {
-        if(member.getRole().getPriority() > Role.CENTRAL_ADMIN.getPriority()) throw new RestApiException(INVALID_ROLE);
+        //if(member.getRole().getPriority() > Role.CENTRAL_ADMIN.getPriority()) throw new RestApiException(INVALID_ROLE);
         universityService.findOrCreateUniversity(universityName);      //학교 생성 or 찾기
         String code = adminCodeService.createWebAdminCode();
         adminCodeService.saveWebAdminCode(universityName, code);

@@ -28,9 +28,9 @@ public class AdminCodeController {
 
     @Operation(summary = "관리자 페이지용 학교코드(학교계정) 발급 API")
     @PostMapping("/create/university-code")
-    public BaseResponse<AdminCodeResponse> createWebAdminCode(@CurrentMember Member member,
+    public BaseResponse<AdminCodeResponse> createWebAdminCode(//@CurrentMember Member member,
                                                               @RequestParam String universityName) {
-        return BaseResponse.onSuccess(adminCodeAdviser.createWebAdminCode(member, universityName));
+        return BaseResponse.onSuccess(adminCodeAdviser.createWebAdminCode(null, universityName));
     }
 
     @Operation(summary = "앱용 확인코드 발급 API", description = "앱에 신규가입, 기존 회원들의 정보를 담은 코드를 발급할 수 있는 API 입니다. 학교 지정->교내 운영진, 챌린저 | 학교 미지정->중앙,지부 운영진")
