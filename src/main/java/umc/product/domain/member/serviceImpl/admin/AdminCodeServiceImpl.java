@@ -1,41 +1,95 @@
 package umc.product.domain.member.serviceImpl.admin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.admin.AdminCodeService;
+import umc.product.global.common.exception.RestApiException;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
+
+import static umc.product.domain.member.status.MemberErrorStatus.NOT_VALID_CODE;
 
 @Service
 @AllArgsConstructor
 public class AdminCodeServiceImpl implements AdminCodeService {
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private static final long EXPIRATION_TIME = 60 * 30;
-    private final ObjectMapper objectMapper;
 
     @Override
-    public void saveAdminCode(AdminCodeRequest request, String code) {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("university", request.getUniversity());
-        properties.put("positionList", request.getMemberCodePropertiesList());
-
-        saveMemberCode(code, properties);
+    public void saveWebAdminCode(String universityName, String code) {
+        String key = "code:" + code;
+        stringRedisTemplate.opsForValue().set(key, universityName, EXPIRATION_TIME, TimeUnit.SECONDS);
     }
 
     @Override
-    public String createChallengerCode() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6).toUpperCase();
+    public void saveAppCode(Map<String, Member> codeMap) {
+        int threadPoolSize = Runtime.getRuntime().availableProcessors() * 2;
+        ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
+        final int batchSize = 50;  // 배치 크기 설정
+        List<Future<?>> futures = new ArrayList<>();
+
+        List<Map<String, Member>> batches = new ArrayList<>();
+        List<String> keys = new ArrayList<>(codeMap.keySet());
+        for (int i = 0; i < keys.size(); i += batchSize) {
+            int end = Math.min(i + batchSize, keys.size());
+            List<String> batchKeys = keys.subList(i, end);
+            Map<String, Member> batchMap = new HashMap<>();
+            for (String key : batchKeys) {
+                batchMap.put(key, codeMap.get(key));
+            }
+            batches.add(batchMap);
+        }
+
+        for (Map<String, Member> batch : batches) {
+            futures.add(executor.submit(() -> {
+                stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+                    StringRedisConnection stringRedisConnection = (StringRedisConnection)connection;
+                    batch.forEach((code, member) -> {
+                        String key = "code:" + code;
+                        String value = String.valueOf(member.getId());
+                        stringRedisConnection.setEx(key, EXPIRATION_TIME, value);
+                    });
+                    return null;
+                });
+            }));
+        }
+
+        // 모든 작업이 완료될 때까지 기다림
+        for (Future<?> future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        executor.shutdown();
+    }
+
+
+    @Override
+    public Map<String, Member> createAppCode(List<Member> memberList) {
+        return memberList.stream()
+                .collect(Collectors.toMap(
+                        member -> toBase62(UUID.randomUUID()),
+                        member -> member
+                ));
     }
 
     @Override
-    public String createAdminCode() {
+    public Map<String, Member> createIndividualAppCode(Member member) {
+        return Map.of(toBase62(UUID.randomUUID()), member);
+    }
+
+    @Override
+    public String createWebAdminCode() {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
 
@@ -46,24 +100,30 @@ public class AdminCodeServiceImpl implements AdminCodeService {
         return sb.toString();
     }
 
-    private void saveMemberCode(String code, Map<String, Object> properties) {
+    @Override
+    public String verifyWebAdminCode(String code) {
         String key = "code:" + code;
-
-        Map<String, String> stringProperties = properties.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            try {
-                                return objectMapper.writeValueAsString(entry.getValue());
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                ));
-
-        redisTemplate.opsForHash().putAll(key, stringProperties);
-        redisTemplate.expire(key, EXPIRATION_TIME, TimeUnit.SECONDS); // TTL 설정
-
+        String value = stringRedisTemplate.opsForValue().get(key);
+        if(value == null) throw new RestApiException(NOT_VALID_CODE);
+        return value;
     }
 
+    private String toBase62(UUID uuid) {
+        String hexString = uuid.toString().replaceAll("-", "").substring(0, 6); // 16진수 6자리
+        long decimalValue = Long.parseLong(hexString, 16); // 10진수 변환
+        return encodeBase62(decimalValue); // Base62 인코딩
+    }
+
+    private String encodeBase62(long value) {
+        final String base62Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder sb = new StringBuilder();
+        while (value > 0) {
+            sb.append(base62Chars.charAt((int) (value % 62)));
+            value /= 62;
+        }
+        while (sb.length() < 6) {
+            sb.append("0"); // 6자리 맞추기
+        }
+        return sb.reverse().toString();
+    }
 }
