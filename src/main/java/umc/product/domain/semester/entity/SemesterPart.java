@@ -30,4 +30,9 @@ public class SemesterPart extends BaseEntity {
     private Part part;
 
     // todo : branch 추가해서 연관관계 매핑하기
+
+    public void updateSemesterPart(Semester semester, Part part) {
+        this.semester =semester;
+        this.part = part;
+    }
 }

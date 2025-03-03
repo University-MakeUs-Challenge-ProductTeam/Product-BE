@@ -1,10 +1,14 @@
 package umc.product.domain.semester.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+
+import umc.product.domain.member.dto.request.admin.AdminSemesterPositionRequest;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
 
-@Repository
-public interface SemesterPositionRepository extends JpaRepository<SemesterPosition, Long> {
+import java.util.List;
+import java.util.Map;
+
+public interface SemesterPositionRepository  {
+    List<SemesterPosition> findSemesterPositionList(Member targetMember, List<Long> positionIdList);
 }

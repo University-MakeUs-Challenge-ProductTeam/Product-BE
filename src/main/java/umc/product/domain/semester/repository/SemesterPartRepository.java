@@ -1,9 +1,13 @@
 package umc.product.domain.semester.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import umc.product.domain.semester.entity.SemesterPart;
 
-@Repository
-public interface SemesterPartRepository extends JpaRepository<SemesterPart, Long> {
+import umc.product.domain.member.dto.request.admin.AdminSemesterPartRequest;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.Semester;
+
+import java.util.List;
+import java.util.Map;
+
+public interface SemesterPartRepository {
+
 }

@@ -1,11 +1,14 @@
 package umc.product.domain.semester.mapper;
 
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.dto.request.admin.AdminPostSemesterPartRequest;
+import umc.product.domain.member.dto.request.admin.AdminPostSemesterPositionRequest;
 import umc.product.domain.member.dto.request.member.MemberSignUpSemesterRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.entity.SemesterPosition;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +21,14 @@ public class SemesterPartMapper {
                 .part(part)
                 .semester(semester)
                 .member(member)
+                .build();
+    }
+
+    public SemesterPart toSemesterPart(Member member, Semester semester, AdminPostSemesterPartRequest request){
+        return SemesterPart.builder()
+                .member(member)
+                .part(request.getPart())
+                .semester(semester)
                 .build();
     }
 

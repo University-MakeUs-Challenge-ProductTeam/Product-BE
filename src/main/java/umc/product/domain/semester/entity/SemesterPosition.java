@@ -27,4 +27,9 @@ public class SemesterPosition extends BaseEntity {
     private Semester semester;
 
     private String position;
+
+    public void updateSemesterPosition(Semester semester, String position) {
+        this.semester =semester;
+        this.position = position;
+    }
 }
