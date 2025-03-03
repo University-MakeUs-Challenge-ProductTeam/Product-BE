@@ -24,8 +24,9 @@ public class StudyCommandServiceImpl implements StudyCommandService {
         if (studyMember.getStudyRole() != StudyRole.LEADER) {
             throw new RestApiException(GlobalErrorStatus._FORBIDDEN);
         }
-        // 스터디 정보 수정        todo - 스터디 주차는 어떻게 수정할지 미정
+        // 스터디 정보 수정
         study.changeName(request.getStudyName());
+        study.updateWeek(request.getWeek());
 
         return StudyCommonResponse.from(study.getId());
     }

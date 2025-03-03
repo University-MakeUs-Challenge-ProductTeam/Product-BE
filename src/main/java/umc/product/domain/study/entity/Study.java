@@ -42,4 +42,9 @@ public class Study extends BaseEntity {
         }
         this.name = studyName;
     }
+
+    // 스터디 진행 주차 변경 메서드
+    public void updateWeek(int week) {
+        this.currentWeek = week;
+    }
 }
