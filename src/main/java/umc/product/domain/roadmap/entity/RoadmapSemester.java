@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.checklist.entity.Checklist;
+import umc.product.domain.checklist.entity.ChecklistContent;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,5 +28,6 @@ public class RoadmapSemester extends BaseEntity {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    // todo - CheckList 연관관계 매핑
+    @OneToMany(mappedBy = "roadmapSemester", cascade = CascadeType.ALL)
+    private List<Checklist> checklistList;
 }

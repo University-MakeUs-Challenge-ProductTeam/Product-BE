@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicInsert
 @DynamicUpdate
 public class Study extends BaseEntity {
 
@@ -28,8 +27,10 @@ public class Study extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StudyType studyType;
 
+    @Column(nullable = false)
     private int currentWeek; // 스터디 진행 주차
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)

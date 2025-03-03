@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.checklist.entity.Checklist;
+import umc.product.domain.checklist.entity.ChecklistMemberAnswer;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.study.entity.enums.StudyRole;
 import umc.product.global.common.base.BaseEntity;
@@ -33,5 +35,6 @@ public class StudyMember extends BaseEntity {
     @JoinColumn(name = "semester_part_id", nullable = false)
     private SemesterPart semesterPart;
 
-    // todo - CheckList 매핑
+    @OneToMany(mappedBy = "studyMember", cascade = CascadeType.ALL)
+    private List<ChecklistMemberAnswer> checklistMemberAnswerList;
 }
