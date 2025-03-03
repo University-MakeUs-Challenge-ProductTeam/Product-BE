@@ -10,7 +10,10 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 @AllArgsConstructor
 public enum SemesterErrorStatus implements BaseCodeInterface {
 
-    EMPTY_SEMESTER(HttpStatus.NOT_FOUND, "SEMESTER404", "기수를 찾을 수 없습니다.")
+    EMPTY_SEMESTER(HttpStatus.NOT_FOUND, "SEMESTER404", "기수를 찾을 수 없습니다."),
+    NOT_MATCH_POSITION_MEMBER(HttpStatus.BAD_REQUEST, "SEMESTER-POSITION400", "사용자에게 없는 직책 id 입니다"),
+
+    NOT_MATCH_PART_MEMBER(HttpStatus.BAD_REQUEST, "SEMESTER-PART400", "사용자에게 없는 파트 id 입니다")
     ;
 
     private final HttpStatus httpStatus;
