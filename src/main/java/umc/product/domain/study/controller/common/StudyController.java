@@ -76,15 +76,12 @@ public class StudyController {
             )
     })
     @Parameters({
-            @Parameter(name = "studyId", description = "스터디 id, path variable 입니다"),
-            @Parameter(name = "week", description = "스터디 진행 주차, query parameter 입니다")
+            @Parameter(name = "studyId", description = "스터디 id, path variable 입니다")
     })
     public BaseResponse<StudyResponse> getMyStudy(
             @CurrentMember Member member,
-            @RequestParam(name = "week") int week,
             @PathVariable Long studyId) {
-
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(studyAdviser.getStudyInfo(member, studyId));
     }
 
     @GetMapping("/{studyId}/workbooks/{week}")

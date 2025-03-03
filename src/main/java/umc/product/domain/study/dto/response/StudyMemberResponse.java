@@ -1,14 +1,13 @@
 package umc.product.domain.study.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Schema(description = "스터디 멤버 정보")
 @Getter
 @Builder
-@AllArgsConstructor
 public class StudyMemberResponse {
 
     @Schema(description = "사용자 id", example = "1")
@@ -22,4 +21,12 @@ public class StudyMemberResponse {
 
     @Schema(description = "출석 상태", example = "UNSET")
     private String attendance;
+
+    @QueryProjection
+    public StudyMemberResponse(Long memberId, String university, String nickname, String attendance) {
+        this.memberId = memberId;
+        this.university = university;
+        this.nickname = nickname;
+        this.attendance = attendance;
+    }
 }
