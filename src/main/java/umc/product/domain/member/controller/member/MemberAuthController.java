@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberAuthController {
     private final MemberAuthAdviser memberAuthAdviser;
 
-    @Operation(summary = "챌린저 회원가입 API", description = "챌린저 멤버 정보를 등록하는 API입니다")
+    @Operation(summary = "App 회원가입 API", description = "App 회원가입하는 API입니다. 이미 회원가입 되어있어도 기수 변경시 필수(확인코드에서 받은 memberId 넣어주세요)")
     @PostMapping(path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberIdResponse> signUp(@RequestPart MemberSignUpRequest request,
                                                  @RequestPart("file") MultipartFile file) {

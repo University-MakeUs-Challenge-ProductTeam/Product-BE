@@ -4,11 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.member.entity.enums.Part;
 
-import java.util.List;
-
 @Getter
 @Builder
-public class SemesterResponse {
+public class SemesterPartResponse {
+    private Long semesterPartId;
     private String semester;
     private Part part;
 }

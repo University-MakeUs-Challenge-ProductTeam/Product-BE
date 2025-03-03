@@ -1,6 +1,6 @@
 package umc.product.global.config.security;
 
-import umc.product.domain.member.serviceImpl.common.MemberServiceImpl;
+import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
 import umc.product.global.config.security.jwt.JwtAuthenticationFilter;
 import umc.product.global.config.security.jwt.JwtExceptionFilter;

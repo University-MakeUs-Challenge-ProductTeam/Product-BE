@@ -11,7 +11,7 @@ import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.admin.AdminAuthService;
-import umc.product.domain.member.serviceImpl.common.MemberRefreshTokenServiceImpl;
+import umc.product.domain.member.serviceImpl.member.MemberRefreshTokenServiceImpl;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.university.entity.University;
 

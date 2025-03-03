@@ -13,7 +13,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.serviceImpl.common.MemberServiceImpl;
+import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
@@ -58,10 +58,9 @@ public class KakaoLoginStrategy implements LoginStrategy {
         }
 
         Member member = getMember.get();
-        boolean isServiceMember = member.getName() != null;
         TokenInfo tokenInfo = generateToken(member);
 
-        return memberConverter.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
+        return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
     }
 
     @Override
@@ -75,7 +74,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
         member.changeRole(Role.GUEST);
         Member newMember = memberService.saveEntity(member);
         TokenInfo tokenInfo = generateToken(newMember);
-        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
+        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {

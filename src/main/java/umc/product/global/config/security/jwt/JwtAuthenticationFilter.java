@@ -1,7 +1,7 @@
 package umc.product.global.config.security.jwt;
 
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.serviceImpl.common.MemberServiceImpl;
+import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.global.config.security.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

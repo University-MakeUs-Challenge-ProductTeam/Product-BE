@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Builder
 @AllArgsConstructor
-public class MemberCodeResponse {
-    private List<MemberCodeInfoResponse> memberCodeList;
+public class MemberCodeVerifyResponse {
+    private Long memberId;
+    private String name;
+    private String nickName;
 }

@@ -1,4 +1,4 @@
-package umc.product.domain.member.serviceImpl.common;
+package umc.product.domain.member.serviceImpl.member;
 
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
@@ -6,14 +6,12 @@ import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.dto.response.member.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.member.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.MemberLoginResponse;
-import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.service.common.MemberAuthService;
+import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;
-import umc.product.domain.semester.entity.SemesterPosition;
-import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
@@ -39,14 +37,12 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     @Transactional
-    public Member signUp(Member member, University university, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList, Role role) {
+    public Member signUp(Member member, List<SemesterPart> semesterPartList) {
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), null, member);
         member.setMemberLoginInfo(memberLoginInfo);
-        member.setUniversity(university);
-        member.setMemberSemesterPart(semesterPartList);
-        member.setMemberSemesterPosition(semesterPositionList);
-        member.setRole(role);
-        return memberRepository.save(member);
+        member.addSemesterPart(semesterPartList);
+        member.setStatus(Status.ACTIVE);
+        return member;
     }
 
     // 소셜 로그인을 수행하는 함수

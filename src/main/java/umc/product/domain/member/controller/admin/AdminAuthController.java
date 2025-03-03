@@ -20,7 +20,7 @@ import umc.product.global.common.base.BaseResponse;
 public class AdminAuthController {
     private final AdminAuthAdviser adminAuthAdviser;
 
-    @Operation(summary = "ADMIN 회원가입 API", description = "최초 ADMIN 멤버 정보를 등록하는 API입니다")
+    @Operation(summary = "학교 계정 회원가입 API", description = "학교 계정 회원가입하는 API입니다")
     @PostMapping( path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberIdResponse> signUp(@RequestPart AdminSignUpRequest request,
                                                  @RequestPart("file") MultipartFile file) {
