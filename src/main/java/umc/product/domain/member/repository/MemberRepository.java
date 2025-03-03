@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
-    Optional<Member> findByName(String name);
 
     boolean existsMemberByClientId(String ClientId);
 }

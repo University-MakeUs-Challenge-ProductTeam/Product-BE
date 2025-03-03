@@ -3,8 +3,8 @@ package umc.product.domain.member.dto.response.member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import umc.product.domain.semester.dto.SemesterResponse;
-import umc.product.global.common.enums.Status;
+import umc.product.domain.semester.dto.SemesterPartResponse;
+import umc.product.domain.member.entity.enums.Status;
 
 import java.util.List;
 
@@ -19,6 +19,7 @@ public class MemberSearchResponse {
     private String university;
     private String role;
     private Status status;
-    private List<SemesterResponse> memberSemesterList;
+    private List<SemesterPartResponse> memberSemesterList;
     private List<MemberPositionResponse> memberPositionList;
+    private List<MemberOutResponse> memberOutList;
 }

@@ -12,5 +12,4 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberRoleResponse {
     String university;
-    List<MemberCodePropertiesResponse> memberCodePropertiesList;
 }

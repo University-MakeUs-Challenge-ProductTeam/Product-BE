@@ -11,6 +11,6 @@ public class MemberLoginResponse {
     private Long memberId;
     private String accessToken;
     private String refreshToken;
-    private boolean isServiceMember;
+    private boolean activeStatus;
     private Role role;
 }

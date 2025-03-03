@@ -3,39 +3,35 @@ package umc.product.domain.member.mapper;
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
 import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.global.common.enums.Status;
+import umc.product.domain.member.entity.enums.Status;
 import org.springframework.stereotype.Component;
+import umc.product.global.dto.excel.ExcelMember;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl){
+
+    public List<Member> toMember(List<ExcelMember> excelMemberList) {
+        return excelMemberList.stream()
+                .map(this::toMemberFromExcelMember)
+                .collect(Collectors.toList());
+    }
+    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName){
         return Member.builder()
-                .birth(request.getBirth())
                 .email(request.getEmail())
                 .avatarUrl(avatarUrl)
-                .name(request.getName())
-                .gender(request.getGender())
-                .nickName(request.getNikeName())
+                .name(universityName)
+                .nickName(universityName)
                 .clientId(request.getClientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
-                .role(Role.BRANCH_ADMIN)
-                .build();
-    }
-
-    public Member toCommonMember(MemberSignUpRequest request, String avatarUrl){
-        return Member.builder()
-                .birth(request.getBirth())
-                .email(request.getEmail())
-                .avatarUrl(avatarUrl)
-                .name(request.getName())
-                .gender(request.getGender())
-                .nickName(request.getNikeName())
-                .clientId(request.getClientId())
-                .loginType(request.getLoginType())
-                .status(Status.ACTIVE)
+                .role(Role.SCHOOL_ADMIN)
                 .build();
     }
 
@@ -43,6 +39,15 @@ public class MemberMapper {
         return Member.builder()
                 .clientId(clientId)
                 .loginType(loginType)
+                .build();
+    }
+
+    private Member toMemberFromExcelMember(ExcelMember excelMember){
+        return Member.builder()
+                .name(excelMember.getName())
+                .nickName(excelMember.getNickName())
+                .role(excelMember.getRole())
+                .university(excelMember.getUniversity())
                 .build();
     }
 }

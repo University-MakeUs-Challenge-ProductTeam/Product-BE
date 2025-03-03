@@ -7,8 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.member.MemberMemberAdviser;
+import umc.product.domain.member.dto.response.member.MemberCodeVerifyResponse;
 import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberRoleResponse;
 import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -22,13 +22,13 @@ public class MemberMemberController {
     private final MemberMemberAdviser memberMemberAdviser;
 
     @Operation(summary = "UMC 코드 인증 API", description = "발급받은 UMC 코드를 인증하는 API 입니다. 결과값을 회원가입시에 넣어주세요.")
-    @GetMapping("/verify")
-    public BaseResponse<MemberRoleResponse> verifyMemberCode(@RequestParam String code) {
-        return BaseResponse.onSuccess(memberMemberAdviser.verifyMemberCode(code));
+    @GetMapping("/code/verify")
+    public BaseResponse<MemberCodeVerifyResponse> verifyMemberCode(@RequestParam String code) {
+        return BaseResponse.onSuccess(memberMemberAdviser.verifyAppCode(code));
     }
 
     @Operation(summary = "사용자 프로필 사진 변경 API", description = "사용자의 사진 변경하는 API 입니다")
-    @PatchMapping(path = "/profile/modify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(@CurrentMember Member member,
                                                                 @RequestPart("file") MultipartFile file) {
         return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member));
@@ -40,6 +40,4 @@ public class MemberMemberController {
                                                          @PathVariable(name = "memberId") Long memberId) {
         return BaseResponse.onSuccess(memberMemberAdviser.getProfile(memberId));
     }
-
-
 }

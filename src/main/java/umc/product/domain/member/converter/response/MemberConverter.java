@@ -2,13 +2,12 @@ package umc.product.domain.member.converter.response;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
-import umc.product.domain.member.dto.response.member.MemberPositionResponse;
-import umc.product.domain.member.dto.response.member.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.*;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.semester.dto.SemesterResponse;
+import umc.product.domain.member.entity.enums.Status;
+import umc.product.domain.semester.dto.SemesterPartResponse;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.global.config.security.jwt.TokenInfo;
@@ -24,12 +23,12 @@ public class MemberConverter {
                 .build();
     }
 
-    public MemberLoginResponse toLoginMemberResponse(final Member member, TokenInfo tokenInfo, boolean isServiceMember, Role role) {
+    public MemberLoginResponse toLoginMemberResponse(final Member member, TokenInfo tokenInfo, Role role) {
         return MemberLoginResponse.builder()
                 .memberId(member.getId())
                 .accessToken(tokenInfo.accessToken())
                 .refreshToken(tokenInfo.refreshToken())
-                .isServiceMember(isServiceMember)
+                .activeStatus(member.getStatus() != Status.WAITING_FOR_UPDATE)
                 .role(role)
                 .build();
     }
@@ -53,13 +52,25 @@ public class MemberConverter {
                 .status(member.getStatus())
                 .memberSemesterList(toMemberSemesterResponseList(member.getMemberSemesterPart()))
                 .memberPositionList(toMemberPositionResponse(member.getMemberSemesterPosition()))
+                .memberOutList(toMemberOutResponseList(member.getMemberOutList()))
                 .build();
     }
+    private List<MemberOutResponse> toMemberOutResponseList(List<MemberOut> memberOutList) {
+        return memberOutList.stream()
+                .map(memberOut -> {
+                    return MemberOutResponse.builder()
+                            .outId(memberOut.getId())
+                            .reason(memberOut.getOutReason().getToKorean())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+
     //todo: 위치 리펙토링해야함
-    private List<SemesterResponse> toMemberSemesterResponseList(List<SemesterPart> semesterPartList) {
+    private List<SemesterPartResponse> toMemberSemesterResponseList(List<SemesterPart> semesterPartList) {
         return semesterPartList.stream()
                 .map(semesterPart -> {
-                    return SemesterResponse.builder()
+                    return SemesterPartResponse.builder()
+                            .semesterPartId(semesterPart.getId())
                             .part(semesterPart.getPart())
                             .semester(semesterPart.getSemester().getName())
                             .build();
@@ -70,6 +81,7 @@ public class MemberConverter {
         return semesterPositionList.stream()
                 .map(semesterPosition -> {
                     return MemberPositionResponse.builder()
+                            .positionId(semesterPosition.getId())
                             .position(semesterPosition.getPosition())
                             .semester(semesterPosition.getSemester().getName())
                             .build();
