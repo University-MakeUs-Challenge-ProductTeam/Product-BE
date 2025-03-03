@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import umc.product.domain.study.entity.enums.StudyType;
 import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.base.BaseEntity;
 import umc.product.global.common.exception.RestApiException;
@@ -25,6 +26,11 @@ public class Study extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    private StudyType studyType;
+
+    private int currentWeek; // 스터디 진행 주차
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyMember> studyMemberList;

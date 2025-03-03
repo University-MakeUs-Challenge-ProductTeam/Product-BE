@@ -22,7 +22,7 @@ public class StudyAttendance extends BaseEntity {
     private int week;
 
     @Enumerated(EnumType.STRING)
-    private Check checkStatus;
+    private Check checkStatus; // 출석 체크 상태
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_member_id", nullable = false)

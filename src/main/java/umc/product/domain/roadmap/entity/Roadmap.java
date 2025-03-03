@@ -32,11 +32,5 @@ public class Roadmap extends BaseEntity {
     private List<RoadmapTitle> roadmapTitleList;
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
-    private List<RoadmapPractice> roadmapPracticeList;
-
-    @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
-    private List<RoadmapMission> roadmapMissionList;
-
-    @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapSemester> roadmapSemesterList;
 }
