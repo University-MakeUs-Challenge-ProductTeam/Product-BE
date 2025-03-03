@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/members/signup", "/members/auth/login").permitAll()
                         .requestMatchers("/members/login").permitAll()
                         //회원가입, 로그인
-                        .requestMatchers("/web/admin/auth/login", "/web/admin/auth/signup").permitAll()
+                        .requestMatchers("/web/admin/auth/login", "/web/admin/auth/signup", "web/admin/members/code/verify").permitAll()
                         .requestMatchers("/members/auth/signup", "/members/auth/social/login", "/members/auth/token/refresh", "members/code/verify").permitAll()
 
                         //Challenger
