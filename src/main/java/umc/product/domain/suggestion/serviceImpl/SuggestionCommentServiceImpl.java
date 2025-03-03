@@ -67,7 +67,6 @@ public class SuggestionCommentServiceImpl implements SuggestionCommentService {
     @Override
     public SuggestionComment deleteSuggestionComment(Member member, SuggestionComment suggestionComment) {
         if (!suggestionComment.getMember().getId().equals(member.getId())||
-                member.getRole().equals(Role.GUEST) ||
                 member.getRole().equals(Role.CHALLENGER)) {
             throw new RestApiException(SUGGESTION_NOT_AUTH);
         }

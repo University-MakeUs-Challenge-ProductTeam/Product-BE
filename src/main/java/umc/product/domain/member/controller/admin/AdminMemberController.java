@@ -1,20 +1,19 @@
 package umc.product.domain.member.controller.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
-import umc.product.domain.member.dto.request.common.CommonCodeRequest;
-import umc.product.domain.member.dto.request.admin.AdminCodeRequest;
+import umc.product.domain.member.dto.request.admin.*;
 import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.common.MemberCodeResponse;
-import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -26,44 +25,56 @@ import umc.product.global.config.security.auth.CurrentMember;
 public class AdminMemberController {
     private final AdminMemberAdviser adminMemberAdviser;
 
-    @Operation(summary = "운영진 확인코드 발급 API", description = "운영진 확인코드 발급하는 API입니다. 권한을 부여해주세요.")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "COMMON200", description = "성공"),
-            @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생")
-    })
-    @PostMapping("/create/admin-code")
-    public BaseResponse<MemberCodeResponse> createAdminCode(@CurrentMember Member member,
-                                                            @Valid @RequestBody AdminCodeRequest request) {
-        //todo: 학교 없으면 생성까지
-        return BaseResponse.onSuccess(adminMemberAdviser.createAdminCode(request));
+    @Operation(summary = "회원 등록 API(공통)")
+    @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<Void> registerMember(@CurrentMember Member member,
+                                             @Valid @RequestPart("excel") MultipartFile excel) {
+        adminMemberAdviser.registerMember(excel);
+        return BaseResponse.onSuccess(null);
     }
 
-    @Operation(summary = "챌린저 확인코드 발급 API", description = "챌린저 확인코드 발급하는 API입니다.")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "COMMON200", description = "성공"),
-            @ApiResponse(responseCode = "UNIVERSITY001", description = "대학교명을 잘못 입력하였을 경우 발생")
-    })
-    @PostMapping("/create/challenger-code")
-    public BaseResponse<MemberCodeResponse> createChallengerCode(@CurrentMember Member member,
-                                                                 @Valid @RequestBody CommonCodeRequest request) {
-        return BaseResponse.onSuccess(adminMemberAdviser.createChallengerCode(request));
+    @Operation(summary = "프로필 수정 API", description = "프로필(이름, 닉네임, 학교, 직책, 기수/파트) 수정하는 API입니다.")
+    @PatchMapping("/profile/{memberId}")
+    public BaseResponse<MemberIdResponse> modifyMemberInfo(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId,
+                                                           @RequestBody AdminProfileModifyRequest request) {
+        return BaseResponse.onSuccess(adminMemberAdviser.modifyMemberInfo(member, memberId, request));
     }
 
-    @GetMapping("/")
+    @Operation(summary = "파트 추가 API", description = "파트 추가하는 API입니다.")
+    @PostMapping("/profile/part/{memberId}")
+    public BaseResponse<MemberIdResponse> postMemberSemesterPart(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId,
+                                                           @RequestBody AdminPostPartRequest request) {
+        return BaseResponse.onSuccess(adminMemberAdviser.postMemberSemesterPart(member, memberId, request));
+    }
+
+    @Operation(summary = "직책 추가 API", description = "직책 추가하는 API입니다.")
+    @PostMapping("/profile/position/{memberId}")
+    public BaseResponse<MemberIdResponse> postMemberSemesterPosition(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId,
+                                                           @RequestBody AdminPostPositionRequest request) {
+        return BaseResponse.onSuccess(adminMemberAdviser.postMemberSemesterPosition(member, memberId, request));
+    }
+
+
+    @Operation(summary = "사용자 필터링 검색 API", description = "사용자를 기수, 파트, 권한에따라 필터링 검색하는 API입니다.")
+    @GetMapping("/filter")
+    //파라미터 수정해야함
+    public BaseResponse<AdminMemberListResponse> filterSearchMembers(@CurrentMember Member member,
+                                                                     @RequestParam Integer cursor,
+                                                                     @RequestParam Integer size,
+                                                                     @RequestParam(required = false) String semester,
+                                                                     @RequestParam(required = false) Role role,
+                                                                     @RequestParam(required = false) Part part) {
+        return BaseResponse.onSuccess(adminMemberAdviser.filterSearchMembers(member, PageRequest.of(cursor,size), semester, role, part));
+    }
+
+    @Operation(summary = "사용자 이름/닉네임 검색 API", description = "사용자를 이름/닉네임으로 검색하는 API입니다.")
+    @GetMapping("/search")
     //파라미터 수정해야함
     public BaseResponse<AdminMemberListResponse> searchMembers(@CurrentMember Member member,
-                                                               @RequestParam Integer page,
-                                                               @RequestParam Integer size,
-                                                               @RequestParam(required = false) String semester,
-                                                               @RequestParam(required = false) Role role,
-                                                               @RequestParam(required = false) String part) {
-        return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(member, PageRequest.of(page,size), semester, role, part));
-    }
-
-    @Operation(summary = "챌린저 OUT(삼진아웃) API", description = "챌린저 OUT(삼진아웃)하는 API입니다.")
-    @PatchMapping("/{memberId}")
-    public BaseResponse<MemberIdResponse> outChallenger(@CurrentMember Member member,
-                                                        @PathVariable(name = "memberId") Long memberId) {
-        return BaseResponse.onSuccess(adminMemberAdviser.outChallenger(memberId));
+                                                               @RequestParam(required = false) String searchString) {
+        return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(member, searchString));
     }
 }

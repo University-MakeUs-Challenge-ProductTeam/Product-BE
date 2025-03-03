@@ -1,14 +1,15 @@
 package umc.product.domain.member.strategy.impl;
 
 
+import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
-import umc.product.domain.member.serviceImpl.common.MemberServiceImpl;
+import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class AnonymousLoginStrategy implements LoginStrategy {
 
     private final MemberRepository memberRepository;
+    private final MemberConverter memberConverter;
     private final MemberMapper memberMapper;
     private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
@@ -39,7 +41,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
         boolean isServiceMember = member.getName() != null;
         TokenInfo tokenInfo = generateToken(member);
 
-        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
+        return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
     }
 
     @Override
@@ -53,7 +55,7 @@ public class AnonymousLoginStrategy implements LoginStrategy {
         member.changeRole(Role.GUEST);
         Member newMember = memberService.saveEntity(member);
         TokenInfo tokenInfo = generateToken(newMember);
-        return memberMapper.toLoginMemberResponse(newMember, tokenInfo, false, Role.GUEST);
+        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {

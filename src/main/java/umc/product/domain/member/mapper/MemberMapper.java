@@ -1,49 +1,37 @@
 package umc.product.domain.member.mapper;
 
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.request.common.CommonSignUpRequest;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.common.MemberSearchResponse;
+import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
-import umc.product.global.common.enums.Status;
-import umc.product.global.config.security.jwt.TokenInfo;
+import umc.product.domain.member.entity.enums.Status;
 import org.springframework.stereotype.Component;
+import umc.product.global.dto.excel.ExcelMember;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
-    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl){
-        return Member.builder()
-                .birth(request.getBirth())
-                .email(request.getEmail())
-                .avatarUrl(avatarUrl)
-                .name(request.getName())
-                .gender(request.getGender())
-                .nikeName(request.getNikeName())
-                .role(request.getRole())
-                .clientId(request.getClientId())
-                .loginType(LoginType.INTERNAL)
-                .status(Status.ACTIVE)
-                .build();
-    }
 
-    public Member toCommonMember(CommonSignUpRequest request, String avatarUrl){
+    public List<Member> toMember(List<ExcelMember> excelMemberList) {
+        return excelMemberList.stream()
+                .map(this::toMemberFromExcelMember)
+                .collect(Collectors.toList());
+    }
+    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName){
         return Member.builder()
-                .birth(request.getBirth())
                 .email(request.getEmail())
                 .avatarUrl(avatarUrl)
-                .name(request.getName())
-                .gender(request.getGender())
-                .nikeName(request.getNikeName())
-                .role(request.getRole())
+                .name(universityName)
+                .nickName(universityName)
                 .clientId(request.getClientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
+                .role(Role.SCHOOL_ADMIN)
                 .build();
     }
 
@@ -54,33 +42,12 @@ public class MemberMapper {
                 .build();
     }
 
-    public MemberLoginResponse toLoginMemberResponse(final Member member, TokenInfo tokenInfo, boolean isServiceMember, Role role) {
-        return MemberLoginResponse.builder()
-                .memberId(member.getId())
-                .accessToken(tokenInfo.accessToken())
-                .refreshToken(tokenInfo.refreshToken())
-                .isServiceMember(isServiceMember)
-                .role(role)
-                .build();
-    }
-
-    public AdminMemberListResponse toAdminMemberListResponse(List<Member> memberList) {
-        List<MemberSearchResponse> memberSearchResponse = memberList.stream()
-                .map(this::toSearchMemberResponse).collect(Collectors.toList());
-        return AdminMemberListResponse.builder()
-                .memberList(memberSearchResponse)
-                .build();
-    }
-
-    public MemberSearchResponse toSearchMemberResponse(Member member) {
-        return MemberSearchResponse.builder()
-                .memberId(member.getId())
-                .avatarUrl(member.getAvatarUrl())
-                .name(member.getName())
-                .nickName(member.getNikeName())
-                .university(member.getName()) //수정해야함
-                .role(member.getRole().getToKorean())
-                .status(member.getStatus())
+    private Member toMemberFromExcelMember(ExcelMember excelMember){
+        return Member.builder()
+                .name(excelMember.getName())
+                .nickName(excelMember.getNickName())
+                .role(excelMember.getRole())
+                .university(excelMember.getUniversity())
                 .build();
     }
 }

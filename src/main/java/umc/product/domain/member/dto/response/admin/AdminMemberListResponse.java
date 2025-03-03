@@ -2,7 +2,7 @@ package umc.product.domain.member.dto.response.admin;
 
 import lombok.Builder;
 import lombok.Getter;
-import umc.product.domain.member.dto.response.common.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.MemberSearchResponse;
 
 import java.util.List;
 

@@ -3,11 +3,11 @@ package umc.product.domain.member.strategy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberLoginInfoRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
@@ -21,7 +21,7 @@ import static umc.product.domain.member.status.MemberErrorStatus.PASSWORD_MISMAT
 @RequiredArgsConstructor
 public class InternalLoginStrategy implements LoginStrategy {
     private final MemberLoginInfoRepository memberLoginInfoRepository;
-    private final MemberMapper memberMapper;
+    private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
 
@@ -48,7 +48,7 @@ public class InternalLoginStrategy implements LoginStrategy {
         // 응답 객체 반환 (회원가입 완료된 멤버인지 판병)
         boolean isServiceMember = member.getName() != null;
 
-        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
+        return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
     }
 
     private TokenInfo generateToken(Member member) {

@@ -4,11 +4,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+
+import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
+import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ROLE;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
@@ -18,8 +23,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        response.setContentType("application/json"); // 응답의 Content-Type을 application/json으로 설정
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 응답의 Content-Type을 application/json으로 설정
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"error\": \"Access Denied\", \"message\": \"You do not have permission to access this resource.\"}");
+        response.getWriter().write(String.format(
+                "{\"timestamp\": \"%s\", \"code\": \"%s\", \"message\": \"%s\"}",
+                LocalDateTime.now(),
+                INVALID_ROLE.getCode().getCode(),
+                INVALID_ROLE.getMessage()
+        ));
     }
 }
