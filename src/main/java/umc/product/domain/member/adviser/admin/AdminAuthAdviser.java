@@ -7,13 +7,12 @@ import umc.product.domain.file.service.FileService;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
 import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.response.member.MemberGenerateTokenResponse;
 import umc.product.domain.member.dto.response.member.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.admin.AdminAuthService;
 import umc.product.domain.member.service.admin.AdminMemberService;
-import umc.product.domain.member.service.common.MemberAuthService;
+import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 
@@ -32,7 +31,7 @@ public class AdminAuthAdviser {
         //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
         memberAuthService.verifyClientId(request.getClientId());
         University university = universityService.findUniversity(request.getUniversity());
-        Member member = adminMemberService.toAdminMember(request, "");
+        Member member = adminMemberService.toAdminMember(request, "", university.getName());
         Member newMember = adminAuthService.signUp(member, request.getPassword(), university);
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
