@@ -18,7 +18,6 @@ import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.university.entity.QUniversity;
 import umc.product.domain.university.entity.University;
-import umc.product.global.common.exception.RestApiException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -28,8 +27,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
-import static umc.product.domain.member.status.MemberErrorStatus.EMPTY_MEMBER;
 
 @Repository
 @Slf4j
@@ -96,44 +95,33 @@ public class MemberRepositoryImpl implements MemberRepository {
         LocalDateTime now = LocalDateTime.now();
         ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
-        String memberSql = """ 
-                           INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
-                           VALUES
-                           """;
+        String memberSql = """
+                       INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
+                       VALUES
+                       """;
 
         String semesterSql = """
-                             INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
-                             VALUES
-                             """;
+                         INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
+                         VALUES
+                         """;
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (int start = 0; start < memberList.size(); start += batchSize) {
             int end = Math.min(start + batchSize, memberList.size());
             List<Member> batchMembers = memberList.subList(start, end);
-            List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start*2, end*2);
+            List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start * 2, end * 2);
 
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
                     StringBuilder memberValues = new StringBuilder();
                     List<Object> memberParams = new ArrayList<>();
-
-                    StringBuilder semesterValues = new StringBuilder();
-                    List<Object> semesterParams = new ArrayList<>();
-
                     for (Member member : batchMembers) {
-                        memberValues.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),");
-                        memberParams.addAll(Arrays.asList(
-                                null, null, Timestamp.valueOf(now), null, null, null,
-                                member.getName(), member.getNickName(), member.getRole().getPriority(),
-                                Status.WAITING_FOR_UPDATE.name(), member.getUniversity().getId(), Timestamp.valueOf(now)
-                        ));
+                        processMember(member, memberValues, memberParams, now);
                     }
-
                     if (!memberValues.isEmpty()) memberValues.setLength(memberValues.length() - 1);
 
                     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
                     jdbcTemplate.update(
                             connection -> {
                                 PreparedStatement ps = connection.prepareStatement(memberSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -147,39 +135,25 @@ public class MemberRepositoryImpl implements MemberRepository {
 
                     List<Long> memberIdList = keyHolder.getKeyList().stream()
                             .map(key -> ((Number) key.get("GENERATED_KEY")).longValue())
-                            .toList();
+                            .collect(Collectors.toList());
 
-
-                    for (int i = 0; i < memberIdList.size(); i += 1) {
+                    StringBuilder semesterValues = new StringBuilder();
+                    List<Object> semesterParams = new ArrayList<>();
+                    for (int i = 0; i < memberIdList.size(); i++) {
                         SemesterPosition semesterPosition1 = batchSemesterPositions.get(i * 2);
-
-                        if (semesterPosition1.getPosition() != null) {
-                            semesterValues.append("(?, ?, ?, ?, ?, ?),");
-                            semesterParams.addAll(Arrays.asList(
-                                    Timestamp.valueOf(now), null, memberIdList.get(i), semesterPosition1.getPosition(),
-                                    semesterPosition1.getSemester().getId(), Timestamp.valueOf(now)
-                            ));
-                        }
+                        processSemesterPosition(semesterPosition1, memberIdList.get(i), semesterValues, semesterParams, now);
 
                         if (i + 1 < batchSemesterPositions.size()) {
                             SemesterPosition semesterPosition2 = batchSemesterPositions.get(i * 2 + 1);
-
-                            if (semesterPosition2.getPosition() != null) {
-                                semesterValues.append("(?, ?, ?, ?, ?, ?),");
-                                semesterParams.addAll(Arrays.asList(
-                                        Timestamp.valueOf(now), null, memberIdList.get(i), semesterPosition2.getPosition(),
-                                        semesterPosition2.getSemester().getId(), Timestamp.valueOf(now)
-                                ));
+                            if (semesterPosition2.getPosition() == null && semesterPosition1.getPosition() == null) {
+                                semesterPosition2.updateSemesterPosition(semesterPosition2.getSemester(), "챌린저");
                             }
+                            processSemesterPosition(semesterPosition2, memberIdList.get(i), semesterValues, semesterParams, now);
                         }
                     }
 
                     if (!semesterValues.isEmpty()) semesterValues.setLength(semesterValues.length() - 1);
-
-                    jdbcTemplate.update(
-                            semesterSql + semesterValues,
-                            semesterParams.toArray()
-                    );
+                    jdbcTemplate.update(semesterSql + semesterValues, semesterParams.toArray());
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -192,7 +166,24 @@ public class MemberRepositoryImpl implements MemberRepository {
         executor.shutdown();
     }
 
+    private void processMember(Member member, StringBuilder memberValues, List<Object> memberParams, LocalDateTime now) {
+        memberValues.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),");
+        memberParams.addAll(Arrays.asList(
+                null, null, Timestamp.valueOf(now), null, null, null,
+                member.getName(), member.getNickName(), member.getRole().getPriority(),
+                Status.WAITING_FOR_UPDATE.name(), member.getUniversity().getId(), Timestamp.valueOf(now)
+        ));
+    }
 
+    private void processSemesterPosition(SemesterPosition semesterPosition, Long memberId, StringBuilder semesterValues, List<Object> semesterParams, LocalDateTime now) {
+        if (semesterPosition.getPosition() != null) {
+            semesterValues.append("(?, ?, ?, ?, ?, ?),");
+            semesterParams.addAll(Arrays.asList(
+                    Timestamp.valueOf(now), null, memberId, semesterPosition.getPosition(),
+                    semesterPosition.getSemester().getId(), Timestamp.valueOf(now)
+            ));
+        }
+    }
 
 
     @Override
@@ -243,6 +234,4 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .where(builder)
                 .fetchFirst() != null;
     }
-
-
 }

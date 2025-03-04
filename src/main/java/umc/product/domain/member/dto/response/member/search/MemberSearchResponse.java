@@ -16,8 +16,8 @@ public record MemberSearchResponse(
         String university,
         String role,
         Status status,
-        List<SemesterPartResponse> memberSemesterList,
-        List<MemberSemesterPositionResponse> memberPositionList,
+        List<SemesterPartResponse> memberSemesterPartList,
+        List<MemberSemesterPositionResponse> memberSemesterPositionList,
         List<MemberOutResponse> memberOutList
 ) {
 }
