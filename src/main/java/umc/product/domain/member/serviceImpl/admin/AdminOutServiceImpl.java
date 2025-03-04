@@ -3,7 +3,6 @@ package umc.product.domain.member.serviceImpl.admin;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.AdminOutRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.OutReason;

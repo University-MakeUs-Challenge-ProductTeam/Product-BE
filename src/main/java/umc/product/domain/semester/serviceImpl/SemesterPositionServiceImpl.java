@@ -1,15 +1,12 @@
 package umc.product.domain.semester.serviceImpl;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.AdminSemesterPositionRequest;
-import umc.product.domain.member.dto.request.admin.AdminPostSemesterPositionRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.semester.mapper.SemesterPositionMapper;
-import umc.product.domain.semester.repository.SemesterPositionRepository;
 import umc.product.domain.semester.service.SemesterPositionService;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.dto.excel.ExcelMember;
@@ -32,10 +29,10 @@ public class SemesterPositionServiceImpl implements SemesterPositionService {
     }
 
     @Override
-    public List<SemesterPosition> toSemesterPosition(Member targetMember, List<AdminPostSemesterPositionRequest> positionList, Map<Long, Semester> semesterMap) {
+    public List<SemesterPosition> toSemesterPosition(Member targetMember, List<AdminInsertSemesterPositionRequest> positionList, Map<Long, Semester> semesterMap) {
         return positionList.stream()
                 .map(position -> {
-                    Semester semester = Optional.ofNullable(semesterMap.get(position.getSemesterId()))
+                    Semester semester = Optional.ofNullable(semesterMap.get(position.semesterId()))
                             .orElseThrow(() -> new RestApiException(EMPTY_SEMESTER));
 
                     return semesterPositionMapper.toSemesterPosition(targetMember, semester ,position);

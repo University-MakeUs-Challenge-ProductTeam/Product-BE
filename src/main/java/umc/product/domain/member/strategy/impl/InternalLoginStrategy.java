@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.repository.MemberLoginInfoRepository;
@@ -34,11 +34,11 @@ public class InternalLoginStrategy implements LoginStrategy {
     @Override
     public MemberLoginResponse login(AdminLoginRequest request) {
         // 회원 조회
-        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.getMemberId())
+        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
         Member member = memberLoginInfo.getMember();
 
-        if (!passwordEncoder.matches(request.getPassword(), member.getMemberLoginInfo().getPassword())) {
+        if (!passwordEncoder.matches(request.password(), member.getMemberLoginInfo().getPassword())) {
             throw new RestApiException(PASSWORD_MISMATCH);
         }
 

@@ -1,16 +1,13 @@
 package umc.product.domain.member.mapper;
 
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.enums.Gender;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.entity.enums.Status;
 import org.springframework.stereotype.Component;
 import umc.product.global.dto.excel.ExcelMember;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +21,11 @@ public class MemberMapper {
     }
     public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName){
         return Member.builder()
-                .email(request.getEmail())
+                .email(request.email())
                 .avatarUrl(avatarUrl)
                 .name(universityName)
                 .nickName(universityName)
-                .clientId(request.getClientId())
+                .clientId(request.clientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
                 .role(Role.SCHOOL_ADMIN)

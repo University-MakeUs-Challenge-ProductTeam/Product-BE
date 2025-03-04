@@ -1,12 +1,9 @@
 package umc.product.domain.member.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.converter.RoleConverter;
-import umc.product.domain.member.dto.request.admin.AdminProfileModifyRequest;
-import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
-import umc.product.domain.member.entity.enums.Gender;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
+import umc.product.domain.member.dto.request.member.auth.MemberSignUpRequest;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -17,7 +14,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.product.global.common.base.BaseEntity;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,18 +99,18 @@ public class Member extends BaseEntity {
     }
 
     public void updateProfile(MemberSignUpRequest request) {
-        this.name = request.getName();
-        this.nickName = request.getNikeName();
-        this.email = request.getEmail();
-        this.loginType =request.getLoginType();
-        this.clientId = request.getClientId();
+        this.name = request.name();
+        this.nickName = request.nickName();
+        this.email = request.email();
+        this.loginType =request.loginType();
+        this.clientId = request.clientId();
     }
 
-    public void modifyProfile(AdminProfileModifyRequest request, University university) {
-        this.name = request.getName();
-        this.nickName = request.getNickName();
+    public void modifyProfile(AdminUpdateMemberProfileRequest request, University university) {
+        this.name = request.name();
+        this.nickName = request.nickName();
         if(!this.university.equals(university)) this.university = university;
-        this.status = request.getStatus();
+        this.status = request.status();
     }
 
 }

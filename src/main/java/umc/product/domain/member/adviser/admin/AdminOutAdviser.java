@@ -3,7 +3,7 @@ package umc.product.domain.member.adviser.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.OutReason;
 import umc.product.domain.member.service.admin.AdminOutService;

@@ -1,8 +1,8 @@
 package umc.product.domain.member.service.admin;
 
 import org.springframework.data.domain.Pageable;
-import umc.product.domain.member.dto.request.admin.AdminProfileModifyRequest;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
@@ -21,7 +21,7 @@ public interface AdminMemberService {
     List<Member> findMembersBySearchString(Member member, String searchString);
     List<Member> toMemberFromExcelMember(List<ExcelMember> excelMemberList);
     void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);
-    void modifyMemberInfo(Member targetMember, University university, AdminProfileModifyRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap);
+    void modifyMemberInfo(Member targetMember, University university, AdminUpdateMemberProfileRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap);
     void addSemesterPositionList(Member targetMember, List<SemesterPosition> semesterPositionList);
     void addSemesterPartList(Member targetMember, List<SemesterPart> semesterPartList);
 }

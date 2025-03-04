@@ -3,11 +3,10 @@ package umc.product.domain.member.adviser.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.converter.response.MemberCodeConverter;
-import umc.product.domain.member.dto.response.admin.AdminCodeResponse;
-import umc.product.domain.member.dto.response.admin.AdminCodeVerifyResponse;
-import umc.product.domain.member.dto.response.member.MemberCodeResponse;
+import umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse;
+import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse;
+import umc.product.domain.member.dto.response.member.code.MemberCreateCodeListResponse;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.service.admin.AdminCodeService;
 import umc.product.domain.member.service.member.MemberService;
@@ -15,7 +14,6 @@ import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +29,12 @@ public class AdminCodeAdviser {
     private final UniversityService universityService;
     private final MemberCodeConverter memberCodeConverter;
 
-    public AdminCodeVerifyResponse verifyMemberCode(String code) {
+    public AdminVerifyCodeResponse verifyMemberCode(String code) {
         String universityName = adminCodeService.verifyWebAdminCode(code);
         return memberCodeConverter.toAdminCodeVerifyResponse(universityName);
     }
 
-    public AdminCodeResponse createWebAdminCode(Member member, String universityName) {
+    public AdminCreateCodeResponse createWebAdminCode(Member member, String universityName) {
         //if(member.getRole().getPriority() > Role.CENTRAL_ADMIN.getPriority()) throw new RestApiException(INVALID_ROLE);
         universityService.findOrCreateUniversity(universityName);      //학교 생성 or 찾기
         String code = adminCodeService.createWebAdminCode();
@@ -44,7 +42,7 @@ public class AdminCodeAdviser {
         return memberCodeConverter.toAdminCodeResponse(code);
     }
 
-    public MemberCodeResponse createAppCode(Member member, String universityName) {
+    public MemberCreateCodeListResponse createAppCode(Member member, String universityName) {
         University university = universityService.findUniversity(universityName);
         List<Member> waitingMember = memberService.findWaitingMemberByUniversity(university);
 
@@ -53,7 +51,7 @@ public class AdminCodeAdviser {
         return memberCodeConverter.toMemberCodeResponse(codeMap);
     }
 
-    public MemberCodeResponse createIndividualAppCode(Member member, Long memberId) {
+    public MemberCreateCodeListResponse createIndividualAppCode(Member member, Long memberId) {
         Member targetMember = memberService.findById(memberId);
         if(targetMember.getStatus() != Status.WAITING_FOR_UPDATE) throw new RestApiException(NOT_VALID_MEMBER_STATUS);
         if(targetMember.getRole().getPriority() < member.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);
