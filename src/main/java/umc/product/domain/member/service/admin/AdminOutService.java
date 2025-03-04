@@ -7,6 +7,6 @@ import umc.product.domain.member.entity.enums.OutReason;
 public interface AdminOutService {
 
     MemberOut postMemberOut(Member member, OutReason outReason);
-    void modifyMemberOut(Long outId, OutReason outReason);
+    void modifyMemberOut(Long outId, OutReason outReason, Member member);
     void deleteMemberOut(Member member,Long outId);
 }

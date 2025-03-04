@@ -32,17 +32,21 @@ public class AdminOutServiceImpl implements AdminOutService {
 
     @Transactional
     @Override
-    public void modifyMemberOut(Long outId, OutReason outReason) {
+    public void modifyMemberOut(Long outId, OutReason outReason, Member member) {
         MemberOut memberOut = memberOutRepository.findMemberOutById(outId)
                 .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
+
+        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
 
         memberOut.setOutReason(outReason);
     }
     @Transactional
     @Override
     public void deleteMemberOut(Member member, Long outId) {
-        memberOutRepository.deleteMemberOutById(outId)
+        MemberOut memberOut = memberOutRepository.findMemberOutById(outId)
                 .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
+        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
+        memberOut.delete();
         if(member.getMemberOutList().size() < 3) member.setStatus(Status.ACTIVE);
     }
 }
