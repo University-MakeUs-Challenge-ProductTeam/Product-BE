@@ -66,10 +66,10 @@ public class AdminMemberController {
     public BaseResponse<AdminMemberSearchListResponse> filterSearchMembers(@CurrentMember Member member,
                                                                            @RequestParam Integer cursor,
                                                                            @RequestParam Integer size,
-                                                                           @RequestParam(required = false) String semester,
+                                                                           @RequestParam(required = false) Long semesterId,
                                                                            @RequestParam(required = false) Role role,
                                                                            @RequestParam(required = false) Part part) {
-        return BaseResponse.onSuccess(adminMemberAdviser.filterSearchMembers(member, PageRequest.of(cursor,size), semester, role, part));
+        return BaseResponse.onSuccess(adminMemberAdviser.filterSearchMembers(member, PageRequest.of(cursor,size), semesterId, role, part));
     }
 
     @Operation(summary = "사용자 이름/닉네임 검색 API", description = "사용자를 이름/닉네임으로 검색하는 API입니다.")

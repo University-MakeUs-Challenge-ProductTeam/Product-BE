@@ -17,7 +17,7 @@ import java.util.Map;
 
 public interface AdminMemberService {
     Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName);
-    List<Member> findMembers(Member member, Pageable pageable, String semester, Role role, Part part);
+    List<Member> findMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part);
     List<Member> findMembersBySearchString(Member member, String searchString);
     List<Member> toMemberFromExcelMember(List<ExcelMember> excelMemberList);
     void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);

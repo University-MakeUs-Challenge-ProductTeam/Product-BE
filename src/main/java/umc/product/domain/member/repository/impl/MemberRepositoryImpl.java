@@ -41,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final QUniversity qUniversity = QUniversity.university;
 
     @Override
-    public List<Member> findMembers(Pageable pageable, Member currentMember, String semester, Role role, Part part) {
+    public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
@@ -54,9 +54,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         if (role != null) {
             builder.and(qMember.role.eq(role));
         }
-        if (semester != null) {
-            builder.and(qMember.memberSemesterPart.any().semester.name.eq(semester)
-                        .or(qMember.memberSemesterPosition.any().semester.name.eq(semester))
+        if (semesterId != null) {
+            builder.and(qMember.memberSemesterPart.any().semester.id.eq(semesterId)
+                        .or(qMember.memberSemesterPosition.any().semester.id.eq(semesterId))
         );
         }
         if (part != null) {

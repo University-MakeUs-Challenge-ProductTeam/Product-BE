@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
-    public List<Member> findMembers(Pageable pageable, Member currentMember, String semester, Role role, Part part);
+    public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
     public List<Member> findMembersBySearchString(Member member,String searchString);
     public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);
     public List<Member> findWaitingMemberByUniversity(University university);
