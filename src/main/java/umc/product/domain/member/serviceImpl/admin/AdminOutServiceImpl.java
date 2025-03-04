@@ -23,10 +23,11 @@ public class AdminOutServiceImpl implements AdminOutService {
 
     @Transactional
     @Override
-    public void postMemberOut(Member member, OutReason outReason) {
+    public MemberOut postMemberOut(Member member, OutReason outReason) {
         MemberOut memberOut = memberOutMapper.toMemberOut(member, outReason);
         member.addMemberOut(memberOut);
         if(member.getMemberOutList().size() >=3) member.setStatus(Status.OUT);
+        return memberOut;
     }
 
     @Transactional

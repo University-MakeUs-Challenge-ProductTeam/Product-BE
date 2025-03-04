@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberOutResponse;
+import umc.product.domain.member.dto.response.member.out.MemberOutResponse;
 import umc.product.domain.member.dto.response.member.search.MemberSearchResponse;
 import umc.product.domain.member.dto.response.member.search.MemberSemesterPositionResponse;
 import umc.product.domain.member.entity.Member;
