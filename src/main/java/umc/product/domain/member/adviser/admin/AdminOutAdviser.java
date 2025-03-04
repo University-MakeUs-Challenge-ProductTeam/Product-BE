@@ -27,7 +27,7 @@ public class AdminOutAdviser {
     }
     public MemberOutIdResponse modifyMemberOut(Long outId, Long memberId, OutReason outReason) {
         Member member = memberService.findById(memberId);
-        adminOutService.modifyMemberOut(outId, outReason);
+        adminOutService.modifyMemberOut(outId, outReason, member);
         return memberOutConverter.toMemberOutIdResponse(outId, member);
     }
     public MemberOutIdResponse deleteMemberOut(Long memberId, Long outId) {
