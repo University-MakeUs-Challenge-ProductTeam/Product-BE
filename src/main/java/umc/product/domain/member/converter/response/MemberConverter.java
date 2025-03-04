@@ -54,8 +54,8 @@ public class MemberConverter {
                 .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
                 .role(member.getRole().getToKorean())
                 .status(member.getStatus())
-                .memberSemesterList(toMemberSemesterResponseList(member.getMemberSemesterPart()))
-                .memberPositionList(toMemberPositionResponse(member.getMemberSemesterPosition()))
+                .memberSemesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
+                .memberSemesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
                 .memberOutList(toMemberOutResponseList(member.getMemberOutList()))
                 .build();
     }
@@ -70,7 +70,7 @@ public class MemberConverter {
     }
 
     //todo: 위치 리펙토링해야함
-    private List<SemesterPartResponse> toMemberSemesterResponseList(List<SemesterPart> semesterPartList) {
+    private List<SemesterPartResponse> toMemberSemesterPartResponseList(List<SemesterPart> semesterPartList) {
         return semesterPartList.stream()
                 .map(semesterPart -> {
                     return SemesterPartResponse.builder()
@@ -81,7 +81,7 @@ public class MemberConverter {
                 }).collect(Collectors.toList());
     }
     //todo: 위치 리펙토링해야함
-    private List<MemberSemesterPositionResponse> toMemberPositionResponse(List<SemesterPosition> semesterPositionList) {
+    private List<MemberSemesterPositionResponse> toMemberSemesterPositionResponse(List<SemesterPosition> semesterPositionList) {
         return semesterPositionList.stream()
                 .map(semesterPosition -> {
                     return MemberSemesterPositionResponse.builder()
