@@ -10,7 +10,7 @@ public record MemberSignUpRequest (
         String email,
         LoginType loginType,
         String clientId,
-        List<MemberSignUpSemesterPartRequest> semesterList
+        List<MemberSignUpSemesterPartRequest> semesterPartList
 ){
 
 }
