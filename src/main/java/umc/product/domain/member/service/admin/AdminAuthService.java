@@ -1,7 +1,7 @@
 package umc.product.domain.member.service.admin;
 
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.university.entity.University;
 

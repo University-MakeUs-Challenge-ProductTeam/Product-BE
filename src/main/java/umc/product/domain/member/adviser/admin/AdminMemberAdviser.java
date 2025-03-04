@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.request.admin.*;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
+import umc.product.domain.member.dto.request.admin.member.*;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
@@ -53,50 +53,50 @@ public class AdminMemberAdviser {
         adminMemberService.saveRegisterMembers(memberList, semesterPositionList);
     }
 
-    public MemberIdResponse modifyMemberInfo(Member member, Long memberId, AdminProfileModifyRequest request) {
+    public MemberIdResponse modifyMemberInfo(Member member, Long memberId, AdminUpdateMemberProfileRequest request) {
         Member targetMember = memberService.findById(memberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
-        University university = universityService.findUniversity(request.getUniversityName());
+        University university = universityService.findUniversity(request.universityName());
         Map<Long, Semester> partSemesterMap = new HashMap<>();
         Map<Long, Semester> positionSemesterMap = new HashMap<>();
 
-        if (!request.getSemesterPartList().isEmpty()) partSemesterMap = semesterService.findSemesterListForModify(request.getSemesterPartList(), AdminSemesterPartRequest::getSemesterId);
-        if (!request.getSemesterPositionList().isEmpty()) positionSemesterMap = semesterService.findSemesterListForModify(request.getSemesterPositionList(), AdminSemesterPositionRequest::getSemesterId);
+        if (!request.semesterPartList().isEmpty()) partSemesterMap = semesterService.findSemesterListForModify(request.semesterPartList(), AdminUpdateSemesterPartRequest::semesterId);
+        if (!request.semesterPositionList().isEmpty()) positionSemesterMap = semesterService.findSemesterListForModify(request.semesterPositionList(), AdminUpdateSemesterPositionRequest::semesterId);
 
         adminMemberService.modifyMemberInfo(targetMember,university,request,partSemesterMap, positionSemesterMap);
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public MemberIdResponse postMemberSemesterPart(Member member, Long memberId, AdminPostPartRequest request) {
+    public MemberIdResponse postMemberSemesterPart(Member member, Long memberId, AdminInsertSemesterPartListRequest request) {
         Member targetMember = memberService.findById(memberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
 
-        Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(request.getSemesterPartList(), AdminPostSemesterPartRequest::getSemesterId);
-        List<SemesterPart> newSemesterPartList = semesterPartService.toSemesterPart(targetMember, request.getSemesterPartList(), semesterMap);
+        Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(request.semesterPartList(), AdminInsertSemesterPartRequest::semesterId);
+        List<SemesterPart> newSemesterPartList = semesterPartService.toSemesterPart(targetMember, request.semesterPartList(), semesterMap);
 
         adminMemberService.addSemesterPartList(targetMember, newSemesterPartList);
 
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public MemberIdResponse postMemberSemesterPosition(Member member, Long memberId, AdminPostPositionRequest request) {
+    public MemberIdResponse postMemberSemesterPosition(Member member, Long memberId, AdminInsertSemesterPositionListRequest request) {
         Member targetMember = memberService.findById(memberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
 
-        Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(request.getSemesterPositionList(), AdminPostSemesterPositionRequest::getSemesterId);
-        List<SemesterPosition> newSemesterPositionList = semesterPositionService.toSemesterPosition(targetMember, request.getSemesterPositionList(), semesterMap);
+        Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(request.semesterPositionList(), AdminInsertSemesterPositionRequest::semesterId);
+        List<SemesterPosition> newSemesterPositionList = semesterPositionService.toSemesterPosition(targetMember, request.semesterPositionList(), semesterMap);
 
         adminMemberService.addSemesterPositionList(targetMember, newSemesterPositionList);
 
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public AdminMemberListResponse filterSearchMembers(Member member, Pageable pageable, String semester, Role role, Part part) {
+    public AdminMemberSearchListResponse filterSearchMembers(Member member, Pageable pageable, String semester, Role role, Part part) {
         List<Member> memberList = adminMemberService.findMembers(member, pageable, semester, role, part);
         return memberConverter.toAdminMemberListResponse(memberList);
     }
 
-    public AdminMemberListResponse searchMembers(Member member, String searchString) {
+    public AdminMemberSearchListResponse searchMembers(Member member, String searchString) {
         List<Member> memberList = adminMemberService.findMembersBySearchString(member, searchString);
         return memberConverter.toAdminMemberListResponse(memberList);
     }

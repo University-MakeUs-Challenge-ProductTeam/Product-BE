@@ -3,12 +3,12 @@ package umc.product.domain.member.controller.member;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.member.MemberAuthAdviser;
-import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
+import umc.product.domain.member.dto.request.member.auth.MemberSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.member.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberCreateTokenResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +39,7 @@ public class MemberAuthController {
 
     @Operation(summary = "accessToken 재발급 API", description = "refreshToken가 유효하다면 새로운 accessToken을 발급하는 API입니다.")
     @GetMapping("/token/refresh")
-    public BaseResponse<MemberGenerateTokenResponse> regenerateToken(@RequestHeader(value = "refreshToken") String refreshToken) {
+    public BaseResponse<MemberCreateTokenResponse> regenerateToken(@RequestHeader(value = "refreshToken") String refreshToken) {
         return BaseResponse.onSuccess(memberAuthAdviser.regenerateToken(refreshToken));
     }
 

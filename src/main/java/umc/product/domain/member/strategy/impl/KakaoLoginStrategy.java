@@ -6,8 +6,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import umc.product.domain.member.client.KakaoMemberClient;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.client.KakaoResponse;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;

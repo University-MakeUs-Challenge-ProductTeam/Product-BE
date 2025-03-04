@@ -1,7 +1,7 @@
 package umc.product.domain.semester.mapper;
 
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.request.admin.AdminPostSemesterPositionRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
@@ -14,10 +14,10 @@ import java.util.stream.IntStream;
 
 @Component
 public class SemesterPositionMapper {
-    public SemesterPosition toSemesterPosition(Member member, Semester semester, AdminPostSemesterPositionRequest request){
+    public SemesterPosition toSemesterPosition(Member member, Semester semester, AdminInsertSemesterPositionRequest request){
         return SemesterPosition.builder()
                 .member(member)
-                .position(request.getPosition())
+                .position(request.position())
                 .semester(semester)
                 .build();
     }

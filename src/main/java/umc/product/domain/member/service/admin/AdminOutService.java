@@ -1,6 +1,5 @@
 package umc.product.domain.member.service.admin;
 
-import umc.product.domain.member.dto.request.admin.AdminOutRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.OutReason;
 

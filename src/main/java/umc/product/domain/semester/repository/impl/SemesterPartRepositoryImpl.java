@@ -4,12 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import umc.product.domain.member.dto.request.admin.AdminSemesterPartRequest;
-import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.QSemesterPart;
-import umc.product.domain.semester.entity.QSemesterPosition;
-import umc.product.domain.semester.entity.Semester;
-import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.semester.repository.SemesterPartRepository;
 
 @Repository

@@ -2,11 +2,11 @@ package umc.product.domain.member.strategy.impl;
 
 
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;

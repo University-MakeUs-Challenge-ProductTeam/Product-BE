@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.request.member.MemberSignUpRequest;
-import umc.product.domain.member.dto.response.member.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.request.member.auth.MemberSignUpRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberCreateTokenResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.service.member.MemberAuthService;
@@ -33,12 +33,12 @@ public class MemberAuthAdviser {
     private final SemesterPartMapper semesterPartMapper;
     public MemberIdResponse signUp(MultipartFile file, MemberSignUpRequest request){
         //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
-        Member member = memberService.findById(request.getMemberId());
+        Member member = memberService.findById(request.memberId());
         member.updateProfile(request);
         //학기 찾기
-        List<Semester> semesterList = semesterService.findSemesterListForSignup(request.getSemesterList());
+        List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterList());
         //학기를 기반으로 학기/파트 생성
-        List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.getSemesterList(), member);
+        List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterList(), member);
 
         Member newMember = memberAuthService.signUp(member, semesterPartList);
         return memberConverter.toMemberIdResponse(newMember.getId());
@@ -48,7 +48,7 @@ public class MemberAuthAdviser {
         return memberAuthService.socialLogin(accessToken, loginType);
     }
 
-    public MemberGenerateTokenResponse regenerateToken(String refreshToken) {
+    public MemberCreateTokenResponse regenerateToken(String refreshToken) {
         Claims claims = memberRefreshTokenService.getClaims(refreshToken);
         Long memberId = Long.parseLong(claims.get("memberId").toString());
         Member member = memberService.findById(memberId);

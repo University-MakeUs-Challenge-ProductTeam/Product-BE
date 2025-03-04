@@ -2,7 +2,7 @@ package umc.product.domain.semester.serviceImpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.member.MemberSignUpSemesterRequest;
+import umc.product.domain.member.dto.request.member.auth.MemberSignUpSemesterPartRequest;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.repository.SemesterRepository;
 import umc.product.domain.semester.service.SemesterService;
@@ -23,9 +23,9 @@ public class SemesterServiceImpl implements SemesterService {
 
 
     @Override
-    public List<Semester> findSemesterListForSignup(List<MemberSignUpSemesterRequest> semesterList) {
+    public List<Semester> findSemesterListForSignup(List<MemberSignUpSemesterPartRequest> semesterList) {
         List<Long> semesterIdList = semesterList.stream()
-                .map(MemberSignUpSemesterRequest::getSemesterId)
+                .map(MemberSignUpSemesterPartRequest::semesterId)
                 .collect(Collectors.toList());
         List<Semester> findSemesterList = semesterRepository.findSemesterList(semesterIdList);
         if(findSemesterList.isEmpty()) throw new RestApiException(EMPTY_SEMESTER);

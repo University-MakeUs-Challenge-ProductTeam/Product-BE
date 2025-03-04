@@ -9,9 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
-import umc.product.domain.member.dto.request.admin.*;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartListRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionListRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
@@ -37,7 +39,7 @@ public class AdminMemberController {
     @PatchMapping("/profile/{memberId}")
     public BaseResponse<MemberIdResponse> modifyMemberInfo(@CurrentMember Member member,
                                                            @PathVariable(name = "memberId") Long memberId,
-                                                           @RequestBody AdminProfileModifyRequest request) {
+                                                           @RequestBody AdminUpdateMemberProfileRequest request) {
         return BaseResponse.onSuccess(adminMemberAdviser.modifyMemberInfo(member, memberId, request));
     }
 
@@ -45,7 +47,7 @@ public class AdminMemberController {
     @PostMapping("/profile/part/{memberId}")
     public BaseResponse<MemberIdResponse> postMemberSemesterPart(@CurrentMember Member member,
                                                            @PathVariable(name = "memberId") Long memberId,
-                                                           @RequestBody AdminPostPartRequest request) {
+                                                           @RequestBody AdminInsertSemesterPartListRequest request) {
         return BaseResponse.onSuccess(adminMemberAdviser.postMemberSemesterPart(member, memberId, request));
     }
 
@@ -53,7 +55,7 @@ public class AdminMemberController {
     @PostMapping("/profile/position/{memberId}")
     public BaseResponse<MemberIdResponse> postMemberSemesterPosition(@CurrentMember Member member,
                                                            @PathVariable(name = "memberId") Long memberId,
-                                                           @RequestBody AdminPostPositionRequest request) {
+                                                           @RequestBody AdminInsertSemesterPositionListRequest request) {
         return BaseResponse.onSuccess(adminMemberAdviser.postMemberSemesterPosition(member, memberId, request));
     }
 
@@ -61,20 +63,20 @@ public class AdminMemberController {
     @Operation(summary = "사용자 필터링 검색 API", description = "사용자를 기수, 파트, 권한에따라 필터링 검색하는 API입니다.")
     @GetMapping("/filter")
     //파라미터 수정해야함
-    public BaseResponse<AdminMemberListResponse> filterSearchMembers(@CurrentMember Member member,
-                                                                     @RequestParam Integer cursor,
-                                                                     @RequestParam Integer size,
-                                                                     @RequestParam(required = false) String semester,
-                                                                     @RequestParam(required = false) Role role,
-                                                                     @RequestParam(required = false) Part part) {
+    public BaseResponse<AdminMemberSearchListResponse> filterSearchMembers(@CurrentMember Member member,
+                                                                           @RequestParam Integer cursor,
+                                                                           @RequestParam Integer size,
+                                                                           @RequestParam(required = false) String semester,
+                                                                           @RequestParam(required = false) Role role,
+                                                                           @RequestParam(required = false) Part part) {
         return BaseResponse.onSuccess(adminMemberAdviser.filterSearchMembers(member, PageRequest.of(cursor,size), semester, role, part));
     }
 
     @Operation(summary = "사용자 이름/닉네임 검색 API", description = "사용자를 이름/닉네임으로 검색하는 API입니다.")
     @GetMapping("/search")
     //파라미터 수정해야함
-    public BaseResponse<AdminMemberListResponse> searchMembers(@CurrentMember Member member,
-                                                               @RequestParam(required = false) String searchString) {
+    public BaseResponse<AdminMemberSearchListResponse> searchMembers(@CurrentMember Member member,
+                                                                     @RequestParam(required = false) String searchString) {
         return BaseResponse.onSuccess(adminMemberAdviser.searchMembers(member, searchString));
     }
 }

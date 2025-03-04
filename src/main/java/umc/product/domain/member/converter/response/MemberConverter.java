@@ -1,8 +1,12 @@
 package umc.product.domain.member.converter.response;
 
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.response.admin.AdminMemberListResponse;
-import umc.product.domain.member.dto.response.member.*;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.search.MemberOutResponse;
+import umc.product.domain.member.dto.response.member.search.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.search.MemberSemesterPositionResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.Role;
@@ -33,10 +37,10 @@ public class MemberConverter {
                 .build();
     }
 
-    public AdminMemberListResponse toAdminMemberListResponse(List<Member> memberList) {
+    public AdminMemberSearchListResponse toAdminMemberListResponse(List<Member> memberList) {
         List<MemberSearchResponse> memberSearchResponse = memberList.stream()
                 .map(this::toSearchMemberResponse).collect(Collectors.toList());
-        return AdminMemberListResponse.builder()
+        return AdminMemberSearchListResponse.builder()
                 .memberList(memberSearchResponse)
                 .build();
     }
@@ -47,7 +51,7 @@ public class MemberConverter {
                 .avatarUrl(member.getAvatarUrl())
                 .name(member.getName())
                 .nickName(member.getNickName())
-                .university(member.getUniversity().getName())
+                .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
                 .role(member.getRole().getToKorean())
                 .status(member.getStatus())
                 .memberSemesterList(toMemberSemesterResponseList(member.getMemberSemesterPart()))
@@ -60,7 +64,7 @@ public class MemberConverter {
                 .map(memberOut -> {
                     return MemberOutResponse.builder()
                             .outId(memberOut.getId())
-                            .reason(memberOut.getOutReason().getToKorean())
+                            .outReason(memberOut.getOutReason().getToKorean())
                             .build();
                 }).collect(Collectors.toList());
     }
@@ -77,13 +81,13 @@ public class MemberConverter {
                 }).collect(Collectors.toList());
     }
     //todo: 위치 리펙토링해야함
-    private List<MemberPositionResponse> toMemberPositionResponse(List<SemesterPosition> semesterPositionList) {
+    private List<MemberSemesterPositionResponse> toMemberPositionResponse(List<SemesterPosition> semesterPositionList) {
         return semesterPositionList.stream()
                 .map(semesterPosition -> {
-                    return MemberPositionResponse.builder()
+                    return MemberSemesterPositionResponse.builder()
                             .positionId(semesterPosition.getId())
                             .position(semesterPosition.getPosition())
-                            .semester(semesterPosition.getSemester().getName())
+                            .semesterName(semesterPosition.getSemester().getName())
                             .build();
                 }).collect(Collectors.toList());
     }

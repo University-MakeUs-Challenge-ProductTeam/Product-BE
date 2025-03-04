@@ -7,10 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.admin.AdminAuthAdviser;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.global.common.base.BaseResponse;
 
 @Tag(name = "어드민 Auth 공통로직 API", description = "어드민(중앙, 중앙 운영진, 학교)Auth 공통 로직 관련 API")

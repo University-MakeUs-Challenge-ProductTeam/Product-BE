@@ -4,15 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.AdminProfileModifyRequest;
-import umc.product.domain.member.dto.request.admin.AdminSemesterPartRequest;
-import umc.product.domain.member.dto.request.admin.AdminSemesterPositionRequest;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPartRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPositionRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberCustomRepository;
+import umc.product.domain.member.repository.MemberRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AdminMemberServiceImpl implements AdminMemberService {
-    private final MemberCustomRepository memberCustomRepository;
+    private final MemberRepository memberRepository;
 
     private final MemberMapper memberMapper;
 
@@ -39,13 +39,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public List<Member> findMembers(Member member, Pageable pageable, String semester, Role role, Part part) {
-        return memberCustomRepository.findMembers(pageable,member, semester, role, part);
+        return memberRepository.findMembers(pageable,member, semester, role, part);
     }
 
 
     @Override
     public List<Member> findMembersBySearchString(Member member, String searchString) {
-        return memberCustomRepository.findMembersBySearchString(member, searchString);
+        return memberRepository.findMembersBySearchString(member, searchString);
     }
 
     @Override
@@ -55,30 +55,30 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList) {
-        memberCustomRepository.saveRegisterMembers(memberList, semesterPositionList);
+        memberRepository.saveRegisterMembers(memberList, semesterPositionList);
     }
 
     @Transactional
     @Override
-    public void modifyMemberInfo(Member targetMember, University university, AdminProfileModifyRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap) {
+    public void modifyMemberInfo(Member targetMember, University university, AdminUpdateMemberProfileRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap) {
         targetMember.modifyProfile(request, university);
 
-        Map<Long, AdminSemesterPartRequest> semesterPartRequestMap = request.getSemesterPartList().stream()
-                .collect(Collectors.toMap(AdminSemesterPartRequest::getSemesterPartId, Function.identity()));
+        Map<Long, AdminUpdateSemesterPartRequest> semesterPartRequestMap = request.semesterPartList().stream()
+                .collect(Collectors.toMap(AdminUpdateSemesterPartRequest::semesterPartId, Function.identity()));
 
         targetMember.getMemberSemesterPart()
                 .forEach(semesterPart -> {
-                    AdminSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
-                    if(matchingRequest != null) semesterPart.updateSemesterPart(partSemesterMap.get(matchingRequest.getSemesterId()), matchingRequest.getPart());
+                    AdminUpdateSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
+                    if(matchingRequest != null) semesterPart.updateSemesterPart(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.part());
                 });
 
-        Map<Long, AdminSemesterPositionRequest> semesterPositionRequestMap = request.getSemesterPositionList().stream()
-                .collect(Collectors.toMap(AdminSemesterPositionRequest::getSemesterPositionId, Function.identity()));
+        Map<Long, AdminUpdateSemesterPositionRequest> semesterPositionRequestMap = request.semesterPositionList().stream()
+                .collect(Collectors.toMap(AdminUpdateSemesterPositionRequest::semesterPositionId, Function.identity()));
 
         targetMember.getMemberSemesterPosition()
                 .forEach(semesterPosition -> {
-                    AdminSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
-                    if(matchingRequest != null) semesterPosition.updateSemesterPosition(partSemesterMap.get(matchingRequest.getSemesterId()), matchingRequest.getPosition());
+                    AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
+                    if(matchingRequest != null) semesterPosition.updateSemesterPosition(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.position());
                 });
     }
 

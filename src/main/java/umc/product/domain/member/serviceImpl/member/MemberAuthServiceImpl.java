@@ -3,9 +3,9 @@ package umc.product.domain.member.serviceImpl.member;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.dto.response.member.MemberGenerateTokenResponse;
-import umc.product.domain.member.dto.response.member.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.MemberLoginResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberCreateTokenResponse;
+import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberInfoMapper;
 import umc.product.domain.member.repository.MemberRepository;
@@ -54,7 +54,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         MemberLoginResponse response = loginContext.executeStrategy(accessToken, loginType);
 
         // 리프레쉬 토큰 저장
-        refreshTokenService.saveRefreshToken(response.getRefreshToken(), response.getMemberId());
+        refreshTokenService.saveRefreshToken(response.refreshToken(), response.memberId());
 
         return loginContext.executeStrategy(accessToken, loginType);
     }
@@ -62,7 +62,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     // 새로운 액세스 토큰 발급 함수
     @Override
     @Transactional
-    public MemberGenerateTokenResponse generateNewAccessToken(String refreshToken, Member member){
+    public MemberCreateTokenResponse generateNewAccessToken(String refreshToken, Member member){
         // 만료된 refreshToken인지 확인
         if (!jwtTokenProvider.validateToken(refreshToken))
             throw new RestApiException(AuthErrorStatus.EXPIRED_REFRESH_TOKEN);
@@ -77,7 +77,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         // 리프레쉬 토큰 저장
         refreshTokenService.saveRefreshToken(tokenInfo.refreshToken(), member.getId());
 
-        return new MemberGenerateTokenResponse(tokenInfo.accessToken(), tokenInfo.refreshToken());
+        return new MemberCreateTokenResponse(tokenInfo.accessToken(), tokenInfo.refreshToken());
     }
 
     // 로그아웃 함수
