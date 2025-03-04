@@ -74,6 +74,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public List<Member> findMembersBySearchString(Member member, String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
 
         if (member != null && member.getRole() != null) {
             if(member.getRole().equals(Role.SCHOOL_ADMIN)){
@@ -81,9 +82,6 @@ public class MemberRepositoryImpl implements MemberRepository {
             }
             builder.and(qMember.role.gt(member.getRole()));
         }
-
-        builder.or(qMember.name.eq(searchString));
-        builder.or(qMember.nickName.eq(searchString));
 
         return jpaQueryFactory
                 .selectFrom(qMember)
