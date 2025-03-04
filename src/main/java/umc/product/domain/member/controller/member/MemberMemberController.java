@@ -31,7 +31,7 @@ public class MemberMemberController {
     @PatchMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(@CurrentMember Member member,
                                                                 @RequestPart("file") MultipartFile file) {
-        return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member));
+        return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member, file));
     }
 
     @Operation(summary = "사용자 프로필 조회 API", description = "사용자의 Id로 프로필을 조회하는 API 입니다")

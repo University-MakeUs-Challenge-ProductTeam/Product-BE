@@ -26,10 +26,11 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Transactional
     @Override
-    public Member signUp(Member member, String password, University university) {
+    public Member signUp(Member member, String password, University university, String avatarUrl) {
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), passwordEncoder.encode(password), member);
         member.setMemberLoginInfo(memberLoginInfo);
         member.setUniversity(university);
+        member.setAvatarUrl(avatarUrl);
         return memberJpaRepository.save(member);
     }
 

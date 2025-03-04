@@ -6,7 +6,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.university.entity.University;
 
 public interface AdminAuthService {
-    Member signUp(Member member, String password, University university);
+    Member signUp(Member member, String password, University university, String avatarUrl);
     // 자체 로그인
     MemberLoginResponse login(AdminLoginRequest request);
 }
