@@ -38,8 +38,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
-    public List<Member> findMembers(Member member, Pageable pageable, String semester, Role role, Part part) {
-        return memberRepository.findMembers(pageable,member, semester, role, part);
+    public List<Member> findMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
+        return memberRepository.findMembers(pageable,member, semesterId, role, part);
     }
 
 

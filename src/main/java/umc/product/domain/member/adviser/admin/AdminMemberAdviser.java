@@ -91,8 +91,8 @@ public class AdminMemberAdviser {
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public AdminMemberSearchListResponse filterSearchMembers(Member member, Pageable pageable, String semester, Role role, Part part) {
-        List<Member> memberList = adminMemberService.findMembers(member, pageable, semester, role, part);
+    public AdminMemberSearchListResponse filterSearchMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
+        List<Member> memberList = adminMemberService.findMembers(member, pageable, semesterId, role, part);
         return memberConverter.toAdminMemberListResponse(memberList);
     }
 

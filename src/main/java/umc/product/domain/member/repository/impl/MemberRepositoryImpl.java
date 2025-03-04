@@ -41,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final QUniversity qUniversity = QUniversity.university;
 
     @Override
-    public List<Member> findMembers(Pageable pageable, Member currentMember, String semester, Role role, Part part) {
+    public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
@@ -54,9 +54,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         if (role != null) {
             builder.and(qMember.role.eq(role));
         }
-        if (semester != null) {
-            builder.and(qMember.memberSemesterPart.any().semester.name.eq(semester)
-                        .or(qMember.memberSemesterPosition.any().semester.name.eq(semester))
+        if (semesterId != null) {
+            builder.and(qMember.memberSemesterPart.any().semester.id.eq(semesterId)
+                        .or(qMember.memberSemesterPosition.any().semester.id.eq(semesterId))
         );
         }
         if (part != null) {
@@ -74,6 +74,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public List<Member> findMembersBySearchString(Member member, String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
 
         if (member != null && member.getRole() != null) {
             if(member.getRole().equals(Role.SCHOOL_ADMIN)){
@@ -81,9 +82,6 @@ public class MemberRepositoryImpl implements MemberRepository {
             }
             builder.and(qMember.role.gt(member.getRole()));
         }
-
-        builder.or(qMember.name.eq(searchString));
-        builder.or(qMember.nickName.eq(searchString));
 
         return jpaQueryFactory
                 .selectFrom(qMember)
