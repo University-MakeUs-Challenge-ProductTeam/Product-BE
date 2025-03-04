@@ -39,9 +39,9 @@ public class MemberAuthAdviser {
         Member member = memberService.findById(request.memberId());
         member.updateProfile(request);
         //학기 찾기
-        List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterList());
+        List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());
         //학기를 기반으로 학기/파트 생성
-        List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterList(), member);
+        List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 
         Member newMember = memberAuthService.signUp(member, semesterPartList, fileCreateResponse.getUrl());
         return memberConverter.toMemberIdResponse(newMember.getId());
