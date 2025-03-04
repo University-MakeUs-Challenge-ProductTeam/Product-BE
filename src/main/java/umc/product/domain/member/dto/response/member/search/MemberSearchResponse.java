@@ -1,6 +1,7 @@
 package umc.product.domain.member.dto.response.member.search;
 
 import lombok.Builder;
+import umc.product.domain.member.dto.response.member.out.MemberOutResponse;
 import umc.product.domain.semester.dto.SemesterPartResponse;
 import umc.product.domain.member.entity.enums.Status;
 

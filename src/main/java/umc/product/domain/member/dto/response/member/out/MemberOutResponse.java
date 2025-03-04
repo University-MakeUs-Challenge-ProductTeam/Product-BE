@@ -1,4 +1,4 @@
-package umc.product.domain.member.dto.response.member.search;
+package umc.product.domain.member.dto.response.member.out;
 
 import lombok.Builder;
 

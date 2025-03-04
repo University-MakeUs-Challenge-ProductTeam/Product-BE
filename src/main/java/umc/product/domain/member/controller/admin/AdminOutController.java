@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.adviser.admin.AdminOutAdviser;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.out.MemberOutIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.OutReason;
 import umc.product.global.common.base.BaseResponse;
@@ -20,23 +21,24 @@ public class AdminOutController {
 
     @Operation(summary = "OUT 부여 API", description = "OUT을 부여하는 API입니다. 3OUT시 자동 OUT 처리됩니다.")
     @PostMapping("/out/{memberId}")
-    public BaseResponse<MemberIdResponse> postMemberOut(@CurrentMember Member member,
-                                                        @PathVariable(name = "memberId") Long memberId,
-                                                        @RequestParam OutReason outReason) {
+    public BaseResponse<MemberOutIdResponse> postMemberOut(@CurrentMember Member member,
+                                                           @PathVariable(name = "memberId") Long memberId,
+                                                           @RequestParam OutReason outReason) {
         return BaseResponse.onSuccess(adminOutAdviser.postMemberOut(memberId, outReason));
     }
 
     @Operation(summary = "OUT 내용 수정 API", description = "OUT 내용 수정하는 API입니다.")
-    @PatchMapping("/out/{outId}")
-    public BaseResponse<MemberIdResponse> modifyMemberOut(@CurrentMember Member member,
-                                                          @PathVariable(name = "outId") Long outId,
-                                                          @RequestParam OutReason outReason) {
-        return BaseResponse.onSuccess(adminOutAdviser.modifyMemberOut(outId, outReason));
+    @PatchMapping("/out/{memberId}/{outId}")
+    public BaseResponse<MemberOutIdResponse> modifyMemberOut(@CurrentMember Member member,
+                                                             @PathVariable(name = "memberId") Long memberId,
+                                                            @PathVariable(name = "outId") Long outId,
+                                                            @RequestParam OutReason outReason) {
+        return BaseResponse.onSuccess(adminOutAdviser.modifyMemberOut(outId, memberId, outReason));
     }
 
     @Operation(summary = "OUT 취소(삭제) API", description = "OUT 취소(삭제)하는 API입니다.")
     @DeleteMapping("/out/{memberId}/{outId}")
-    public BaseResponse<MemberIdResponse> deleteMemberOut(@CurrentMember Member member,
+    public BaseResponse<MemberOutIdResponse> deleteMemberOut(@CurrentMember Member member,
                                                           @PathVariable(name = "memberId") Long memberId,
                                                           @PathVariable(name = "outId") Long outId) {
         return BaseResponse.onSuccess(adminOutAdviser.deleteMemberOut(memberId, outId));
