@@ -39,6 +39,6 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     public MemberLoginResponse login(AdminLoginRequest request) {
         MemberLoginResponse response = loginContext.executeStrategy(request);
         refreshTokenService.saveRefreshToken(response.refreshToken(), response.memberId());
-        return loginContext.executeStrategy(request);
+        return response;
     }
 }
