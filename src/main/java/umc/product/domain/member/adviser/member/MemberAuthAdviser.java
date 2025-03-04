@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import umc.product.domain.file.dto.FileCreateResponse;
+import umc.product.domain.file.service.FileService;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.member.auth.MemberSignUpRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberCreateTokenResponse;
@@ -28,11 +30,12 @@ public class MemberAuthAdviser {
     private final MemberService memberService;
     private final SemesterService semesterService;
     private final MemberRefreshTokenService memberRefreshTokenService;
+    private final FileService fileService;
 
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
     public MemberIdResponse signUp(MultipartFile file, MemberSignUpRequest request){
-        //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
+        FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         Member member = memberService.findById(request.memberId());
         member.updateProfile(request);
         //학기 찾기
@@ -40,7 +43,7 @@ public class MemberAuthAdviser {
         //학기를 기반으로 학기/파트 생성
         List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterList(), member);
 
-        Member newMember = memberAuthService.signUp(member, semesterPartList);
+        Member newMember = memberAuthService.signUp(member, semesterPartList, fileCreateResponse.getUrl());
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 

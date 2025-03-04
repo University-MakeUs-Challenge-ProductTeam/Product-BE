@@ -3,6 +3,7 @@ package umc.product.domain.member.adviser.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import umc.product.domain.file.dto.FileCreateResponse;
 import umc.product.domain.file.service.FileService;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
@@ -28,11 +29,11 @@ public class AdminAuthAdviser {
     private final MemberConverter memberConverter;
 
     public MemberIdResponse signUp(MultipartFile file, AdminSignUpRequest request){
-        //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
+        FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         memberAuthService.verifyClientId(request.clientId());
         University university = universityService.findUniversity(request.universityName());
         Member member = adminMemberService.toAdminMember(request, "", university.getName());
-        Member newMember = adminAuthService.signUp(member, request.password(), university);
+        Member newMember = adminAuthService.signUp(member, request.password(), university, fileCreateResponse.getUrl());
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 

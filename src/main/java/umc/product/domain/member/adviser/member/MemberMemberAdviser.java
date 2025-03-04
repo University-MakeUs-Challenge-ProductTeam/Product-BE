@@ -2,6 +2,8 @@ package umc.product.domain.member.adviser.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import umc.product.domain.file.dto.FileCreateResponse;
 import umc.product.domain.file.service.FileService;
 import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
@@ -33,12 +35,9 @@ public class MemberMemberAdviser {
         return  memberConverter.toSearchMemberResponse(member);
     }
 
-    public MemberIdResponse modifyMyProfileAvatar(Member member) {
-        //FileCreateResponse fileCreateResponse = fileService.createFile("AVATAR-IMAGE", file);
-        Member modifyMember = memberService.modifyMyProfileAvatar(member, "");
+    public MemberIdResponse modifyMyProfileAvatar(Member member, MultipartFile file) {
+        FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
+        Member modifyMember = memberService.modifyMyProfileAvatar(member, fileCreateResponse.getUrl());
         return  memberConverter.toMemberIdResponse(modifyMember.getId());
     }
-
-
-
 }
