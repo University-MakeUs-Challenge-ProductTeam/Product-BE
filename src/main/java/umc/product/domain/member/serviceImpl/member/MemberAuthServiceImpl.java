@@ -56,7 +56,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         // 리프레쉬 토큰 저장
         refreshTokenService.saveRefreshToken(response.refreshToken(), response.memberId());
 
-        return loginContext.executeStrategy(accessToken, loginType);
+        return response;
     }
 
     // 새로운 액세스 토큰 발급 함수
