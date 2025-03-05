@@ -8,4 +8,6 @@ import java.util.List;
 public interface RoadmapQueryService {
 
     List<Roadmap> getRoadmapList(StudyMember studyMember);
+
+    List<String> getRoadmapTitleList(StudyMember studyMember, int week);
 }

@@ -35,4 +35,13 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
         }
         return roadmapList;
     }
+
+    @Override
+    public List<String> getRoadmapTitleList(StudyMember studyMember, int week) {
+        List<String> titleList = roadmapRepository.findRoadmapTitleListByPartAndWeek(studyMember.getSemesterPart().getPart(), week);
+        if (titleList == null || titleList.isEmpty()) {
+            throw new RestApiException(StudyErrorStatus.STUDY_ROADMAP_NOT_FOUND);
+        }
+        return titleList;
+    }
 }

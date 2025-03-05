@@ -16,5 +16,8 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
             "AND r.part = :part " +
             "ORDER BY r.week ASC")
     List<Roadmap> findAllBySemesterIdAndPart(@Param("semesterId") Long semesterId, @Param("part") Part part);
+
+    @Query("SELECT rt.title FROM Roadmap r JOIN r.roadmapTitleList rt WHERE r.part = :part AND r.week = :week")
+    List<String> findRoadmapTitleListByPartAndWeek(@Param("part") Part part, @Param("week") int week);
 }
 

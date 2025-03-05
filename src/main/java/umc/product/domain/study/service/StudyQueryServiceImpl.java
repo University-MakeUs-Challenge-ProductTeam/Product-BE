@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.study.dto.response.StudyMemberResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
+import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.mapper.StudyMapper;
@@ -36,5 +38,12 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         return studyMapper.toStudyResponse(studyMember, studyMemberResponseList, roadmapList);
+    }
+
+    @Override
+    public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList) {
+        List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
+        List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists = studyRepository.getStudyChecklists(studyMember.getId(), week);
+        return studyMapper.toStudyWorkbookResponse(studyMember, studyMemberResponseList, week, roadmapTitleList, studyChecklists);
     }
 }

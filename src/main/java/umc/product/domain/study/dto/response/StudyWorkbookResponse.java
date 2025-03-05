@@ -1,5 +1,6 @@
 package umc.product.domain.study.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,6 @@ public class StudyWorkbookResponse {
     @Schema(description = "체크리스트 정보")
     @Getter
     @Builder
-    @AllArgsConstructor
     public static class StudyChecklistResponse {
 
         @Schema(description = "체크리스트 제목", example = "참석")
@@ -39,5 +39,11 @@ public class StudyWorkbookResponse {
 
         @Schema(description = "체크리스트 상태", example = "YES")
         private String status;
+
+        @QueryProjection
+        public StudyChecklistResponse(String title, String status) {
+            this.title = title;
+            this.status = status;
+        }
     }
 }

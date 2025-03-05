@@ -1,10 +1,12 @@
 package umc.product.domain.study.mapper;
 
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapTitle;
 import umc.product.domain.study.dto.response.StudyMemberResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
+import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
@@ -43,6 +45,19 @@ public class StudyMapper {
         return StudyResponse.StudyRoadmapResponse.builder()
                 .week(roadmap.getWeek())
                 .titles(titles)
+                .build();
+    }
+
+    public StudyWorkbookResponse toStudyWorkbookResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, int week,
+                                                         List<String> roadmapTitleList, List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists) {
+        Member member = studyMember.getSemesterPart().getMember();
+
+        return StudyWorkbookResponse.builder()
+                .nickname(member.getNikeName())
+                .week(week)
+                .workbookContents(roadmapTitleList)
+                .members(studyMemberResponseList)
+                .checklists(studyChecklists)
                 .build();
     }
 

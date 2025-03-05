@@ -84,9 +84,10 @@ public class StudyController {
         return BaseResponse.onSuccess(studyAdviser.getStudyInfo(member, studyId));
     }
 
-    @GetMapping("/{studyId}/workbooks/{week}")
+    @GetMapping("/{studyId}/workbooks")
     @Operation(summary = "주차별 워크북 조회 API", description = "워크북을 주차별로 조회하는 API입니다. memberId를 query parameter로 안 보내면 나의 워크북이 조회되고, " +
-            "memberId를 query parameter로 보내면 해당 사용자의 워크북이 조회됩니다.(체크리스트 상태가 YES면 ○, Partial이면 △, NO면 X 표기)")
+            "memberId를 query parameter로 보내면 해당 사용자의 워크북이 조회됩니다. week도 마찬가지로 query parameter로 안 보내면 스터디 진행 주차의 워크북이 조회되고, " +
+            "week에 값이 담기면 해당 주차의 워크북이 조회됩니다. (체크리스트 상태가 YES면 ○, Partial이면 △, NO면 X 표기)")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -95,17 +96,18 @@ public class StudyController {
     })
     @Parameters({
             @Parameter(name = "studyId", description = "스터디 id, path variable 입니다"),
-            @Parameter(name = "week", description = "조회할 워크북 주차, path variable 입니다"),
+            @Parameter(name = "week", description = "조회할 워크북 주차, query parameter 입니다"),
             @Parameter(name = "memberId", description = "조회할 워크북 대상의 멤버 id, query parameter 입니다")
     })
     public BaseResponse<StudyWorkbookResponse> getMyWorkbook(
             @CurrentMember Member member,
             @RequestParam(name = "memberId", required = false) Long memberId,
-            @PathVariable Long studyId,
-            @PathVariable int week) {
+            @RequestParam(name = "week", required = false) Integer week,
+            @PathVariable Long studyId) {
 
-        // memberId가 존재하면, 해당 멤버의 워크북 조회 로직을 처리하고. memberId가 없으면, 현재 로그인한 member의 워크북 조회 로직을 처리합니다.
-
-        return BaseResponse.onSuccess(null);
+        // memberId가 존재하면, 해당 멤버의 워크북 조회 로직을 처리하고. memberId가 없으면, 현재 로그인한 member의 워크북 조회 로직을 처리
+        // week가 존재하면, 해당 주차의 워크북을 조회하고, week가 없다면 스터디 진행 주차의 워크북이 조회
+        // 컨트롤러 계층에서 Study의 currentWeek 값을 못 가져오므로, 어드바이저 계층에서 분기 처리
+        return BaseResponse.onSuccess(studyAdviser.getStudyWorkbook(member, memberId, week, studyId));
     }
 }
