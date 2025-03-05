@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Schema(description = "스터디 멤버 정보")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class StudyMemberResponse {
 
     @Schema(description = "사용자 id", example = "1")
