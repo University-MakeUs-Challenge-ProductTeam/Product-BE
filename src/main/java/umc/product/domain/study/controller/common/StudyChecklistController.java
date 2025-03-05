@@ -45,10 +45,10 @@ public class StudyChecklistController {
     public BaseResponse<StudyWeekChecklistResponse> getChecklist(
             @CurrentMember Member member,
             @PathVariable Long studyId,
-            @PathVariable Long week,
-            @RequestParam(name = "memberId", required = false) Integer memberId) {
-
-        return BaseResponse.onSuccess(null);
+            @PathVariable int week,
+            @RequestParam(name = "memberId", required = false) Long memberId) {
+        // 조회 대상 사용자에 대한 분기 처리는 어드바이저 계층에서 진행
+        return BaseResponse.onSuccess(studyAdviser.getStudyChecklist(member, memberId, week, studyId));
     }
 
     @PostMapping("/{studyId}/checklists/{week}")

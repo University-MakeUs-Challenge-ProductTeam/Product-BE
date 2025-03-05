@@ -6,6 +6,7 @@ import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapTitle;
 import umc.product.domain.study.dto.response.StudyMemberResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
+import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
 import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
@@ -58,6 +59,15 @@ public class StudyMapper {
                 .workbookContents(roadmapTitleList)
                 .members(studyMemberResponseList)
                 .checklists(studyChecklists)
+                .build();
+    }
+
+    public StudyWeekChecklistResponse toStudyWeekCheckListResponse(int week, List<String> roadmapTitleList,
+                                                                   List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList) {
+        return StudyWeekChecklistResponse.builder()
+                .week(week)
+                .workbookContents(roadmapTitleList)
+                .checklists(checklistResponseList)
                 .build();
     }
 

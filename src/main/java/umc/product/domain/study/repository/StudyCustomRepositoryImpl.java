@@ -1,5 +1,6 @@
 package umc.product.domain.study.repository;
 
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +14,11 @@ import umc.product.domain.member.entity.QMember;
 import umc.product.domain.roadmap.entity.QRoadmap;
 import umc.product.domain.roadmap.entity.QRoadmapSemester;
 import umc.product.domain.semester.entity.QSemesterPart;
-import umc.product.domain.study.dto.response.QStudyMemberResponse;
-import umc.product.domain.study.dto.response.QStudyWorkbookResponse_StudyChecklistResponse;
-import umc.product.domain.study.dto.response.StudyMemberResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.*;
 import umc.product.domain.study.entity.QStudyAttendance;
 import umc.product.domain.study.entity.QStudyMember;
 import umc.product.domain.study.entity.Study;
+import umc.product.domain.study.entity.StudyMember;
 
 import java.util.Collections;
 import java.util.List;
@@ -164,6 +163,33 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                         .gt(Expressions.numberTemplate(Integer.class, "0"))
                 )
                 .fetch();
+    }
+
+    @Override
+    public List<StudyWeekChecklistResponse.ChecklistResponse> getChecklistResponses(StudyMember studyMember, int week) {
+
+        return jpaQueryFactory
+                .from(checklist)
+                .join(checklist.checklistContentList, checklistContent)
+                .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
+                .on(checklistMemberAnswer.studyMember.id.eq(studyMember.getId()))
+                // Roadmap을 통해 week 조건 맞추기
+                .join(checklist.roadmapSemester, roadmapSemester)
+                .join(roadmapSemester.roadmap, roadmap)
+                .where(roadmap.week.eq(week))
+                // checklistId를 기준으로 그룹화하고, 각 그룹별로 DTO를 직접 생성하여 리스트로 반환
+                .transform(GroupBy.groupBy(checklist.id)
+                        .list(new QStudyWeekChecklistResponse_ChecklistResponse(
+                                checklist.checklistType.stringValue(),
+                                checklist.title,
+                                // 체크리스트 내용 목록 가져오기
+                                GroupBy.list(new QStudyWeekChecklistResponse_ChecklistContentResponse(
+                                        checklistContent.id,
+                                        checklistContent.content,
+                                        checklistMemberAnswer.checkStatus
+                                ))
+                        ))
+                );
     }
 
 }

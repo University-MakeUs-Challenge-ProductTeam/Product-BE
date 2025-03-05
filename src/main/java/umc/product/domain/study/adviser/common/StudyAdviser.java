@@ -12,6 +12,7 @@ import umc.product.domain.study.dto.request.StudyChecklistListRequest;
 import umc.product.domain.study.dto.request.StudyModifyRequest;
 import umc.product.domain.study.dto.response.StudyCommonResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
+import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
 import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyAttendance;
@@ -66,7 +67,7 @@ public class StudyAdviser {
 
         // memberId가 제공되면 해당 사용자, 없으면 현재 로그인한 사용자의 id로 조회
         Long targetMemberId = (providedMemberId != null) ? providedMemberId : loginMember.getId();
-        Member targetMember = memberService.findById(targetMemberId );
+        Member targetMember = memberService.findById(targetMemberId);
 
         // week가 제공되면 해당 주차, 없으면 Study 진행 주차로 조회
         Study study = studyQueryService.getStudy(studyId);
@@ -81,6 +82,19 @@ public class StudyAdviser {
     }
 
     // 워크북 체크리스트 조회
+    public StudyWeekChecklistResponse getStudyChecklist(Member loginMember, Long providedMemberId, int week, Long studyId) {
+
+        // memberId가 제공되면 해당 사용자, 없으면 현재 로그인한 사용자의 id로 조회
+        Long targetMemberId = (providedMemberId != null) ? providedMemberId : loginMember.getId();
+        Member targetMember = memberService.findById(targetMemberId);
+
+        StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(targetMember, studyId);
+
+        List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
+
+        // StudyMember를 통해 Checklist를 가져오고, week에 맞게 응답값 반환 - querydsl을 통해 N + 1 문제 해결
+        return studyQueryService.getStudyChecklist(studyMember, week, roadmapTitleList);
+    }
 
     // 체크리스트 입력
     public StudyCommonResponse postChecklist(Member member, Long studyId, int week, StudyChecklistListRequest request) {

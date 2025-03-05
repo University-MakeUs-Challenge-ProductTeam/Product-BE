@@ -8,6 +8,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.study.dto.response.StudyMemberResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
+import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
 import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
@@ -45,5 +46,11 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists = studyRepository.getStudyChecklists(studyMember.getId(), week);
         return studyMapper.toStudyWorkbookResponse(studyMember, studyMemberResponseList, week, roadmapTitleList, studyChecklists);
+    }
+
+    @Override
+    public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList) {
+        List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList = studyRepository.getChecklistResponses(studyMember, week);
+        return studyMapper.toStudyWeekCheckListResponse(week, roadmapTitleList, checklistResponseList);
     }
 }

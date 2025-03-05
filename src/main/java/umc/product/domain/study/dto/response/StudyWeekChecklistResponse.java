@@ -1,5 +1,6 @@
 package umc.product.domain.study.dto.response;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +26,6 @@ public class StudyWeekChecklistResponse {
     @Schema(description = "체크리스트 응답 DTO")
     @Getter
     @Builder
-    @AllArgsConstructor
     public static class ChecklistResponse {
 
         @Schema(description = "체크리스트 타입", example = "SELECT")
@@ -36,12 +36,18 @@ public class StudyWeekChecklistResponse {
 
         @Schema(description = "체크리스트 내용 목록")
         private List<ChecklistContentResponse> contents;
+
+        @QueryProjection
+        public ChecklistResponse(String type, String title, List<ChecklistContentResponse> contents) {
+            this.type = type;
+            this.title = title;
+            this.contents = contents;
+        }
     }
 
     @Schema(description = "체크리스트 내용 응답 DTO")
     @Getter
     @Builder
-    @AllArgsConstructor
     public static class ChecklistContentResponse {
 
         @Schema(description = "체크리스트 contentId", example = "101")
@@ -52,5 +58,12 @@ public class StudyWeekChecklistResponse {
 
         @Schema(name = "check_status", description = "체크 상태", example = "true")
         private boolean checkStatus;
+
+        @QueryProjection
+        public ChecklistContentResponse(Long contentId, String content, boolean checkStatus) {
+            this.contentId = contentId;
+            this.content = content;
+            this.checkStatus = checkStatus;
+        }
     }
 }
