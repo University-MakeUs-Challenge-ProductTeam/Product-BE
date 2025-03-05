@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class StudyChecklistListRequest {
 
-    @Schema(description = "체크리스트 요청 리스트", example = "[{\"contentId\": 101, \"checkStatus\": true}, {\"contentId\": 104, \"checkStatus\": true}]")
+    @Schema(description = "체크리스트 요청 리스트", example = "[{\"contentId\": 1, \"checkStatus\": true}, {\"contentId\": 4, \"checkStatus\": true}]")
     private List<StudyChecklistRequest> answers;
 
     @Schema(description = "특정 주차 워크북 체크리스트 DTO")

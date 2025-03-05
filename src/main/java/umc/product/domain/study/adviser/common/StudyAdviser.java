@@ -2,11 +2,13 @@ package umc.product.domain.study.adviser.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import umc.product.domain.checklist.service.ChecklistCommandService;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.common.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.study.dto.request.StudyAttendanceRequest;
+import umc.product.domain.study.dto.request.StudyChecklistListRequest;
 import umc.product.domain.study.dto.request.StudyModifyRequest;
 import umc.product.domain.study.dto.response.StudyCommonResponse;
 import umc.product.domain.study.dto.response.StudyResponse;
@@ -14,7 +16,6 @@ import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyAttendance;
 import umc.product.domain.study.entity.StudyMember;
-import umc.product.domain.study.mapper.StudyMapper;
 import umc.product.domain.study.service.*;
 
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudyAdviser {
 
-    private final StudyMapper studyMapper;
     private final StudyMemberQueryService studyMemberQueryService;
     private final StudyQueryService studyQueryService;
     private final StudyCommandService studyCommandService;
@@ -31,6 +31,7 @@ public class StudyAdviser {
     private final StudyAttendanceCommandService studyAttendanceCommandService;
     private final RoadmapQueryService roadmapQueryService;
     private final MemberService memberService;
+    private final ChecklistCommandService checklistCommandService;
 
     // 스터디 정보 수정
     public StudyCommonResponse modifyStudy(Member member, StudyModifyRequest request, Long studyId) {
@@ -77,5 +78,16 @@ public class StudyAdviser {
         List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
 
         return studyQueryService.getStudyWorkbookResponse(studyMember, week, roadmapTitleList);
+    }
+
+    // 워크북 체크리스트 조회
+
+    // 체크리스트 입력
+    public StudyCommonResponse postChecklist(Member member, Long studyId, int week, StudyChecklistListRequest request) {
+        // member랑 studyID로 studyMember 가져오기
+        StudyMember studyMember = studyMemberQueryService.getStudyMember(member, studyId);
+
+        // request의 contentId에 맞는 ChecklistMemberAnswer를 가져와 checkStatus 업데이트
+        return checklistCommandService.updateChecklistAnswers(studyMember, week, request.getAnswers());
     }
 }

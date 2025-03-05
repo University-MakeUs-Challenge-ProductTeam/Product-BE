@@ -26,4 +26,9 @@ public class ChecklistMemberAnswer extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_member_id", nullable = false)
     private StudyMember studyMember;
+
+    // checkStatus 업데이트 메서드
+    public void updateCheckStatus(boolean checkStatus) {
+        this.checkStatus = checkStatus;
+    }
 }
