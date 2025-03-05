@@ -88,6 +88,6 @@ public class StudyChecklistController {
             @Valid @RequestBody StudyChecklistListRequest request,
             @PathVariable Long studyId,
             @PathVariable int week) {
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(studyAdviser.postChecklist(member, studyId, week, request));
     }
 }

@@ -90,4 +90,13 @@ public class StudyAdviser {
         // request의 contentId에 맞는 ChecklistMemberAnswer를 가져와 checkStatus 업데이트
         return checklistCommandService.updateChecklistAnswers(studyMember, week, request.getAnswers());
     }
+
+    // 체크리스트 수정
+    public StudyCommonResponse modifyChecklist(Member member, Long studyId, int week, StudyChecklistListRequest request) {
+        // member랑 studyID로 studyMember 가져오기
+        StudyMember studyMember = studyMemberQueryService.getStudyMember(member, studyId);
+
+        // request의 contentId에 맞는 ChecklistMemberAnswer를 가져와 checkStatus 업데이트
+        return checklistCommandService.updateChecklistAnswers(studyMember, week, request.getAnswers());
+    }
 }
