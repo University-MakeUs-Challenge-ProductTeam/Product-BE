@@ -12,6 +12,9 @@ import umc.product.domain.member.repository.MemberOutRepository;
 import umc.product.domain.member.service.admin.AdminOutService;
 import umc.product.global.common.exception.RestApiException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static umc.product.domain.member.status.MemberErrorStatus.NOT_FOUND_OUT;
 
 @Service
@@ -26,7 +29,10 @@ public class AdminOutServiceImpl implements AdminOutService {
     public MemberOut postMemberOut(Member member, OutReason outReason) {
         MemberOut memberOut = memberOutMapper.toMemberOut(member, outReason);
         member.addMemberOut(memberOut);
-        if(member.getMemberOutList().size() >=3) member.setStatus(Status.OUT);
+        List<MemberOut> memberOutList = member.getMemberOutList().stream()
+                .filter(memberOut1 -> memberOut1.getDeletedAt() == null)    //삭제 되지 않은 것만 추출
+                .collect(Collectors.toList());
+        if(memberOutList.size() >=3) member.setStatus(Status.OUT);
         return memberOut;
     }
 
@@ -47,6 +53,9 @@ public class AdminOutServiceImpl implements AdminOutService {
                 .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
         if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
         memberOut.delete();
-        if(member.getMemberOutList().size() < 3) member.setStatus(Status.ACTIVE);
+        List<MemberOut> memberOutList = member.getMemberOutList().stream()
+                .filter(memberOut1 -> memberOut1.getDeletedAt() == null)    //삭제 되지 않은 것만 추출
+                .collect(Collectors.toList());
+        if(memberOutList.size() < 3) member.setStatus(Status.ACTIVE);
     }
 }

@@ -96,14 +96,14 @@ public class MemberRepositoryImpl implements MemberRepository {
         ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
         String memberSql = """
-                       INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
-                       VALUES
-                       """;
+                        INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
+                        VALUES
+                        """;
 
         String semesterSql = """
-                         INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
-                         VALUES
-                         """;
+                        INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
+                        VALUES
+                        """;
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -213,14 +213,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType) {
-       BooleanBuilder builder = new BooleanBuilder();
-       builder.and(qMember.clientId.eq(clientId));
-       builder.and(qMember.loginType.eq(loginType));
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.clientId.eq(clientId));
+        builder.and(qMember.loginType.eq(loginType));
 
-       return Optional.ofNullable(jpaQueryFactory
-                                   .selectFrom(qMember)
-                                   .where(builder)
-                                   .fetchOne());
+        return Optional.ofNullable(jpaQueryFactory
+                                    .selectFrom(qMember)
+                                    .where(builder)
+                                    .fetchOne());
     }
 
     @Override

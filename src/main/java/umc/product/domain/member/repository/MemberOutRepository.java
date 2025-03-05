@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface MemberOutRepository extends JpaRepository<MemberOut, Long> {
     Optional<MemberOut> findMemberOutById(Long outId);
-    Optional<MemberOut> deleteMemberOutById(Long outId);
 }
 
