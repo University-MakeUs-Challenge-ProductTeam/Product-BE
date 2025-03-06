@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
+import umc.product.domain.study.entity.StudyMember;
 import umc.product.global.common.base.BaseEntity;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -30,6 +33,10 @@ public class SemesterPart extends BaseEntity {
     private Part part;
 
     // todo : branch 추가해서 연관관계 매핑하기
+
+
+    @OneToMany(mappedBy = "semesterPart", cascade = CascadeType.ALL)
+    private List<StudyMember> studyMemberList;
 
     public void updateSemesterPart(Semester semester, Part part) {
         this.semester =semester;
