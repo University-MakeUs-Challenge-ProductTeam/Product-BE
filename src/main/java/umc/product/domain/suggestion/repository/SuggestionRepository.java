@@ -19,7 +19,7 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
             "case when s.anonymityStatus = true then 'Anonymous' " +
             "     when s.anonymityStatus = false then s.member.name end, " +
             "case when s.anonymityStatus = true then 'Anonymous' " +
-            "     when s.anonymityStatus = false then s.member.nikeName end," +
+            "     when s.anonymityStatus = false then s.member.nickName end," +
             "case when s.anonymityStatus = true then 'Anonymous' " +
             "     when s.anonymityStatus = false then s.member.avatarUrl end) " +
             "from Suggestion s " +

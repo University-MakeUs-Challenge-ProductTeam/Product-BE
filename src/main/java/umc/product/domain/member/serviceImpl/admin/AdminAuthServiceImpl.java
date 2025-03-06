@@ -3,33 +3,43 @@ package umc.product.domain.member.serviceImpl.admin;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.AdminSignUpRequest;
-import umc.product.domain.member.dto.response.common.MemberIdResponse;
+import org.springframework.transaction.annotation.Transactional;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberInfoMapper;
-import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.jpa.MemberJpaRepository;
 import umc.product.domain.member.service.admin.AdminAuthService;
+import umc.product.domain.member.serviceImpl.member.MemberRefreshTokenServiceImpl;
+import umc.product.domain.member.strategy.context.LoginContext;
+import umc.product.domain.university.entity.University;
 
 @Service
 @AllArgsConstructor
 public class AdminAuthServiceImpl implements AdminAuthService {
-    private final MemberRepository memberRepository;
-
-    private final MemberMapper memberMapper;
+    public final MemberRefreshTokenServiceImpl refreshTokenService;
+    private final MemberJpaRepository memberJpaRepository;
     private final MemberInfoMapper memberInfoMapper;
-
+    private final LoginContext loginContext;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     @Override
-    public MemberIdResponse signUp(AdminSignUpRequest request, String avatarUrl) {
-        Member member = memberMapper.toAdminMember(request, avatarUrl);
-        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.getClientId(), passwordEncoder.encode(request.getPassword()), member);
+    public Member signUp(Member member, String password, University university, String avatarUrl) {
+        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), passwordEncoder.encode(password), member);
         member.setMemberLoginInfo(memberLoginInfo);
-        return new MemberIdResponse(saveEntity(member).getId());
+        member.setUniversity(university);
+        member.setAvatarUrl(avatarUrl);
+        return memberJpaRepository.save(member);
     }
-    public Member saveEntity(Member member) {
-        return memberRepository.save(member);
+
+    // 자체 로그인을 수행하는 함수
+    @Override
+    @Transactional(readOnly = true)
+    public MemberLoginResponse login(AdminLoginRequest request) {
+        MemberLoginResponse response = loginContext.executeStrategy(request);
+        refreshTokenService.saveRefreshToken(response.refreshToken(), response.memberId());
+        return response;
     }
 }

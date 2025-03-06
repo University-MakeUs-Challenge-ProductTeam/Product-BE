@@ -58,7 +58,6 @@ public class SuggestionServiceImpl implements SuggestionService {
                 .orElseThrow(()->new RestApiException(SUGGESTION_NOT_EXIST));
 
         if (!suggestion.getMember().getId().equals(member.getId())||
-                member.getRole().equals(Role.GUEST) ||
                 member.getRole().equals(Role.CHALLENGER)) {
             throw new RestApiException(SUGGESTION_NOT_AUTH);
         }
@@ -85,7 +84,6 @@ public class SuggestionServiceImpl implements SuggestionService {
                 .orElseThrow(()->new RestApiException(SUGGESTION_NOT_EXIST));
 
         if (!suggestion.getMember().getId().equals(member.getId()) ||
-                member.getRole().equals(Role.GUEST) ||
                 member.getRole().equals(Role.CHALLENGER)) {
             throw new RestApiException(SUGGESTION_NOT_AUTH);
         }

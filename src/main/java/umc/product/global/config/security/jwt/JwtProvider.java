@@ -1,16 +1,20 @@
 package umc.product.global.config.security.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import umc.product.global.common.exception.RestApiException;
 
 import java.security.Key;
 import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+
+import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_REFRESH_TOKEN;
 
 @Component
 public class JwtProvider {
@@ -44,10 +48,10 @@ public class JwtProvider {
         }
 
         // todo: subject 바꾸기
-        Claims claims = Jwts.claims().setSubject("your-mode"); // JWT payload 에 저장되는 정보단위
+        Claims claims = Jwts.claims().setSubject(memberId); // JWT payload 에 저장되는 정보단위
 
         claims.put("memberId", memberId);
-        claims.put("role", "ROLE_USER");
+        claims.put("role", subject);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -78,7 +82,12 @@ public class JwtProvider {
     }
 
     public Claims getClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        }
+        catch (Exception e){
+            throw new RestApiException(INVALID_REFRESH_TOKEN);
+        }
     }
 
     public String resolveToken(HttpServletRequest request) {

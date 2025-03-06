@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+import static umc.product.global.common.exception.code.status.GlobalErrorStatus._FAILED_NOT_VALID_FORMAT;
+
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -37,7 +39,7 @@ public class S3FileUtil {
 
         // 파일 타입 확인
         boolean isImage = multipartFile.getContentType() != null && multipartFile.getContentType().startsWith("image");
-
+        if(!isImage) throw new RestApiException(_FAILED_NOT_VALID_FORMAT);
         // 바이트 배열로 파일 내용 읽기
         byte[] bytes;
         try {
@@ -45,7 +47,7 @@ public class S3FileUtil {
         } catch (IOException e) {
             // 파일 읽기 실패
             log.error(e.getMessage());
-            throw new RestApiException(GlobalErrorStatus._FALIED_READ_FILE);
+            throw new RestApiException(GlobalErrorStatus._FAILED_READ_FILE);
         }
 
         // Content-Length 설정
@@ -56,8 +58,7 @@ public class S3FileUtil {
 
         // S3에 업로드
         try {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, byteArrayInputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, byteArrayInputStream, objectMetadata));
         } catch (AmazonS3Exception e) {
             // S3 업로드 실패 시 에러 코드 분기
             log.error(e.getMessage());

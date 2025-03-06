@@ -26,44 +26,4 @@ public class SuggestionMapper {
                 .member(member)
                 .build();
     }
-
-    public SuggestionIdResponse toSuggestionIdResponse(Suggestion suggestion) {
-        return SuggestionIdResponse.builder()
-                .suggestionId(suggestion.getId())
-                .build();
-    }
-
-    public SuggestionGetResponse toSuggestionGetResponse(Page<SuggestionQueryDto> suggestions) {
-        return SuggestionGetResponse.builder()
-                .totalPage(suggestions.getTotalPages())
-                .page(suggestions.getNumber())
-                .suggestions(suggestions.getContent())
-                .build();
-    }
-
-    public MySuggestionGetResponse toMySuggestionGetResponse(Page<MySuggestionQueryDto> suggestions) {
-        return MySuggestionGetResponse.builder()
-                .totalPage(suggestions.getTotalPages())
-                .page(suggestions.getNumber())
-                .suggestions(suggestions.getContent())
-                .build();
-    }
-
-    public SuggestionDetailResponse toSuggestionDetailResponse(Suggestion suggestion, List<SuggestionComment> comments, Long depth){
-        List<SuggestionCommentsResponse> suggestionCommentsResponseList
-                = suggestionCommentMapper.toPostDetailCommentResultDTO(comments, 0L);
-
-        return SuggestionDetailResponse.builder()
-                .suggestionId(suggestion.getId())
-                .title(suggestion.getTitle())
-                .content(suggestion.getContent())
-                .completedStatus(suggestion.isCompletedStatus())
-                .createdAt(suggestion.getCreatedAt())
-                .suggestionTarget(suggestion.getSuggestionTarget())
-                .memberName(suggestion.getMember().getName())
-                .memberNickName(suggestion.getMember().getNikeName())
-                .memberAvatarUrl(suggestion.getMember().getAvatarUrl())
-                .comments(suggestionCommentsResponseList)
-                .build();
-    }
 }

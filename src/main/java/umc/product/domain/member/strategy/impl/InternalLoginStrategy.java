@@ -3,42 +3,40 @@ package umc.product.domain.member.strategy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.request.admin.AdminLoginRequest;
-import umc.product.domain.member.dto.response.common.MemberLoginResponse;
+import umc.product.domain.member.converter.response.MemberConverter;
+import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberLoginInfoRepository;
+import umc.product.domain.member.repository.jpa.MemberLoginInfoJpaRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 
-import static umc.product.domain.member.status.MemberErrorStatus.AUTHENTICATION_FAILED;
-import static umc.product.domain.member.status.MemberErrorStatus.PASSWORD_MISMATCH;
+import static umc.product.domain.member.status.MemberErrorStatus.*;
 
 @Component
 @RequiredArgsConstructor
 public class InternalLoginStrategy implements LoginStrategy {
-    private final MemberLoginInfoRepository memberLoginInfoRepository;
-    private final MemberMapper memberMapper;
+    private final MemberLoginInfoJpaRepository memberLoginInfoJpaRepository;
+    private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
 
     @Override
     public MemberLoginResponse login(String accessToken) {
-        // todo : AccessToken 방식은 지원하지 않습니다. RestApiException으로 변경
-        throw new UnsupportedOperationException("AccessToken 방식은 지원하지 않습니다.");
+        throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
     }
 
     @Override
     public MemberLoginResponse login(AdminLoginRequest request) {
         // 회원 조회
-        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.getMemberId())
+        MemberLoginInfo memberLoginInfo = memberLoginInfoJpaRepository.findByMemberLoginId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
         Member member = memberLoginInfo.getMember();
 
-        if (!passwordEncoder.matches(request.getPassword(), member.getMemberLoginInfo().getPassword())) {
+        if (!passwordEncoder.matches(request.password(), member.getMemberLoginInfo().getPassword())) {
             throw new RestApiException(PASSWORD_MISMATCH);
         }
 
@@ -48,7 +46,7 @@ public class InternalLoginStrategy implements LoginStrategy {
         // 응답 객체 반환 (회원가입 완료된 멤버인지 판병)
         boolean isServiceMember = member.getName() != null;
 
-        return memberMapper.toLoginMemberResponse(member, tokenInfo, isServiceMember, member.getRole());
+        return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
     }
 
     private TokenInfo generateToken(Member member) {
