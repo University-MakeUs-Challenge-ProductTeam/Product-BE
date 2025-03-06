@@ -8,33 +8,31 @@ import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.repository.MemberLoginInfoRepository;
+import umc.product.domain.member.repository.jpa.MemberLoginInfoJpaRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 
-import static umc.product.domain.member.status.MemberErrorStatus.AUTHENTICATION_FAILED;
-import static umc.product.domain.member.status.MemberErrorStatus.PASSWORD_MISMATCH;
+import static umc.product.domain.member.status.MemberErrorStatus.*;
 
 @Component
 @RequiredArgsConstructor
 public class InternalLoginStrategy implements LoginStrategy {
-    private final MemberLoginInfoRepository memberLoginInfoRepository;
+    private final MemberLoginInfoJpaRepository memberLoginInfoJpaRepository;
     private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
 
     @Override
     public MemberLoginResponse login(String accessToken) {
-        // todo : AccessToken 방식은 지원하지 않습니다. RestApiException으로 변경
-        throw new UnsupportedOperationException("AccessToken 방식은 지원하지 않습니다.");
+        throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
     }
 
     @Override
     public MemberLoginResponse login(AdminLoginRequest request) {
         // 회원 조회
-        MemberLoginInfo memberLoginInfo = memberLoginInfoRepository.findByMemberLoginId(request.clientId())
+        MemberLoginInfo memberLoginInfo = memberLoginInfoJpaRepository.findByMemberLoginId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
         Member member = memberLoginInfo.getMember();
 

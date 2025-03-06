@@ -9,7 +9,7 @@ import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
 import umc.product.domain.member.mapper.MemberInfoMapper;
-import umc.product.domain.member.repository.MemberJpaRepository;
+import umc.product.domain.member.repository.jpa.MemberJpaRepository;
 import umc.product.domain.member.service.admin.AdminAuthService;
 import umc.product.domain.member.serviceImpl.member.MemberRefreshTokenServiceImpl;
 import umc.product.domain.member.strategy.context.LoginContext;

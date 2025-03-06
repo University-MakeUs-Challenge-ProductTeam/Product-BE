@@ -1,4 +1,4 @@
-package umc.product.domain.member.repository;
+package umc.product.domain.member.repository.querydsl;
 
 import org.springframework.data.domain.Pageable;
 import umc.product.domain.member.entity.Member;

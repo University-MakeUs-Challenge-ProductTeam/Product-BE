@@ -8,7 +8,7 @@ import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.OutReason;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberOutMapper;
-import umc.product.domain.member.repository.MemberOutRepository;
+import umc.product.domain.member.repository.jpa.MemberOutJpaRepository;
 import umc.product.domain.member.service.admin.AdminOutService;
 import umc.product.global.common.exception.RestApiException;
 
@@ -20,7 +20,7 @@ import static umc.product.domain.member.status.MemberErrorStatus.NOT_FOUND_OUT;
 @Service
 @RequiredArgsConstructor
 public class AdminOutServiceImpl implements AdminOutService {
-    private final MemberOutRepository memberOutRepository;
+    private final MemberOutJpaRepository memberOutJpaRepository;
 
     private final MemberOutMapper memberOutMapper;
 
@@ -39,7 +39,7 @@ public class AdminOutServiceImpl implements AdminOutService {
     @Transactional
     @Override
     public void modifyMemberOut(Long outId, OutReason outReason, Member member) {
-        MemberOut memberOut = memberOutRepository.findMemberOutById(outId)
+        MemberOut memberOut = memberOutJpaRepository.findMemberOutById(outId)
                 .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
 
         if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
@@ -49,7 +49,7 @@ public class AdminOutServiceImpl implements AdminOutService {
     @Transactional
     @Override
     public void deleteMemberOut(Member member, Long outId) {
-        MemberOut memberOut = memberOutRepository.findMemberOutById(outId)
+        MemberOut memberOut = memberOutJpaRepository.findMemberOutById(outId)
                 .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
         if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
         memberOut.delete();

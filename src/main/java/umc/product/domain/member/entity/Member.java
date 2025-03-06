@@ -1,5 +1,6 @@
 package umc.product.domain.member.entity;
 
+import org.hibernate.annotations.Where;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.member.converter.RoleConverter;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;

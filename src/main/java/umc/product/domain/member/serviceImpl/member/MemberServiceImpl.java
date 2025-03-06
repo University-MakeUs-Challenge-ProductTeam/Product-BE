@@ -2,16 +2,13 @@ package umc.product.domain.member.serviceImpl.member;
 
 import jakarta.transaction.Transactional;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.repository.MemberJpaRepository;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.jpa.MemberJpaRepository;
+import umc.product.domain.member.repository.querydsl.MemberRepository;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
 import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
-import umc.product.global.config.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

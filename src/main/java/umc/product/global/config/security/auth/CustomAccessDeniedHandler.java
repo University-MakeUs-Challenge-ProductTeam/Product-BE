@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ROLE;
 
 @Component
@@ -20,8 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     //AccessDeniedHandler 인터페이스를 구현하여 사용자가 권한이 없는 자원에 접근할 경우 요청을 /access/denied 경로로 포워딩
     // accessDeniedException이 발생했을 때만 요청을 포워드하도록 조건을 추가
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 응답의 Content-Type을 application/json으로 설정
         response.setCharacterEncoding("UTF-8");
