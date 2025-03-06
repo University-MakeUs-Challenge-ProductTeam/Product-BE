@@ -54,7 +54,7 @@ public class StudyMapper {
         Member member = studyMember.getSemesterPart().getMember();
 
         return StudyWorkbookResponse.builder()
-                .nickname(member.getNikeName())
+                .nickname(member.getNickName())
                 .week(week)
                 .workbookContents(roadmapTitleList)
                 .members(studyMemberResponseList)

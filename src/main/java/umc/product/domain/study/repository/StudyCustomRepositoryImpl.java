@@ -47,7 +47,7 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 .select(new QStudyMemberResponse(
                         member.id,
                         member.university.name,
-                        member.nikeName,
+                        member.nickName,
                         studyAttendance.checkStatus.stringValue()
                 ))
                 .from(studyMember)
