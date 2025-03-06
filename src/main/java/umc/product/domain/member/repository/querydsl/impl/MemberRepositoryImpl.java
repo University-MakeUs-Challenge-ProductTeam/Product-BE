@@ -1,4 +1,4 @@
-package umc.product.domain.member.repository.impl;
+package umc.product.domain.member.repository.querydsl.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,10 +13,9 @@ import umc.product.domain.member.entity.QMember;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberRepository;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.member.entity.enums.Status;
-import umc.product.domain.university.entity.QUniversity;
 import umc.product.domain.university.entity.University;
 
 import java.sql.PreparedStatement;
@@ -37,7 +36,6 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final JdbcTemplate jdbcTemplate;
     private final QMember qMember = QMember.member;
-    private final QUniversity qUniversity = QUniversity.university;
 
     @Override
     public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
@@ -61,6 +59,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         if (part != null) {
             builder.and(qMember.memberSemesterPart.any().part.eq(part));
         }
+        builder.and(qMember.deletedAt.isNull());
 
         return jpaQueryFactory
                 .selectFrom(qMember)
@@ -74,6 +73,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findMembersBySearchString(Member member, String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
+        builder.and(qMember.deletedAt.isNull());
 
         if (member != null && member.getRole() != null) {
             if(member.getRole().equals(Role.SCHOOL_ADMIN)){
@@ -96,14 +96,14 @@ public class MemberRepositoryImpl implements MemberRepository {
         ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
         String memberSql = """
-                       INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
-                       VALUES
-                       """;
+                        INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
+                        VALUES
+                        """;
 
         String semesterSql = """
-                         INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
-                         VALUES
-                         """;
+                        INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
+                        VALUES
+                        """;
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -213,14 +213,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType) {
-       BooleanBuilder builder = new BooleanBuilder();
-       builder.and(qMember.clientId.eq(clientId));
-       builder.and(qMember.loginType.eq(loginType));
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.clientId.eq(clientId));
+        builder.and(qMember.loginType.eq(loginType));
 
-       return Optional.ofNullable(jpaQueryFactory
-                                   .selectFrom(qMember)
-                                   .where(builder)
-                                   .fetchOne());
+        return Optional.ofNullable(jpaQueryFactory
+                                    .selectFrom(qMember)
+                                    .where(builder)
+                                    .fetchOne());
     }
 
     @Override

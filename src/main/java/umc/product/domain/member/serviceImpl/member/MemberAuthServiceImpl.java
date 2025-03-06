@@ -8,7 +8,7 @@ import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberInfoMapper;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberRepository;
 import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;

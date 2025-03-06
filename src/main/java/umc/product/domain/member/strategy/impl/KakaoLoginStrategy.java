@@ -12,7 +12,7 @@ import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberRepository;
 import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
@@ -21,6 +21,8 @@ import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 
 import java.util.Optional;
+
+import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
 
 @RequiredArgsConstructor
 @Component
@@ -65,8 +67,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
 
     @Override
     public MemberLoginResponse login(AdminLoginRequest request) {
-        // todo : MemberLoginRequest  방식은 지원하지 않습니다. RestApiException으로 변경
-        throw new UnsupportedOperationException("MemberLoginRequest  방식은 지원하지 않습니다.");
+        throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
     }
 
     private MemberLoginResponse saveNewMember(String clientId, LoginType loginType) {

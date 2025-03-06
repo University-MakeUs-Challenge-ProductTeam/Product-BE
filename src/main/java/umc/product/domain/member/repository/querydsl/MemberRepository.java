@@ -1,4 +1,4 @@
-package umc.product.domain.member.repository;
+package umc.product.domain.member.repository.querydsl;
 
 import org.springframework.data.domain.Pageable;
 import umc.product.domain.member.entity.Member;
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
-    public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
-    public List<Member> findMembersBySearchString(Member member,String searchString);
-    public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);
-    public List<Member> findWaitingMemberByUniversity(University university);
-    public List<Member> findWaitingMember();
+    List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
+    List<Member> findMembersBySearchString(Member member,String searchString);
+    void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);
+    List<Member> findWaitingMemberByUniversity(University university);
+    List<Member> findWaitingMember();
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
     boolean existsMemberByClientId(String clientId);
 }

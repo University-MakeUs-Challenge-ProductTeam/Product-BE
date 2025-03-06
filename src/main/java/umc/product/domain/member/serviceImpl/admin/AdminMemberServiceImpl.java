@@ -12,7 +12,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;

@@ -10,10 +10,13 @@ import umc.product.domain.member.strategy.impl.KakaoLoginStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import umc.product.global.common.exception.RestApiException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
 
 @Component
 @RequiredArgsConstructor
@@ -38,8 +41,7 @@ public class LoginContext {
     public MemberLoginResponse executeStrategy(String accessToken, LoginType loginType) {
         LoginStrategy strategy = strategyMap.get(loginType);
         if (strategy == null) {
-            // todo: RestApiException으로 예외처리 하기
-            throw new IllegalArgumentException("Unsupported login type: " + loginType);
+            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
         }
         return strategy.login(accessToken);
     }
@@ -48,8 +50,7 @@ public class LoginContext {
         LoginType loginType = LoginType.INTERNAL;
         LoginStrategy strategy = strategyMap.get(loginType);
         if (strategy == null) {
-            // todo: RestApiException으로 예외처리 하기
-            throw new IllegalArgumentException("Unsupported login type: " + loginType);
+            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
         }
         return strategy.login(request);
     }
