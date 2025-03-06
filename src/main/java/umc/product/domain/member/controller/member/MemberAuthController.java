@@ -26,7 +26,7 @@ public class MemberAuthController {
     @Operation(summary = "App 회원가입 API", description = "App 회원가입하는 API입니다. 이미 회원가입 되어있어도 기수 변경시 필수(확인코드에서 받은 memberId 넣어주세요)")
     @PostMapping(path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberIdResponse> signUp(@RequestPart MemberSignUpRequest request,
-                                                 @RequestPart("file") MultipartFile file) {
+                                                 @RequestPart(name = "avatarImage", required = false) MultipartFile file) {
         return BaseResponse.onSuccess(memberAuthAdviser.signUp(file, request));
     }
 

@@ -35,7 +35,9 @@ public class MemberAuthAdviser {
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
     public MemberIdResponse signUp(MultipartFile file, MemberSignUpRequest request){
-        FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
+        if(file != null) {
+            FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
+        }
         Member member = memberService.findById(request.memberId());
         member.updateProfile(request);
         //학기 찾기
@@ -43,7 +45,7 @@ public class MemberAuthAdviser {
         //학기를 기반으로 학기/파트 생성
         List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 
-        Member newMember = memberAuthService.signUp(member, semesterPartList, fileCreateResponse.getUrl());
+        Member newMember = memberAuthService.signUp(member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 
