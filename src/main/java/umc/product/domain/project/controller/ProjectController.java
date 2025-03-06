@@ -24,7 +24,7 @@ import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 import umc.product.global.config.security.auth.PrincipalDetails;
 
-@Tag(name = "PROJECT API", description = "프로젝트 관련 API")
+@Tag(name = "챌린저용(앱) PROJECT API", description = "챌린저용(앱) 프로젝트 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/projects")
