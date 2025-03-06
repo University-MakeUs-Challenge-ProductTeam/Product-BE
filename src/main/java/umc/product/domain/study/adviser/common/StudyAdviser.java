@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.checklist.service.ChecklistCommandService;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.service.common.MemberService;
+import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.study.dto.request.StudyAttendanceRequest;
