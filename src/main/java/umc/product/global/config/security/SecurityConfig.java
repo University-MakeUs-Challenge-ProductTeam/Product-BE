@@ -38,6 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configure(http))
                 .userDetailsService(principalDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -66,7 +67,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.accessDeniedHandler(customAccessDeniedHandler)
-                                         .authenticationEntryPoint(authenticationEntryPoint()))
+                                .authenticationEntryPoint(authenticationEntryPoint()))
                 .addFilterBefore(jwtExceptionFilter, LogoutFilter.class) // filter 등록시 등록되어있는 필터와 순서를 정의해야함
                 .addFilterBefore(jwtAuthenticationFilter, LogoutFilter.class)
                 .build();
