@@ -10,10 +10,7 @@ import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.querydsl.MemberRepository;
-import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
@@ -22,6 +19,7 @@ import umc.product.global.config.security.jwt.TokenInfo;
 
 import java.util.Optional;
 
+import static umc.product.domain.member.status.MemberErrorStatus.EMPTY_MEMBER;
 import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
 
 @RequiredArgsConstructor
@@ -30,8 +28,6 @@ public class KakaoLoginStrategy implements LoginStrategy {
 
     private final MemberRepository memberRepository;
     private final MemberConverter memberConverter;
-    private final MemberMapper memberMapper;
-    private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
     private final KakaoMemberClient kakaoMemberClient;
 
@@ -53,11 +49,8 @@ public class KakaoLoginStrategy implements LoginStrategy {
         // Kakao-specific logic
         String clientId = kakaoResponse.getId();
 
-        Optional<Member> getMember = memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO);
-
-        if (getMember.isEmpty()) {
-            return saveNewMember(clientId, LoginType.KAKAO);
-        }
+        Optional<Member> getMember = Optional.ofNullable(memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO)
+                .orElseThrow(() -> new RestApiException(EMPTY_MEMBER)));
 
         Member member = getMember.get();
         TokenInfo tokenInfo = generateToken(member);
@@ -68,14 +61,6 @@ public class KakaoLoginStrategy implements LoginStrategy {
     @Override
     public MemberLoginResponse login(AdminLoginRequest request) {
         throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
-    }
-
-    private MemberLoginResponse saveNewMember(String clientId, LoginType loginType) {
-        Member member = memberMapper.toMember(clientId, loginType);
-        member.changeRole(Role.GUEST);
-        Member newMember = memberService.saveEntity(member);
-        TokenInfo tokenInfo = generateToken(newMember);
-        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, Role.GUEST);
     }
 
     private TokenInfo generateToken(Member member) {

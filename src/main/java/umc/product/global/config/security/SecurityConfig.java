@@ -56,13 +56,8 @@ public class SecurityConfig {
                         .requestMatchers("/suggestion/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_STAFF)
                         .requestMatchers("/members/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN, "ROLE_"+Role.CHALLENGER, "ROLE_"+Role.UNIVERSITY_STAFF)
 
-
                         //Admin Web Security
                         .requestMatchers("/web/admin/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-
-                        .requestMatchers("/web/central-admin/**").hasAnyAuthority("ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("/web/branch-admin/**").hasAnyAuthority("ROLE_"+Role.SCHOOL_ADMIN, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
-                        .requestMatchers("/web/university-admin/**", "/members/admin/generate/code").hasAnyAuthority("ROLE_"+Role.UNIVERSITY_STAFF, "ROLE_"+Role.CENTRAL_ADMIN, "ROLE_"+Role.ADMIN)
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling ->
