@@ -20,7 +20,7 @@ import umc.product.domain.study.dto.response.StudyWorkbookResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
-@Tag(name = "STUDY API", description = "스터디 관련 API")
+@Tag(name = "챌린저용(앱) STUDY API", description = "챌린저용(앱) 스터디 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/studies")
