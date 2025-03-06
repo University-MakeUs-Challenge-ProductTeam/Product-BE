@@ -48,11 +48,10 @@ public class KakaoLoginStrategy implements LoginStrategy {
 
         // Kakao-specific logic
         String clientId = kakaoResponse.getId();
+        System.out.println(clientId);
 
-        Optional<Member> getMember = Optional.ofNullable(memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO)
-                .orElseThrow(() -> new RestApiException(EMPTY_MEMBER)));
-
-        Member member = getMember.get();
+        Member member = memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO)
+                .orElseThrow(() -> new RestApiException(EMPTY_MEMBER));
         TokenInfo tokenInfo = generateToken(member);
 
         return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
