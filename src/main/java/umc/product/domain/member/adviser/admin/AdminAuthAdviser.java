@@ -29,11 +29,13 @@ public class AdminAuthAdviser {
     private final MemberConverter memberConverter;
 
     public MemberIdResponse signUp(MultipartFile file, AdminSignUpRequest request){
-        FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
+        if(file != null) {
+            FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
+        }
         memberAuthService.verifyClientId(request.clientId());
         University university = universityService.findUniversity(request.universityName());
         Member member = adminMemberService.toAdminMember(request, "", university.getName());
-        Member newMember = adminAuthService.signUp(member, request.password(), university, fileCreateResponse.getUrl());
+        Member newMember = adminAuthService.signUp(member, request.password(), university, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 

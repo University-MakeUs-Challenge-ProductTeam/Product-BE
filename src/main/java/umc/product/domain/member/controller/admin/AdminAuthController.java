@@ -23,7 +23,7 @@ public class AdminAuthController {
     @Operation(summary = "학교 계정 회원가입 API", description = "학교 계정 회원가입하는 API입니다")
     @PostMapping( path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberIdResponse> signUp(@RequestPart AdminSignUpRequest request,
-                                                 @RequestPart("file") MultipartFile file) {
+                                                 @RequestPart(name = "avatarImage", required = false) MultipartFile file) {
         return BaseResponse.onSuccess(adminAuthAdviser.signUp(file, request));
     }
 
