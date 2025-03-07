@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.client.SocialMemberClient;
 import umc.product.domain.member.client.common.SocialClient;
 import umc.product.domain.member.dto.client.SocialLoginResponse;
+import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.global.common.exception.RestApiException;
 
 import java.math.BigInteger;
@@ -58,6 +59,11 @@ public class AppleMemberClient implements SocialMemberClient {
             }
         }
         throw new RestApiException(FAILED_GET_APPLE_KEY);
+    }
+
+    @Override
+    public LoginType getLoginType() {
+        return LoginType.APPLE;
     }
 
     // X.509 공개 키 생성

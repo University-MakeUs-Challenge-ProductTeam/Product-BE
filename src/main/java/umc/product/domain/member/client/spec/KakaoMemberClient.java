@@ -5,6 +5,7 @@ import umc.product.domain.member.client.SocialMemberClient;
 import umc.product.domain.member.client.common.SocialClient;
 import umc.product.domain.member.dto.client.SocialLoginResponse;
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.entity.enums.LoginType;
 
 @Component
 @RequiredArgsConstructor
@@ -17,5 +18,10 @@ public class KakaoMemberClient implements SocialMemberClient {
         String idPath = "$.id";
 
         return socialClient.getSocialLoginResponse(accessToken, KAKAO_URL, idPath);
+    }
+
+    @Override
+    public LoginType getLoginType() {
+        return LoginType.KAKAO;
     }
 }

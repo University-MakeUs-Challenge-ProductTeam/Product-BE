@@ -39,16 +39,14 @@ public class SocialLoginStrategy implements LoginStrategy {
                 throw new RestApiException(AuthErrorStatus.FAILED_SOCIAL_LOGIN);
             }
 
-        } catch (WebClientResponseException.Unauthorized e) {
-            throw new RestApiException(AuthErrorStatus.FAILED_SOCIAL_LOGIN);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RestApiException(AuthErrorStatus.FAILED_SOCIAL_LOGIN);
         }
 
         String clientId = socialLoginResponse.id();
         System.out.println(clientId);
 
-        Member member = memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO)
+        Member member = memberRepository.findByClientIdAndLoginType(clientId, client.getLoginType())
                 .orElseThrow(() -> new RestApiException(EMPTY_MEMBER));
         TokenInfo tokenInfo = generateToken(member);
 
