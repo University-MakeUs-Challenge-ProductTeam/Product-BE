@@ -5,6 +5,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.university.entity.University;
 
@@ -12,9 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
+    Optional<Member> findById(Long memberId);
+    Optional<Member> findMemberByClientId(String clientId);
     List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
     List<Member> findMembersBySearchString(Member member,String searchString);
-    void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList);
+    List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList);
     List<Member> findWaitingMemberByUniversity(University university);
     List<Member> findWaitingMember();
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);

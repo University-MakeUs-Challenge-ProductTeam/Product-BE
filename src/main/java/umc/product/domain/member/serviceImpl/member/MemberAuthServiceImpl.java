@@ -37,9 +37,12 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     @Transactional
-    public Member signUp(Member member, List<SemesterPart> semesterPartList, String avatarUrl) {
-        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), null, member);
-        member.setMemberLoginInfo(memberLoginInfo);
+    public Member signUp(String clientId, Member member, List<SemesterPart> semesterPartList, String avatarUrl) {
+        if(member.getMemberLoginInfo() != null) member.getMemberLoginInfo().updateLoginId(clientId);
+        else {
+            MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(clientId, null, member);
+            member.setMemberLoginInfo(memberLoginInfo);
+        }
         member.addSemesterPart(semesterPartList);
         member.setStatus(Status.ACTIVE);
         member.setAvatarUrl(avatarUrl);

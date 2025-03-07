@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPartRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPositionRequest;
@@ -49,13 +50,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
-    public List<Member> toMemberFromExcelMember(List<ExcelMember> excelMemberList) {
-        return memberMapper.toMember(excelMemberList);
+    public List<Member> toMemberFromExcelMember(AdminRegisterRequest request, List<University> universityList) {
+        return memberMapper.toMember(request, universityList);
     }
 
     @Override
-    public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList) {
-        memberRepository.saveRegisterMembers(memberList, semesterPositionList);
+    public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
+        return memberRepository.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
     }
 
     @Transactional

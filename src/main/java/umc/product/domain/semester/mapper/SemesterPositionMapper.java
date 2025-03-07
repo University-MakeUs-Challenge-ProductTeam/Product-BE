@@ -2,6 +2,8 @@ package umc.product.domain.semester.mapper;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterMemberRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
@@ -22,26 +24,26 @@ public class SemesterPositionMapper {
                 .build();
     }
 
-    public List<SemesterPosition> toSemesterPosition(List<Member> memberList, List<ExcelMember> excelMemberList, Semester recentSemester) {
+    public List<SemesterPosition> toSemesterPosition(AdminRegisterRequest request, List<Member> memberList, Semester recentSemester) {
         return IntStream.range(0, memberList.size())
                 .mapToObj(i -> {
-                    ExcelMember excelMember = excelMemberList.get(i);
+                    AdminRegisterMemberRequest registerMemberRequest = request.registerMemberList().get(i);
                     List<SemesterPosition> semesterPositions = new ArrayList<>();
-                        semesterPositions.add(
-                                SemesterPosition.builder()
-                                        .member(memberList.get(i))
-                                        .semester(recentSemester)
-                                        .position(excelMember.getCentralPosition())
-                                        .build()
-                        );
+                    semesterPositions.add(
+                            SemesterPosition.builder()
+                                    .member(memberList.get(i))
+                                    .semester(recentSemester)
+                                    .position(registerMemberRequest.centralPosition())
+                                    .build()
+                    );
 
-                        semesterPositions.add(
-                                SemesterPosition.builder()
-                                        .member(memberList.get(i))
-                                        .semester(recentSemester)
-                                        .position(excelMember.getUniversityPosition())
-                                        .build()
-                        );
+                    semesterPositions.add(
+                            SemesterPosition.builder()
+                                    .member(memberList.get(i))
+                                    .semester(recentSemester)
+                                    .position(registerMemberRequest.universityPosition())
+                                    .build()
+                    );
                     return semesterPositions;
                 })
                 .flatMap(List::stream)

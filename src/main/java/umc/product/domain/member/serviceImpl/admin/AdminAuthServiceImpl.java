@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
+import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberLoginInfo;
@@ -26,8 +27,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Transactional
     @Override
-    public Member signUp(Member member, String password, University university, String avatarUrl) {
-        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), passwordEncoder.encode(password), member);
+    public Member signUp(AdminSignUpRequest request, Member member, University university, String avatarUrl) {
+        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.clientId(), passwordEncoder.encode(request.password()), member);
         member.setMemberLoginInfo(memberLoginInfo);
         member.setUniversity(university);
         member.setAvatarUrl(avatarUrl);

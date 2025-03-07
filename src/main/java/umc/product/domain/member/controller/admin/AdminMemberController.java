@@ -9,8 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
+import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartListRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionListRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
 import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
@@ -27,12 +29,11 @@ import umc.product.global.config.security.auth.CurrentMember;
 public class AdminMemberController {
     private final AdminMemberAdviser adminMemberAdviser;
 
-    @Operation(summary = "회원 등록 API(공통)")
-    @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BaseResponse<Void> registerMember(@CurrentMember Member member,
-                                             @Valid @RequestPart("excel") MultipartFile excel) {
-        adminMemberAdviser.registerMember(excel);
-        return BaseResponse.onSuccess(null);
+    @Operation(summary = "회원 등록 API(공통)", description = "사용자를 등록하고 코드를 응답하는 API 입니다.")
+    @PostMapping(path = "/register")
+    public BaseResponse<AdminCreateCodeListResponse> registerMember(@CurrentMember Member member,
+                                                                    @RequestBody AdminRegisterRequest request) {
+        return BaseResponse.onSuccess(adminMemberAdviser.registerMember(request));
     }
 
     @Operation(summary = "프로필 수정 API", description = "프로필(이름, 닉네임, 학교, 직책, 기수/파트) 수정하는 API입니다.")

@@ -2,21 +2,27 @@ package umc.product.domain.member.repository.querydsl.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
+import umc.product.domain.member.entity.QMemberLoginInfo;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.university.entity.University;
+import umc.product.global.common.exception.RestApiException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -28,6 +34,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static umc.product.domain.member.status.MemberErrorStatus.ERROR_TO_SAVE_DB;
+
 
 @Repository
 @Slf4j
@@ -35,7 +43,30 @@ import java.util.stream.Collectors;
 public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final JdbcTemplate jdbcTemplate;
+    private final PlatformTransactionManager transactionManager;
     private final QMember qMember = QMember.member;
+    private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
+
+    @Override
+    public Optional<Member> findById(Long memberId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(qMember)
+                        .where(qMember.id.eq(memberId))
+                        .fetchFirst()
+        );
+    }
+
+    @Override
+    public Optional<Member> findMemberByClientId(String clientId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(qMember)
+                        .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
+                        .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
+                        .fetchFirst()
+        );
+    }
 
     @Override
     public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
@@ -88,82 +119,119 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .fetch();
     }
 
+    @Transactional
     @Override
-    public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList) {
+    public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
         final int batchSize = 50;  // 배치 크기 설정
         int threadPoolSize = Runtime.getRuntime().availableProcessors() * 2;
         LocalDateTime now = LocalDateTime.now();
         ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
         String memberSql = """
-                        INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
-                        VALUES
-                        """;
+                    INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
+                    VALUES
+                    """;
 
-        String semesterSql = """
-                        INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
-                        VALUES
-                        """;
+        String semesterPositionSql = """
+                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
+                    VALUES
+                    """;
 
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        String semesterPartSql = """
+                    INSERT INTO semester_part (created_at, deleted_at, member_id, part, semester_id, updated_at)
+                    VALUES
+            """;
+
+        List<CompletableFuture<List<Long>>> futures = new ArrayList<>();
 
         for (int start = 0; start < memberList.size(); start += batchSize) {
             int end = Math.min(start + batchSize, memberList.size());
             List<Member> batchMembers = memberList.subList(start, end);
+            List<SemesterPart> batchSemesterPart = semesterPartList.subList(start, end);
             List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start * 2, end * 2);
 
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                try {
-                    StringBuilder memberValues = new StringBuilder();
-                    List<Object> memberParams = new ArrayList<>();
-                    for (Member member : batchMembers) {
-                        processMember(member, memberValues, memberParams, now);
-                    }
-                    if (!memberValues.isEmpty()) memberValues.setLength(memberValues.length() - 1);
-
-                    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-                    jdbcTemplate.update(
-                            connection -> {
-                                PreparedStatement ps = connection.prepareStatement(memberSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
-                                for (int i = 0; i < memberParams.size(); i++) {
-                                    ps.setObject(i + 1, memberParams.get(i));
-                                }
-                                return ps;
-                            },
-                            keyHolder
-                    );
-
-                    List<Long> memberIdList = keyHolder.getKeyList().stream()
-                            .map(key -> ((Number) key.get("GENERATED_KEY")).longValue())
-                            .collect(Collectors.toList());
-
-                    StringBuilder semesterValues = new StringBuilder();
-                    List<Object> semesterParams = new ArrayList<>();
-                    for (int i = 0; i < memberIdList.size(); i++) {
-                        SemesterPosition semesterPosition1 = batchSemesterPositions.get(i * 2);
-                        processSemesterPosition(semesterPosition1, memberIdList.get(i), semesterValues, semesterParams, now);
-
-                        if (i + 1 < batchSemesterPositions.size()) {
-                            SemesterPosition semesterPosition2 = batchSemesterPositions.get(i * 2 + 1);
-                            if (semesterPosition2.getPosition() == null && semesterPosition1.getPosition() == null) {
-                                semesterPosition2.updateSemesterPosition(semesterPosition2.getSemester(), "챌린저");
-                            }
-                            processSemesterPosition(semesterPosition2, memberIdList.get(i), semesterValues, semesterParams, now);
+            CompletableFuture<List<Long>> future = CompletableFuture.supplyAsync(() -> {
+                TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+                return transactionTemplate.execute(status -> {
+                    try {
+                        StringBuilder memberValues = new StringBuilder();
+                        List<Object> memberParams = new ArrayList<>();
+                        for (Member member : batchMembers) {
+                            processMember(member, memberValues, memberParams, now);
                         }
+                        if (!memberValues.isEmpty()) memberValues.setLength(memberValues.length() - 1);
+
+                        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+                        jdbcTemplate.update(
+                                connection -> {
+                                    PreparedStatement ps = connection.prepareStatement(memberSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
+                                    for (int i = 0; i < memberParams.size(); i++) {
+                                        ps.setObject(i + 1, memberParams.get(i));
+                                    }
+                                    return ps;
+                                },
+                                keyHolder
+                        );
+
+                        List<Long> memberIdList = keyHolder.getKeyList().stream()
+                                .map(key -> ((Number) key.get("GENERATED_KEY")).longValue())
+                                .collect(Collectors.toList());
+
+                        StringBuilder semesterPositionValues = new StringBuilder();
+                        List<Object> semesterPositionParams = new ArrayList<>();
+                        for (int i = 0; i < memberIdList.size(); i++) {
+                            SemesterPosition semesterPosition1 = batchSemesterPositions.get(i * 2);
+                            processSemesterPosition(semesterPosition1, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
+
+                            if (i + 1 < batchSemesterPositions.size()) {
+                                SemesterPosition semesterPosition2 = batchSemesterPositions.get(i * 2 + 1);
+                                if (semesterPosition2.getPosition() == null && semesterPosition1.getPosition() == null) {
+                                    semesterPosition2.updateSemesterPosition(semesterPosition2.getSemester(), "챌린저");
+                                }
+                                processSemesterPosition(semesterPosition2, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
+                            }
+                        }
+
+                        if (!semesterPositionValues.isEmpty()) semesterPositionValues.setLength(semesterPositionValues.length() - 1);
+                        jdbcTemplate.update(semesterPositionSql + semesterPositionValues, semesterPositionParams.toArray());
+
+                        StringBuilder semesterPartValues = new StringBuilder();
+                        List<Object> semesterPartParams = new ArrayList<>();
+                        for (int i = 0; i < memberIdList.size(); i++) {
+                            SemesterPart semesterPart = batchSemesterPart.get(i);
+                            processSemesterPart(semesterPart, memberIdList.get(i), semesterPartValues, semesterPartParams, now);
+                        }
+
+                        if (!semesterPartValues.isEmpty()) semesterPartValues.setLength(semesterPartValues.length() - 1);
+                        if(!semesterPartParams.isEmpty()) jdbcTemplate.update(semesterPartSql + semesterPartValues, semesterPartParams.toArray());
+                        return memberIdList;
+                    } catch (Exception e) {
+                        status.setRollbackOnly(); // 예외 발생 시 롤백 처리
+                        throw new RestApiException(ERROR_TO_SAVE_DB);
                     }
-
-                    if (!semesterValues.isEmpty()) semesterValues.setLength(semesterValues.length() - 1);
-                    jdbcTemplate.update(semesterSql + semesterValues, semesterParams.toArray());
-
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                });
             }, executor);
             futures.add(future);
         }
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        List<Long> allMemberIds = futures.stream()
+                .map(CompletableFuture::join)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
         executor.shutdown();
+
+        return findMembersByIds(allMemberIds);
+    }
+
+    private List<Member> findMembersByIds(List<Long> memberIds) {
+        if (memberIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return jpaQueryFactory
+                .selectFrom(QMember.member)
+                .where(QMember.member.id.in(memberIds))
+                .fetch();
     }
 
     private void processMember(Member member, StringBuilder memberValues, List<Object> memberParams, LocalDateTime now) {
@@ -175,12 +243,22 @@ public class MemberRepositoryImpl implements MemberRepository {
         ));
     }
 
-    private void processSemesterPosition(SemesterPosition semesterPosition, Long memberId, StringBuilder semesterValues, List<Object> semesterParams, LocalDateTime now) {
+    private void processSemesterPosition(SemesterPosition semesterPosition, Long memberId, StringBuilder semesterPositionValues, List<Object> semesterPositionParams, LocalDateTime now) {
         if (semesterPosition.getPosition() != null) {
-            semesterValues.append("(?, ?, ?, ?, ?, ?),");
-            semesterParams.addAll(Arrays.asList(
+            semesterPositionValues.append("(?, ?, ?, ?, ?, ?),");
+            semesterPositionParams.addAll(Arrays.asList(
                     Timestamp.valueOf(now), null, memberId, semesterPosition.getPosition(),
                     semesterPosition.getSemester().getId(), Timestamp.valueOf(now)
+            ));
+        }
+    }
+
+    private void processSemesterPart(SemesterPart semesterPart, Long memberId, StringBuilder semesterPartValues, List<Object> semesterPartParams, LocalDateTime now) {
+        if (semesterPart.getPart() != null) {
+            semesterPartValues.append("(?, ?, ?, ?, ?, ?),");
+            semesterPartParams.addAll(Arrays.asList(
+                    Timestamp.valueOf(now), null, memberId, semesterPart.getPart().name(),
+                    semesterPart.getSemester().getId(), Timestamp.valueOf(now)
             ));
         }
     }
@@ -213,25 +291,24 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.clientId.eq(clientId));
-        builder.and(qMember.loginType.eq(loginType));
 
         return Optional.ofNullable(jpaQueryFactory
                                     .selectFrom(qMember)
-                                    .where(builder)
+                                    .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
+                                    .where(
+                                            qMember.memberLoginInfo.memberLoginId.eq(clientId),
+                                            qMember.loginType.eq(loginType)
+                                    )
                                     .fetchOne());
     }
 
     @Override
     public boolean existsMemberByClientId(String clientId) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.clientId.eq(clientId));
 
         return jpaQueryFactory
                 .selectOne()
                 .from(qMember)
-                .where(builder)
+                .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
                 .fetchFirst() != null;
     }
 }

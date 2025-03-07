@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
+import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
 import umc.product.domain.member.dto.request.admin.member.*;
 import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.service.admin.AdminCodeService;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.semester.entity.Semester;
@@ -37,20 +40,25 @@ public class AdminMemberAdviser {
     private final AdminMemberService adminMemberService;
     private final MemberService memberService;
     private final UniversityService universityService;
-    private final ExcelFileUtil excelFileUtil;
     private final SemesterService semesterService;
     private final SemesterPositionService semesterPositionService;
     private final SemesterPartService semesterPartService;
+    private final AdminCodeService adminCodeService;
 
     private final MemberConverter memberConverter;
+    private final MemberCodeConverter memberCodeConverter;
 
-    public void registerMember(MultipartFile excel) {
-        Semester recentSemester = semesterService.findRecentSemester();     //최근 기수의 직책만 등록
+    public AdminCreateCodeListResponse registerMember(AdminRegisterRequest request) {
+        Semester recentSemester = semesterService.findRecentSemester();     //최근 기수의 직책, 파트만 등록
         List<University> universityList = universityService.findUniversityList();
-        List<ExcelMember> excelMember = excelFileUtil.convertToExcelMember(excel, universityList);
-        List<Member> memberList = adminMemberService.toMemberFromExcelMember(excelMember);
-        List<SemesterPosition> semesterPositionList = semesterPositionService.toSemesterPosition(memberList, excelMember, recentSemester);
-        adminMemberService.saveRegisterMembers(memberList, semesterPositionList);
+        List<Member> memberList = adminMemberService.toMemberFromExcelMember(request, universityList);
+        List<SemesterPart> semesterPartList = semesterPartService.toSemesterPart(request, memberList, recentSemester);
+        List<SemesterPosition> semesterPositionList = semesterPositionService.toSemesterPosition(request, memberList, recentSemester);
+        List<Member> newMemberList = adminMemberService.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
+
+        Map<String, Member> codeMap = adminCodeService.createAppCode(newMemberList);
+        adminCodeService.saveAppCode(codeMap);
+        return memberCodeConverter.toMemberCodeResponse(codeMap);
     }
 
     public MemberIdResponse modifyMemberInfo(Member member, Long memberId, AdminUpdateMemberProfileRequest request) {
