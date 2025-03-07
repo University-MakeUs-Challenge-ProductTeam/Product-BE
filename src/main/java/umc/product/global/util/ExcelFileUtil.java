@@ -51,15 +51,15 @@ public class ExcelFileUtil {
     }
 
     private ExcelMember toExcelMember(Row row, Map<String, University> universityMap) {
-        String centralPosition = row.getCell(3) != null ? row.getCell(3).getStringCellValue() : null;
-        String universityPosition = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : null;
+        String universityPosition = row.getCell(3) != null ? row.getCell(3).getStringCellValue() : null;
+        String centralPosition = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : null;
 
         String role = determineRole(centralPosition, universityPosition);
 
         return ExcelMember.builder()
-                .name(row.getCell(0).getStringCellValue())
+                .university(universityMap.get(row.getCell(0).getStringCellValue()))
                 .nickName(row.getCell(1).getStringCellValue())
-                .university(universityMap.get(row.getCell(2).getStringCellValue()))
+                .name(row.getCell(2).getStringCellValue())
                 .role(Role.valueOf(role))
                 .centralPosition(centralPosition)
                 .universityPosition(universityPosition)

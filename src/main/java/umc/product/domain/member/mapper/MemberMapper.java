@@ -1,22 +1,29 @@
 package umc.product.domain.member.mapper;
 
 import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterMemberRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.entity.enums.Status;
 import org.springframework.stereotype.Component;
+import umc.product.domain.university.entity.University;
 import umc.product.global.dto.excel.ExcelMember;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
 
-    public List<Member> toMember(List<ExcelMember> excelMemberList) {
-        return excelMemberList.stream()
-                .map(this::toMemberFromExcelMember)
+    public List<Member> toMember(AdminRegisterRequest request, List<University> universityList) {
+        Map<String, University> universityMap = universityList.stream()
+                .collect(Collectors.toMap(University::getName, university -> university));
+
+        return request.registerMemberList().stream()
+                .map(request1 -> toMemberFromExcelMember(request1, universityMap))
                 .collect(Collectors.toList());
     }
     public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName){
@@ -25,27 +32,36 @@ public class MemberMapper {
                 .avatarUrl(avatarUrl)
                 .name(universityName)
                 .nickName(universityName)
-                .clientId(request.clientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
                 .role(Role.SCHOOL_ADMIN)
                 .build();
     }
 
-    public Member toMember(final String clientId, LoginType loginType){
+    private Member toMemberFromExcelMember(AdminRegisterMemberRequest request, Map<String, University> universityMap){
+        Role role = Role.valueOf(determineRole(request.centralPosition(), request.universityPosition()));
         return Member.builder()
-                .clientId(clientId)
-                .loginType(loginType)
+                .name(request.name())
+                .nickName(request.nickName())
+                .role(role)
+                .university(universityMap.get(request.universityName()))
                 .build();
     }
 
-    private Member toMemberFromExcelMember(ExcelMember excelMember){
-        return Member.builder()
-                .name(excelMember.getName())
-                .nickName(excelMember.getNickName())
-                .role(excelMember.getRole())
-                .university(excelMember.getUniversity())
-                .build();
+    private String determineRole(String centralPosition, String universityPosition) {
+        if (centralPosition == null && universityPosition == null) {
+            return "CHALLENGER";
+        }
+        if (centralPosition != null && (centralPosition.equals("총괄") || centralPosition.equals("부총괄"))) {
+            return "ADMIN";
+        }
+        if (centralPosition != null) {
+            return "CENTRAL_ADMIN";
+        }
+        if (universityPosition != null) {
+            return "UNIVERSITY_STAFF";
+        }
+        return "CHALLENGER";
     }
 }
 

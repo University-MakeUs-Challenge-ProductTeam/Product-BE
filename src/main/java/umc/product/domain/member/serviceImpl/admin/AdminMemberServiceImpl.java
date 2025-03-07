@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPartRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPositionRequest;
@@ -12,13 +13,13 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.jdbc.MemberJdbcRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.university.entity.University;
-import umc.product.global.dto.excel.ExcelMember;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class AdminMemberServiceImpl implements AdminMemberService {
-    private final MemberRepository memberRepository;
+    private final MemberDslRepository memberDslRepository;
+    private final MemberJdbcRepository memberJdbcRepository;
 
     private final MemberMapper memberMapper;
 
@@ -39,23 +41,23 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public List<Member> findMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
-        return memberRepository.findMembers(pageable,member, semesterId, role, part);
+        return memberDslRepository.findMemberList(pageable,member, semesterId, role, part);
     }
 
 
     @Override
     public List<Member> findMembersBySearchString(Member member, String searchString) {
-        return memberRepository.findMembersBySearchString(member, searchString);
+        return memberDslRepository.findMembersBySearchString(member, searchString);
     }
 
     @Override
-    public List<Member> toMemberFromExcelMember(List<ExcelMember> excelMemberList) {
-        return memberMapper.toMember(excelMemberList);
+    public List<Member> toMemberFromExcelMember(AdminRegisterRequest request, List<University> universityList) {
+        return memberMapper.toMember(request, universityList);
     }
 
     @Override
-    public void saveRegisterMembers(List<Member> memberList, List<SemesterPosition> semesterPositionList) {
-        memberRepository.saveRegisterMembers(memberList, semesterPositionList);
+    public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
+        return memberJdbcRepository.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
     }
 
     @Transactional
@@ -92,6 +94,4 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public void addSemesterPartList(Member targetMember, List<SemesterPart> semesterPartList) {
         targetMember.addSemesterPart(semesterPartList);
     }
-
-
 }

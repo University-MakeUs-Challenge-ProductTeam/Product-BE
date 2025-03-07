@@ -35,7 +35,7 @@ public class AdminAuthAdviser {
         memberAuthService.verifyClientId(request.clientId());
         University university = universityService.findUniversity(request.universityName());
         Member member = adminMemberService.toAdminMember(request, "", university.getName());
-        Member newMember = adminAuthService.signUp(member, request.password(), university, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
+        Member newMember = adminAuthService.signUp(request, member, university, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 

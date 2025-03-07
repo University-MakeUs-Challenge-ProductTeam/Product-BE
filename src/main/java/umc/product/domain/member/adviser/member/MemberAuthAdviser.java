@@ -45,7 +45,7 @@ public class MemberAuthAdviser {
         //학기를 기반으로 학기/파트 생성
         List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 
-        Member newMember = memberAuthService.signUp(member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
+        Member newMember = memberAuthService.signUp(request.clientId(), member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 

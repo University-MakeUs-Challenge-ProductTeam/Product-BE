@@ -8,7 +8,7 @@ import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberInfoMapper;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -28,7 +28,7 @@ import static umc.product.domain.member.status.MemberErrorStatus.DUPLICATED_CLIE
 @RequiredArgsConstructor
 public class MemberAuthServiceImpl implements MemberAuthService {
     public final MemberRefreshTokenServiceImpl refreshTokenService;
-    public final MemberRepository memberRepository;
+    public final MemberDslRepository memberDslRepository;
 
     public final JwtProvider jwtTokenProvider;
     private final LoginContext loginContext;
@@ -37,9 +37,12 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     @Transactional
-    public Member signUp(Member member, List<SemesterPart> semesterPartList, String avatarUrl) {
-        MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(member.getClientId(), null, member);
-        member.setMemberLoginInfo(memberLoginInfo);
+    public Member signUp(String clientId, Member member, List<SemesterPart> semesterPartList, String avatarUrl) {
+        if(member.getMemberLoginInfo() != null) member.getMemberLoginInfo().updateLoginId(clientId);
+        else {
+            MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(clientId, null, member);
+            member.setMemberLoginInfo(memberLoginInfo);
+        }
         member.addSemesterPart(semesterPartList);
         member.setStatus(Status.ACTIVE);
         member.setAvatarUrl(avatarUrl);
@@ -108,7 +111,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     public void verifyClientId(String clientId) {
-        if(memberRepository.existsMemberByClientId(clientId)) {
+        if(memberDslRepository.existsMemberByClientId(clientId)) {
             throw new RestApiException(DUPLICATED_CLIENT_ID);
         }
     }

@@ -3,6 +3,7 @@ package umc.product.domain.semester.serviceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
@@ -24,8 +25,8 @@ public class SemesterPositionServiceImpl implements SemesterPositionService {
     private final SemesterPositionMapper semesterPositionMapper;
 
     @Override
-    public List<SemesterPosition> toSemesterPosition(List<Member> memberList, List<ExcelMember> excelMemberList, Semester recentSemester) {
-        return semesterPositionMapper.toSemesterPosition(memberList, excelMemberList, recentSemester);
+    public List<SemesterPosition> toSemesterPosition(AdminRegisterRequest request, List<Member> memberList, Semester recentSemester) {
+        return semesterPositionMapper.toSemesterPosition(request, memberList, recentSemester);
     }
 
     @Override

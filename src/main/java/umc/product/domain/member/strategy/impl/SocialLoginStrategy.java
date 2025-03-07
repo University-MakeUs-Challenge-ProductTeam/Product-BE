@@ -2,15 +2,13 @@ package umc.product.domain.member.strategy.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import umc.product.domain.member.client.SocialMemberClient;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.client.SocialLoginResponse;
 import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.common.exception.code.status.AuthErrorStatus;
@@ -24,10 +22,14 @@ import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOG
 @Component
 public class SocialLoginStrategy implements LoginStrategy {
 
-    private final MemberRepository memberRepository;
+    private final MemberDslRepository memberDslRepository;
     private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
 
+    /**
+     * GOOGLE, KAKAO는 따로 구현하는 것이 아닌 공통적인 login 메서드 사용
+     * SocialMemberClient로 Social을 구분
+     */
     @Override
     public MemberLoginResponse login(SocialMemberClient client, String accessToken) {
 
@@ -46,7 +48,7 @@ public class SocialLoginStrategy implements LoginStrategy {
         String clientId = socialLoginResponse.id();
         System.out.println(clientId);
 
-        Member member = memberRepository.findByClientIdAndLoginType(clientId, client.getLoginType())
+        Member member = memberDslRepository.findByClientIdAndLoginType(clientId, client.getLoginType())
                 .orElseThrow(() -> new RestApiException(EMPTY_MEMBER));
         TokenInfo tokenInfo = generateToken(member);
 
