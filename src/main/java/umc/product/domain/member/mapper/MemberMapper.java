@@ -25,7 +25,6 @@ public class MemberMapper {
                 .avatarUrl(avatarUrl)
                 .name(universityName)
                 .nickName(universityName)
-                .clientId(request.clientId())
                 .loginType(LoginType.INTERNAL)
                 .status(Status.ACTIVE)
                 .role(Role.SCHOOL_ADMIN)
@@ -34,7 +33,6 @@ public class MemberMapper {
 
     public Member toMember(final String clientId, LoginType loginType){
         return Member.builder()
-                .clientId(clientId)
                 .loginType(loginType)
                 .build();
     }

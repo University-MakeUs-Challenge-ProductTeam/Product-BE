@@ -21,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberJpaRepository memberJpaRepository;
 
     public Member findById(Long id) throws UsernameNotFoundException {
-        return memberJpaRepository.findById(id)
+        return memberRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER));
     }
 

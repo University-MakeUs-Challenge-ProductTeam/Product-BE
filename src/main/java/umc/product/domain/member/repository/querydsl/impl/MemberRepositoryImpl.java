@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
+import umc.product.domain.member.entity.QMemberLoginInfo;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
@@ -36,6 +37,28 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final JdbcTemplate jdbcTemplate;
     private final QMember qMember = QMember.member;
+    private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
+
+    @Override
+    public Optional<Member> findById(Long memberId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(qMember)
+                        .where(qMember.id.eq(memberId))
+                        .fetchFirst()
+        );
+    }
+
+    @Override
+    public Optional<Member> findMemberByClientId(String clientId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(qMember)
+                        .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
+                        .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
+                        .fetchFirst()
+        );
+    }
 
     @Override
     public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
@@ -213,25 +236,24 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.clientId.eq(clientId));
-        builder.and(qMember.loginType.eq(loginType));
 
         return Optional.ofNullable(jpaQueryFactory
                                     .selectFrom(qMember)
-                                    .where(builder)
+                                    .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
+                                    .where(
+                                            qMember.memberLoginInfo.memberLoginId.eq(clientId),
+                                            qMember.loginType.eq(loginType)
+                                    )
                                     .fetchOne());
     }
 
     @Override
     public boolean existsMemberByClientId(String clientId) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.clientId.eq(clientId));
 
         return jpaQueryFactory
                 .selectOne()
                 .from(qMember)
-                .where(builder)
+                .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
                 .fetchFirst() != null;
     }
 }
