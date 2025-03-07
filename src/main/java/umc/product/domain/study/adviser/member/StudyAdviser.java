@@ -1,4 +1,4 @@
-package umc.product.domain.study.adviser.common;
+package umc.product.domain.study.adviser.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -7,17 +7,17 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
-import umc.product.domain.study.dto.request.StudyAttendanceRequest;
-import umc.product.domain.study.dto.request.StudyChecklistListRequest;
-import umc.product.domain.study.dto.request.StudyModifyRequest;
-import umc.product.domain.study.dto.response.StudyCommonResponse;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.request.member.StudyAttendanceRequest;
+import umc.product.domain.study.dto.request.member.StudyChecklistListRequest;
+import umc.product.domain.study.dto.request.member.StudyModifyRequest;
+import umc.product.domain.study.dto.response.member.StudyCommonResponse;
+import umc.product.domain.study.dto.response.member.StudyResponse;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyAttendance;
 import umc.product.domain.study.entity.StudyMember;
-import umc.product.domain.study.service.*;
+import umc.product.domain.study.service.member.*;
 
 import java.util.List;
 

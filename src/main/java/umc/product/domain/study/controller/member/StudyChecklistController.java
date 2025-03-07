@@ -1,4 +1,4 @@
-package umc.product.domain.study.controller.common;
+package umc.product.domain.study.controller.member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.study.adviser.common.StudyAdviser;
-import umc.product.domain.study.dto.request.StudyChecklistListRequest;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyCommonResponse;
+import umc.product.domain.study.adviser.member.StudyAdviser;
+import umc.product.domain.study.dto.request.member.StudyChecklistListRequest;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 

@@ -1,8 +1,8 @@
-package umc.product.domain.study.repository;
+package umc.product.domain.study.repository.member;
 
-import umc.product.domain.study.dto.response.StudyMemberResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.StudyMemberResponse;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 

@@ -1,9 +1,9 @@
-package umc.product.domain.study.service;
+package umc.product.domain.study.service.member;
 
 import umc.product.domain.roadmap.entity.Roadmap;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.StudyResponse;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 

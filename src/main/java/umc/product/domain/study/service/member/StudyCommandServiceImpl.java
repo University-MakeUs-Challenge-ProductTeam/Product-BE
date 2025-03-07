@@ -1,11 +1,11 @@
-package umc.product.domain.study.service;
+package umc.product.domain.study.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.product.domain.study.dto.request.StudyModifyRequest;
-import umc.product.domain.study.dto.response.StudyCommonResponse;
+import umc.product.domain.study.dto.request.member.StudyModifyRequest;
+import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.entity.enums.StudyRole;

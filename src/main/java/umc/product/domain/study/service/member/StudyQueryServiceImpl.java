@@ -1,18 +1,18 @@
-package umc.product.domain.study.service;
+package umc.product.domain.study.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.roadmap.entity.Roadmap;
-import umc.product.domain.study.dto.response.StudyMemberResponse;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.StudyMemberResponse;
+import umc.product.domain.study.dto.response.member.StudyResponse;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
-import umc.product.domain.study.mapper.StudyMapper;
-import umc.product.domain.study.repository.StudyRepository;
+import umc.product.domain.study.mapper.member.StudyMapper;
+import umc.product.domain.study.repository.member.StudyRepository;
 import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 

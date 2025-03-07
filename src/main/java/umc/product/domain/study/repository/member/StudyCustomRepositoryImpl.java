@@ -1,4 +1,4 @@
-package umc.product.domain.study.repository;
+package umc.product.domain.study.repository.member;
 
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.*;
@@ -14,7 +14,7 @@ import umc.product.domain.member.entity.QMember;
 import umc.product.domain.roadmap.entity.QRoadmap;
 import umc.product.domain.roadmap.entity.QRoadmapSemester;
 import umc.product.domain.semester.entity.QSemesterPart;
-import umc.product.domain.study.dto.response.*;
+import umc.product.domain.study.dto.response.member.*;
 import umc.product.domain.study.entity.QStudyAttendance;
 import umc.product.domain.study.entity.QStudyMember;
 import umc.product.domain.study.entity.Study;

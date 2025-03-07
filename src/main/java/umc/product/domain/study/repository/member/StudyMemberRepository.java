@@ -1,4 +1,4 @@
-package umc.product.domain.study.repository;
+package umc.product.domain.study.repository.member;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package umc.product.domain.study.controller.common;
+package umc.product.domain.study.controller.member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,12 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.study.adviser.common.StudyAdviser;
-import umc.product.domain.study.dto.request.StudyAttendanceRequest;
-import umc.product.domain.study.dto.request.StudyModifyRequest;
-import umc.product.domain.study.dto.response.StudyCommonResponse;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.adviser.member.StudyAdviser;
+import umc.product.domain.study.dto.request.member.StudyAttendanceRequest;
+import umc.product.domain.study.dto.request.member.StudyModifyRequest;
+import umc.product.domain.study.dto.response.member.StudyCommonResponse;
+import umc.product.domain.study.dto.response.member.StudyResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 

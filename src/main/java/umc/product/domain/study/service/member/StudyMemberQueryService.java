@@ -1,4 +1,4 @@
-package umc.product.domain.study.service;
+package umc.product.domain.study.service.member;
 
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.study.entity.StudyMember;

@@ -1,13 +1,13 @@
-package umc.product.domain.study.mapper;
+package umc.product.domain.study.mapper.member;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapTitle;
-import umc.product.domain.study.dto.response.StudyMemberResponse;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.StudyMemberResponse;
+import umc.product.domain.study.dto.response.member.StudyResponse;
+import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
