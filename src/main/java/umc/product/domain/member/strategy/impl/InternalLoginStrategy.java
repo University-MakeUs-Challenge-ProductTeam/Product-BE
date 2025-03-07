@@ -3,6 +3,7 @@ package umc.product.domain.member.strategy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.client.SocialMemberClient;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
@@ -25,12 +26,12 @@ public class InternalLoginStrategy implements LoginStrategy {
     private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
 
     @Override
-    public MemberLoginResponse login(String accessToken) {
+    public MemberLoginResponse login(SocialMemberClient client, String accessToken) {
         throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
     }
 
     @Override
-    public MemberLoginResponse login(AdminLoginRequest request) {
+    public MemberLoginResponse login(SocialMemberClient client, AdminLoginRequest request) {
         // 회원 조회
         MemberLoginInfo memberLoginInfo = memberLoginInfoJpaRepository.findByMemberLoginId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
