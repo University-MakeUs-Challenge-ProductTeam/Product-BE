@@ -1,9 +1,9 @@
-package umc.product.domain.member.dto.response.member.code;
+package umc.product.domain.member.dto.request.admin.code;
 
 import lombok.Builder;
 
 @Builder
-public record MemberCreateCodeResponse(
+public record AdminCreateCodeResponse(
         Long memberId,
         String code,
         String name,

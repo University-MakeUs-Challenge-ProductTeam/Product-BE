@@ -1,10 +1,9 @@
 package umc.product.domain.member.converter.response;
 
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse;
 import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse;
-import umc.product.domain.member.dto.response.member.code.MemberCreateCodeResponse;
-import umc.product.domain.member.dto.response.member.code.MemberCreateCodeListResponse;
+import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeResponse;
+import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.entity.Member;
 
@@ -15,15 +14,15 @@ import java.util.stream.Collectors;
 @Component
 public class MemberCodeConverter {
 
-    public AdminCreateCodeResponse toAdminCodeResponse(String code){
-        return AdminCreateCodeResponse.builder()
+    public umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse toAdminCodeResponse(String code){
+        return umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse.builder()
                 .code(code)
                 .build();
     }
 
-    public MemberCreateCodeListResponse toMemberCodeResponse(Map<String, Member> codeMap){
-        List<MemberCreateCodeResponse> memberCodeInfoList = toMemberCodeInfoResponse(codeMap);
-        return MemberCreateCodeListResponse.builder()
+    public AdminCreateCodeListResponse toMemberCodeResponse(Map<String, Member> codeMap){
+        List<AdminCreateCodeResponse> memberCodeInfoList = toMemberCodeInfoResponse(codeMap);
+        return AdminCreateCodeListResponse.builder()
                 .memberCodeList(memberCodeInfoList)
                 .build();
     }
@@ -42,10 +41,10 @@ public class MemberCodeConverter {
                 .build();
     }
 
-    private List<MemberCreateCodeResponse> toMemberCodeInfoResponse(Map<String, Member> codeMap) {
+    private List<AdminCreateCodeResponse> toMemberCodeInfoResponse(Map<String, Member> codeMap) {
         return codeMap.entrySet().stream()
                 .map(entry -> {
-                    return MemberCreateCodeResponse.builder()
+                    return AdminCreateCodeResponse.builder()
                             .memberId(entry.getValue().getId())
                             .code(entry.getKey())
                             .name(entry.getValue().getName())

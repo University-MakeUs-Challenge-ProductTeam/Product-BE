@@ -21,6 +21,8 @@ public enum MemberErrorStatus implements BaseCodeInterface {
     NOT_VALID_CODE(HttpStatus.BAD_REQUEST, "CODE001", "적절한 코드가 아닙니다."),
     NOT_VALID_MEMBER_STATUS(HttpStatus.BAD_REQUEST, "CODE002", "코드를 발급받을 수 있는 상태가 아닙니다."),
 
+    ERROR_TO_SAVE_DB(HttpStatus.INTERNAL_SERVER_ERROR, "DB001", "DB 저장중 문제 발생. RollBack 됩니다."),
+
 
             ;
 
