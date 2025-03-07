@@ -1,0 +1,81 @@
+package umc.product.domain.study.controller.admin;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.study.adviser.member.StudyAdviser;
+import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
+import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.response.member.StudyCommonResponse;
+import umc.product.global.common.base.BaseResponse;
+import umc.product.global.config.security.auth.CurrentMember;
+
+@Tag(name = "관리자용(웹) STUDY API", description = "관리자용(웹) 스터디 관련 API")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/web/admin/studies")
+@Validated
+public class AdminStudyController {
+
+    private final StudyAdviser studyAdviser;
+
+    @PostMapping()
+    @Operation(summary = "스터디 생성 API", description = "관리자가 스터디를 생성하는 API입니다. 참여 인원은 최대 5명입니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "스터디 생성 성공"
+            )
+    })
+    public BaseResponse<StudyCommonResponse> createStudy(
+            @CurrentMember Member member,
+            @Valid @RequestBody AdminStudyRequest request) {
+        // 스터디를 생성하면서 StudyMember, StudyAttendance, ChecklistStudyMember 같이 생성
+        return BaseResponse.onSuccess(null);
+    }
+
+    @PatchMapping("/{studyId}")
+    @Operation(summary = "스터디 수정 API", description = "관리자가 스터디를 수정하는 API입니다. 스터디 소속, 스터디 참여 인원, 스터디장만 변경 가능합니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "스터디 수정 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "studyId", description = "스터디 id, path variable 입니다")
+    })
+    public BaseResponse<StudyCommonResponse> modifyStudy(
+            @CurrentMember Member member,
+            @Valid @RequestBody AdminStudyModifyRequest request,
+            @PathVariable Long studyId) {
+        // 스터디 타입(SCHOOL, BRANCH), 스터디 역할(LEADER, CHALLENGER), 스터디 참여 인원만 변경 가능
+        return BaseResponse.onSuccess(null);
+    }
+
+    @DeleteMapping("/{studyId}")
+    @Operation(summary = "스터디 삭제 API", description = "관리자가 스터디를 삭제하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "스터디 삭제 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "studyId", description = "스터디 id, path variable 입니다")
+    })
+    public BaseResponse<StudyCommonResponse> deleteStudy(
+            @CurrentMember Member member,
+            @PathVariable Long studyId) {
+        // 스터디를 삭제하면서 StudyMember, StudyAttendance, ChecklistStudyMember 같이 삭제
+        return BaseResponse.onSuccess(null);
+    }
+}
