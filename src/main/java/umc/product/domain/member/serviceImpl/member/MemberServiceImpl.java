@@ -3,7 +3,7 @@ package umc.product.domain.member.serviceImpl.member;
 import jakarta.transaction.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.repository.jpa.MemberJpaRepository;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
 import umc.product.domain.university.entity.University;
@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepository memberRepository;
+    private final MemberDslRepository memberDslRepository;
     private final MemberJpaRepository memberJpaRepository;
 
     public Member findById(Long id) throws UsernameNotFoundException {
-        return memberRepository.findById(id)
+        return memberDslRepository.findById(id)
                 .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER));
     }
 
@@ -39,11 +39,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<Member> findWaitingMemberByUniversity(University university) {
-        return memberRepository.findWaitingMemberByUniversity(university);
+        return memberDslRepository.findWaitingMemberByUniversity(university);
     }
 
     @Override
     public List<Member> findWaitingMember() {
-        return memberRepository.findWaitingMember();
+        return memberDslRepository.findWaitingMember();
     }
 }

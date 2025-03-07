@@ -32,6 +32,11 @@ public class LoginContext {
     private final GoogleMemberClient googleMemberClient;
     private final KakaoMemberClient kakaoMemberClient;
 
+    /**
+     *
+     * @param socialMemberClientList bean에 등록된 APPLE, GOOGLE, KAKAO 구현체 가져옴
+     * @param strategyList bean에 등록된 Internal, Social 구현체 가져옴
+     */
     @Autowired
     public LoginContext(List<SocialMemberClient> socialMemberClientList,
                         List<LoginStrategy> strategyList,
@@ -44,6 +49,7 @@ public class LoginContext {
         this.strategyMap = new HashMap<>();
         this.clientMap = new HashMap<>();
 
+        //Social에 맞는 로직을 Map에 추가
         strategyList.forEach(strategy -> {
             if(strategy instanceof SocialLoginStrategy) {
                 strategyMap.put(LoginType.KAKAO, strategy);
@@ -54,6 +60,7 @@ public class LoginContext {
             }
         });
 
+        //Social에 맞는 LoginHandler를 Map에 추가
         socialMemberClientList.forEach(client -> {
             if (client instanceof AppleMemberClient) {
                 clientMap.put(LoginType.APPLE,

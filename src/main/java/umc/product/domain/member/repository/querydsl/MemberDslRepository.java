@@ -12,12 +12,11 @@ import umc.product.domain.university.entity.University;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository {
+public interface MemberDslRepository {
     Optional<Member> findById(Long memberId);
     Optional<Member> findMemberByClientId(String clientId);
-    List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
+    List<Member> findMemberList(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
     List<Member> findMembersBySearchString(Member member,String searchString);
-    List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList);
     List<Member> findWaitingMemberByUniversity(University university);
     List<Member> findWaitingMember();
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);

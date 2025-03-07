@@ -5,17 +5,15 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse;
 import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse;
-import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.service.admin.AdminCodeService;
 import umc.product.domain.member.service.member.MemberService;
-import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
 
-import java.util.List;
 import java.util.Map;
 
 import static umc.product.domain.member.status.MemberErrorStatus.NOT_VALID_MEMBER_STATUS;
@@ -43,7 +41,7 @@ public class AdminCodeAdviser {
         return memberCodeConverter.toAdminCodeResponse(code);
     }
 
-    public AdminCreateCodeListResponse createIndividualAppCode(Member member, Long memberId) {
+    public AdminRegisterResponse createIndividualAppCode(Member member, Long memberId) {
         Member targetMember = memberService.findById(memberId);
         if(targetMember.getStatus() != Status.WAITING_FOR_UPDATE) throw new RestApiException(NOT_VALID_MEMBER_STATUS);
         if(targetMember.getRole().getPriority() < member.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);

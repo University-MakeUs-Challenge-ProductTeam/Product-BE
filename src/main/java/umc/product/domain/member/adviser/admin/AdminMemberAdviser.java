@@ -3,10 +3,9 @@ package umc.product.domain.member.adviser.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterResponse;
 import umc.product.domain.member.dto.request.admin.member.*;
 import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
@@ -25,8 +24,6 @@ import umc.product.domain.semester.service.SemesterService;
 import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
-import umc.product.global.dto.excel.ExcelMember;
-import umc.product.global.util.ExcelFileUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +45,7 @@ public class AdminMemberAdviser {
     private final MemberConverter memberConverter;
     private final MemberCodeConverter memberCodeConverter;
 
-    public AdminCreateCodeListResponse registerMember(AdminRegisterRequest request) {
+    public AdminRegisterResponse registerMember(AdminRegisterRequest request) {
         Semester recentSemester = semesterService.findRecentSemester();     //최근 기수의 직책, 파트만 등록
         List<University> universityList = universityService.findUniversityList();
         List<Member> memberList = adminMemberService.toMemberFromExcelMember(request, universityList);
@@ -99,12 +96,12 @@ public class AdminMemberAdviser {
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public AdminMemberSearchListResponse filterSearchMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
+    public AdminMemberSearchListResponse filterSearchMemberList(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
         List<Member> memberList = adminMemberService.findMembers(member, pageable, semesterId, role, part);
         return memberConverter.toAdminMemberListResponse(memberList);
     }
 
-    public AdminMemberSearchListResponse searchMembers(Member member, String searchString) {
+    public AdminMemberSearchListResponse searchMemberList(Member member, String searchString) {
         List<Member> memberList = adminMemberService.findMembersBySearchString(member, searchString);
         return memberConverter.toAdminMemberListResponse(memberList);
     }

@@ -2,8 +2,8 @@ package umc.product.domain.member.converter.response;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse;
-import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeResponse;
-import umc.product.domain.member.dto.request.admin.code.AdminCreateCodeListResponse;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterMemberResponse;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterResponse;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.entity.Member;
 
@@ -20,9 +20,9 @@ public class MemberCodeConverter {
                 .build();
     }
 
-    public AdminCreateCodeListResponse toMemberCodeResponse(Map<String, Member> codeMap){
-        List<AdminCreateCodeResponse> memberCodeInfoList = toMemberCodeInfoResponse(codeMap);
-        return AdminCreateCodeListResponse.builder()
+    public AdminRegisterResponse toMemberCodeResponse(Map<String, Member> codeMap){
+        List<AdminRegisterMemberResponse> memberCodeInfoList = toMemberCodeInfoResponse(codeMap);
+        return AdminRegisterResponse.builder()
                 .memberCodeList(memberCodeInfoList)
                 .build();
     }
@@ -41,10 +41,10 @@ public class MemberCodeConverter {
                 .build();
     }
 
-    private List<AdminCreateCodeResponse> toMemberCodeInfoResponse(Map<String, Member> codeMap) {
+    private List<AdminRegisterMemberResponse> toMemberCodeInfoResponse(Map<String, Member> codeMap) {
         return codeMap.entrySet().stream()
                 .map(entry -> {
-                    return AdminCreateCodeResponse.builder()
+                    return AdminRegisterMemberResponse.builder()
                             .memberId(entry.getValue().getId())
                             .code(entry.getKey())
                             .name(entry.getValue().getName())

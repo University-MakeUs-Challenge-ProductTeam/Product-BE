@@ -8,9 +8,7 @@ import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.auth.AdminLoginRequest;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.member.entity.MemberLoginInfo;
-import umc.product.domain.member.repository.jpa.MemberLoginInfoJpaRepository;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.jwt.JwtProvider;
@@ -21,7 +19,7 @@ import static umc.product.domain.member.status.MemberErrorStatus.*;
 @Component
 @RequiredArgsConstructor
 public class InternalLoginStrategy implements LoginStrategy {
-    private final MemberRepository memberRepository;
+    private final MemberDslRepository memberDslRepository;
     private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
@@ -34,7 +32,7 @@ public class InternalLoginStrategy implements LoginStrategy {
     @Override
     public MemberLoginResponse login(SocialMemberClient client, AdminLoginRequest request) {
         // 회원 조회
-        Member member = memberRepository.findMemberByClientId(request.clientId())
+        Member member = memberDslRepository.findMemberByClientId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
 
         if (!passwordEncoder.matches(request.password(), member.getMemberLoginInfo().getPassword())) {

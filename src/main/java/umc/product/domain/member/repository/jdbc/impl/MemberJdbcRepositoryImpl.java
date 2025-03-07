@@ -1,11 +1,9 @@
-package umc.product.domain.member.repository.querydsl.impl;
+package umc.product.domain.member.repository.jdbc.impl;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -13,15 +11,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
-import umc.product.domain.member.entity.QMemberLoginInfo;
-import umc.product.domain.member.entity.enums.LoginType;
-import umc.product.domain.member.entity.enums.Part;
-import umc.product.domain.member.entity.enums.Role;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.entity.enums.Status;
+import umc.product.domain.member.repository.jdbc.MemberJdbcRepository;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
-import umc.product.domain.member.entity.enums.Status;
-import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
 
 import java.sql.PreparedStatement;
@@ -40,85 +33,16 @@ import static umc.product.domain.member.status.MemberErrorStatus.ERROR_TO_SAVE_D
 @Repository
 @Slf4j
 @AllArgsConstructor
-public class MemberRepositoryImpl implements MemberRepository {
+public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final JdbcTemplate jdbcTemplate;
     private final PlatformTransactionManager transactionManager;
-    private final QMember qMember = QMember.member;
-    private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
 
-    @Override
-    public Optional<Member> findById(Long memberId) {
-        return Optional.ofNullable(
-                jpaQueryFactory
-                        .selectFrom(qMember)
-                        .where(qMember.id.eq(memberId))
-                        .fetchFirst()
-        );
-    }
-
-    @Override
-    public Optional<Member> findMemberByClientId(String clientId) {
-        return Optional.ofNullable(
-                jpaQueryFactory
-                        .selectFrom(qMember)
-                        .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
-                        .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
-                        .fetchFirst()
-        );
-    }
-
-    @Override
-    public List<Member> findMembers(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
-        BooleanBuilder builder = new BooleanBuilder();
-
-        if (currentMember != null && currentMember.getRole() != null) {
-            if(currentMember.getRole().equals(Role.SCHOOL_ADMIN)){
-                builder.and(qMember.university.name.eq(currentMember.getUniversity().getName()));
-            }
-            builder.and(qMember.role.gt(currentMember.getRole()));
-        }
-
-        if (role != null) {
-            builder.and(qMember.role.eq(role));
-        }
-        if (semesterId != null) {
-            builder.and(qMember.memberSemesterPart.any().semester.id.eq(semesterId)
-                        .or(qMember.memberSemesterPosition.any().semester.id.eq(semesterId))
-        );
-        }
-        if (part != null) {
-            builder.and(qMember.memberSemesterPart.any().part.eq(part));
-        }
-        builder.and(qMember.deletedAt.isNull());
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-    }
-
-    @Override
-    public List<Member> findMembersBySearchString(Member member, String searchString) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
-        builder.and(qMember.deletedAt.isNull());
-
-        if (member != null && member.getRole() != null) {
-            if(member.getRole().equals(Role.SCHOOL_ADMIN)){
-                builder.and(qMember.university.name.eq(member.getUniversity().getName()));
-            }
-            builder.and(qMember.role.gt(member.getRole()));
-        }
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .fetch();
-    }
-
+    /**
+     * 100명씩 Insert 작업을 위해 병렬처리(50개씩 나누어 한번에 저장)
+     * JdbcTemplete로 구현
+     * @return 저장된 Member의 리스트
+     */
     @Transactional
     @Override
     public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
@@ -142,15 +66,19 @@ public class MemberRepositoryImpl implements MemberRepository {
                     VALUES
             """;
 
+        //병렬처리의 return 값으로 List<Long> 반환
         List<CompletableFuture<List<Long>>> futures = new ArrayList<>();
 
         for (int start = 0; start < memberList.size(); start += batchSize) {
             int end = Math.min(start + batchSize, memberList.size());
+            //batch size별로 리스트 분할
             List<Member> batchMembers = memberList.subList(start, end);
             List<SemesterPart> batchSemesterPart = semesterPartList.subList(start, end);
             List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start * 2, end * 2);
 
+            //병렬 수행
             CompletableFuture<List<Long>> future = CompletableFuture.supplyAsync(() -> {
+                //중간에 잘못되면 Transaction을 통해 RollBack이 가능하게 설계
                 TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
                 return transactionTemplate.execute(status -> {
                     try {
@@ -161,6 +89,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                         }
                         if (!memberValues.isEmpty()) memberValues.setLength(memberValues.length() - 1);
 
+                        //생성된 Member의 Id를 찾기
                         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
                         jdbcTemplate.update(
                                 connection -> {
@@ -173,6 +102,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                                 keyHolder
                         );
 
+                        //생성된 Member의 Id를 찾기
                         List<Long> memberIdList = keyHolder.getKeyList().stream()
                                 .map(key -> ((Number) key.get("GENERATED_KEY")).longValue())
                                 .collect(Collectors.toList());
@@ -261,54 +191,5 @@ public class MemberRepositoryImpl implements MemberRepository {
                     semesterPart.getSemester().getId(), Timestamp.valueOf(now)
             ));
         }
-    }
-
-
-    @Override
-    public List<Member> findWaitingMemberByUniversity(University university) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.status.eq(Status.WAITING_FOR_UPDATE));
-        builder.and(qMember.university.eq(university));
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .fetch();
-    }
-
-    @Override
-    public List<Member> findWaitingMember() {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.status.eq(Status.WAITING_FOR_UPDATE));
-        builder.and(qMember.role.in(Role.ADMIN, Role.CENTRAL_ADMIN, Role.SCHOOL_ADMIN));
-
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .fetch();
-    }
-
-    @Override
-    public Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType) {
-
-        return Optional.ofNullable(jpaQueryFactory
-                                    .selectFrom(qMember)
-                                    .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
-                                    .where(
-                                            qMember.memberLoginInfo.memberLoginId.eq(clientId),
-                                            qMember.loginType.eq(loginType)
-                                    )
-                                    .fetchOne());
-    }
-
-    @Override
-    public boolean existsMemberByClientId(String clientId) {
-
-        return jpaQueryFactory
-                .selectOne()
-                .from(qMember)
-                .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
-                .fetchFirst() != null;
     }
 }
