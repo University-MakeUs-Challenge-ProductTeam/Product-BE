@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapTitle;
-import umc.product.domain.study.dto.response.StudyMemberResponse;
-import umc.product.domain.study.dto.response.StudyResponse;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyWorkbookResponse;
+import umc.product.domain.study.dto.common.response.StudyMemberResponse;
+import umc.product.domain.study.dto.common.response.StudyResponse;
+import umc.product.domain.study.dto.common.response.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.common.response.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 

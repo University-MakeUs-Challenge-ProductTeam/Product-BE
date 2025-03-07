@@ -1,4 +1,4 @@
-package umc.product.domain.study.dto.response;
+package umc.product.domain.study.dto.common.response;
 
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;

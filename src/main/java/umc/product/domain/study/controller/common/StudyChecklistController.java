@@ -12,9 +12,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.study.adviser.common.StudyAdviser;
-import umc.product.domain.study.dto.request.StudyChecklistListRequest;
-import umc.product.domain.study.dto.response.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.StudyCommonResponse;
+import umc.product.domain.study.dto.common.request.StudyChecklistListRequest;
+import umc.product.domain.study.dto.common.response.StudyWeekChecklistResponse;
+import umc.product.domain.study.dto.common.response.StudyCommonResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
