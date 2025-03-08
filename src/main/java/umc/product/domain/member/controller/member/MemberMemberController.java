@@ -50,7 +50,7 @@ public class MemberMemberController {
     @PatchMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(@CurrentMember Member member,
                                                                 @RequestPart(name = "avatarImage", required = false)
-                                                                @Parameter(description = "사용자 프로필 이미지(선택 사항)", required = false) MultipartFile file) {
+                                                                @Parameter(description = "사용자 프로필 이미지(선택 사항)") MultipartFile file) {
         return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member, file));
     }
 

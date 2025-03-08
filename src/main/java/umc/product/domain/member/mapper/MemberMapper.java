@@ -58,7 +58,10 @@ public class MemberMapper {
         if (centralPosition != null) {
             return "CENTRAL_ADMIN";
         }
-        if (universityPosition != null) {
+        if (universityPosition != null && universityPosition.equals("회장") || universityPosition.equals("부회장")) {
+            return "SCHOOL_ADMIN";
+        }
+        if(universityPosition != null) {
             return "UNIVERSITY_STAFF";
         }
         return "CHALLENGER";
