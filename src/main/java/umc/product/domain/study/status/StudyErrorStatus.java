@@ -17,6 +17,11 @@ public enum StudyErrorStatus implements BaseCodeInterface {
     INVALID_ATTENDANCE_VALUE(HttpStatus.BAD_REQUEST, "STUDY_ATTENDANCE400", "유효하지 않은 참석 여부 체크값입니다. YES, NO 중에 보내주세요."),
     STUDY_ROADMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_ROADMAP404", "해당 스터디 로드맵을 찾을 수 없습니다."),
     STUDY_CHECKLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_CHECKLIST404", "해당 스터디 체크리스트를 찾을 수 없습니다."),
+    INVALID_STUDY_TYPE_SCHOOL(HttpStatus.BAD_REQUEST, "STUDY_TYPE_SCHOOL400", "교내 스터디 조건에 맞지 않습니다."),
+    INVALID_STUDY_TYPE_BRANCH(HttpStatus.BAD_REQUEST, "STUDY_TYPE_BRANCH400", "지부 스터디 조건에 맞지 않습니다."),
+    UNIVERSITY_LIST_EMPTY(HttpStatus.BAD_REQUEST, "UNIVERSITY_EMPTY400", "학교 목록이 비어 있습니다."),
+    UNIVERSITY_DIFFERENT_BRANCH(HttpStatus.BAD_REQUEST, "UNIVERSITY_BRANCH400", "모든 회원의 학교는 동일 지부에 속해야 합니다."),
+    UNSUPPORTED_STUDY_TYPE(HttpStatus.BAD_REQUEST, "STUDY_TYPE400", "지원되지 않는 스터디 유형입니다."),
     ;
 
     private final HttpStatus httpStatus;
