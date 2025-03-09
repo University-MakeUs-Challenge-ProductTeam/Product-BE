@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.dto.request.member.auth.MemberSignUpSemesterPartRequest;
 import umc.product.domain.semester.entity.Semester;
+import umc.product.domain.semester.repository.SemesterJpaRepository;
 import umc.product.domain.semester.repository.SemesterRepository;
 import umc.product.domain.semester.service.SemesterService;
 import umc.product.global.common.exception.RestApiException;
@@ -20,6 +21,7 @@ import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMES
 @AllArgsConstructor
 public class SemesterServiceImpl implements SemesterService {
     private final SemesterRepository semesterRepository;
+    private final SemesterJpaRepository semesterJpaRepository;
 
 
     @Override
@@ -47,5 +49,11 @@ public class SemesterServiceImpl implements SemesterService {
     @Override
     public Semester findRecentSemester() {
         return semesterRepository.findRecentSemester();
+    }
+
+    @Override
+    public Semester getSemester(Long semesterId) {
+        return semesterJpaRepository.findById(semesterId)
+                .orElseThrow(() -> new RestApiException(EMPTY_SEMESTER));
     }
 }

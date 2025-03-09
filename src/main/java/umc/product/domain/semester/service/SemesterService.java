@@ -11,4 +11,5 @@ public interface SemesterService {
     List<Semester> findSemesterListForSignup(List<MemberSignUpSemesterPartRequest> semesterList);
     <T> Map<Long, Semester> findSemesterListForModify(List<T> list, Function<T, Long> idExtractor);
     Semester findRecentSemester();
+    Semester getSemester(Long semesterId);
 }

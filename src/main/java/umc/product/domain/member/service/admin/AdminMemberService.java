@@ -9,6 +9,7 @@ import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
+import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.university.entity.University;
 import umc.product.global.dto.excel.ExcelMember;
 
@@ -24,4 +25,5 @@ public interface AdminMemberService {
     void modifyMemberInfo(Member targetMember, University university, AdminUpdateMemberProfileRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap);
     void addSemesterPositionList(Member targetMember, List<SemesterPosition> semesterPositionList);
     void addSemesterPartList(Member targetMember, List<SemesterPart> semesterPartList);
+    List<Member> getMemberList(List<AdminStudyMemberRequest> members);
 }

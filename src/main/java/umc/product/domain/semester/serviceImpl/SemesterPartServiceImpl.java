@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartRequest;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.mapper.SemesterPartMapper;
+import umc.product.domain.semester.repository.SemesterPartJpaRepository;
 import umc.product.domain.semester.service.SemesterPartService;
+import umc.product.domain.semester.status.SemesterErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMES
 @AllArgsConstructor
 public class SemesterPartServiceImpl implements SemesterPartService {
     private final SemesterPartMapper semesterPartMapper;
+    private final SemesterPartJpaRepository semesterPartJpaRepository;
     @Override
     public List<SemesterPart> toSemesterPart(Member targetMember, List<AdminInsertSemesterPartRequest> partList, Map<Long, Semester> semesterMap) {
         return partList.stream()
@@ -32,4 +36,13 @@ public class SemesterPartServiceImpl implements SemesterPartService {
                 }).collect(Collectors.toList());
     }
 
+    @Override
+    public List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList) {
+        List<SemesterPart> semesterPartList = semesterPartJpaRepository.findBySemesterAndPartAndMemberIn(semester, Part.valueOf(part.toUpperCase()), memberList);
+
+        if (semesterPartList == null || semesterPartList.isEmpty()) {
+            throw new RestApiException(SemesterErrorStatus.NOT_MATCH_PART_MEMBER);
+        }
+        return semesterPartList;
+    }
 }

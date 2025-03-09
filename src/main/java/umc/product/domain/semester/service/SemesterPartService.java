@@ -10,5 +10,5 @@ import java.util.Map;
 
 public interface SemesterPartService {
     List<SemesterPart> toSemesterPart(Member targetMember, List<AdminInsertSemesterPartRequest> partList, Map<Long, Semester> semesterMap);
-
+    List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList);
 }
