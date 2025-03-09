@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import umc.product.domain.project.entity.ProjectUniversity;
+import umc.product.domain.study.entity.StudyUniversity;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;
@@ -30,4 +31,7 @@ public class University extends BaseEntity {
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectUniversity> projectUniversityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudyUniversity> studyUniversityList = new ArrayList<>();
 }

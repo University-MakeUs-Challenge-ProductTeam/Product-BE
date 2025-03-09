@@ -2,7 +2,6 @@ package umc.product.domain.study.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.product.domain.study.entity.enums.StudyType;
 import umc.product.domain.study.status.StudyErrorStatus;
@@ -35,6 +34,9 @@ public class Study extends BaseEntity {
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyMember> studyMemberList;
+
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    private List<StudyUniversity> studyUniversityList;
 
     // 스터디 이름 변경 메서드
     public void changeName(String studyName) {
