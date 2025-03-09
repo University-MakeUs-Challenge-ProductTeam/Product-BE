@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
-import umc.product.domain.study.adviser.member.StudyAdviser;
+import umc.product.domain.study.adviser.admin.AdminStudyAdviser;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
@@ -25,7 +25,7 @@ import umc.product.global.config.security.auth.CurrentMember;
 @Validated
 public class AdminStudyController {
 
-    private final StudyAdviser studyAdviser;
+    private final AdminStudyAdviser adminStudyAdviser;
 
     @PostMapping()
     @Operation(summary = "스터디 생성 API", description = "관리자가 스터디를 생성하는 API입니다. 참여 인원은 최대 5명입니다.")
@@ -35,11 +35,9 @@ public class AdminStudyController {
                     description = "스터디 생성 성공"
             )
     })
-    public BaseResponse<StudyCommonResponse> createStudy(
-            @CurrentMember Member member,
-            @Valid @RequestBody AdminStudyRequest request) {
+    public BaseResponse<StudyCommonResponse> createStudy(@Valid @RequestBody AdminStudyRequest request) {
         // 스터디를 생성하면서 StudyMember, StudyAttendance, ChecklistStudyMember 같이 생성
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(adminStudyAdviser.createStudy(request));
     }
 
     @PatchMapping("/{studyId}")
