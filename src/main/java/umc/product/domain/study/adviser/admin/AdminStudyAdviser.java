@@ -20,8 +20,12 @@ import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.service.admin.AdminStudyAttendanceCommandService;
 import umc.product.domain.study.service.admin.AdminStudyCommandService;
 import umc.product.domain.study.service.admin.AdminStudyMemberCommandService;
+import umc.product.domain.study.service.admin.AdminStudyUniversityCommandService;
+import umc.product.domain.university.entity.University;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class AdminStudyAdviser {
     private final SemesterService semesterService;
     private final AdminMemberService adminMemberService;
     private final SemesterPartService semesterPartService;
+    private final AdminStudyUniversityCommandService adminStudyUniversityCommandService;
     private final AdminStudyMemberCommandService adminStudyMemberCommandService;
     private final AdminStudyAttendanceCommandService adminStudyAttendanceCommandService;
     private final AdminChecklistContentQueryServiceImpl adminChecklistContentQueryService;
@@ -47,6 +52,9 @@ public class AdminStudyAdviser {
         List<AdminStudyMemberRequest> memberRequestList = request.getMembers();
         List<Member> memberList = adminMemberService.getMemberList(memberRequestList);
         List<SemesterPart> semesterPartList = semesterPartService.getSemesterPartList(request.getPart(), semester, memberList);
+
+        // StudyUniversity(study, university(memberList)) 생성
+        adminStudyUniversityCommandService.createStudyUniversity(study, memberList);
 
         // StudyMember(semesterPart, study, studyRole) 생성
         List<StudyMember> studyMemberList = adminStudyMemberCommandService.createStudyMember(study, memberRequestList, semesterPartList);
