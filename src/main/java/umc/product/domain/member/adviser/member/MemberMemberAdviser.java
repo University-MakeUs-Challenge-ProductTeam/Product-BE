@@ -24,18 +24,25 @@ public class MemberMemberAdviser {
     private final MemberConverter memberConverter;
     private final MemberCodeConverter memberCodeConverter;
 
-    public MemberCodeVerifyResponse verifyAppCode(String code) {
+    public MemberCodeVerifyResponse verifyAppCode(
+            String code
+    ) {
         Long memberId = memberCodeService.verifyAppCode(code);
         Member member = memberService.findById(memberId);
         return memberCodeConverter.toMemberCodeVerifyResponse(member);
     }
 
-    public MemberSearchResponse getProfile(Long memberId) {
+    public MemberSearchResponse getProfile(
+            Long memberId
+    ) {
         Member member = memberService.findById(memberId);
         return  memberConverter.toSearchMemberResponse(member);
     }
 
-    public MemberIdResponse modifyMyProfileAvatar(Member member, MultipartFile file) {
+    public MemberIdResponse modifyMyProfileAvatar(
+            Member member,
+            MultipartFile file
+    ) {
         FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         Member modifyMember = memberService.modifyMyProfileAvatar(member, fileCreateResponse.getUrl());
         return  memberConverter.toMemberIdResponse(modifyMember.getId());

@@ -1,6 +1,5 @@
 package umc.product.global.config.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import umc.product.domain.member.entity.enums.Role;
@@ -20,7 +19,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import java.time.LocalDateTime;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
+import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 
 @Configuration
 @EnableWebSecurity

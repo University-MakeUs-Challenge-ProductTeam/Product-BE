@@ -25,9 +25,15 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private final LoginContext loginContext;
     private final PasswordEncoder passwordEncoder;
 
+    //web용 학교 계정 회원가입
     @Transactional
     @Override
-    public Member signUp(AdminSignUpRequest request, Member member, University university, String avatarUrl) {
+    public Member signUp(
+            AdminSignUpRequest request,
+            Member member,
+            University university,
+            String avatarUrl
+    ) {
         MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(request.clientId(), passwordEncoder.encode(request.password()), member);
         member.setMemberLoginInfo(memberLoginInfo);
         member.setUniversity(university);

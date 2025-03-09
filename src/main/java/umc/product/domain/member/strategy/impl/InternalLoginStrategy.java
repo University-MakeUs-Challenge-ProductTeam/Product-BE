@@ -22,21 +22,28 @@ public class InternalLoginStrategy implements LoginStrategy {
     private final MemberDslRepository memberDslRepository;
     private final MemberConverter memberConverter;
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder; // Spring Security PasswordEncoder 사용
+    // Spring Security PasswordEncoder 사용
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberLoginResponse login(SocialMemberClient client, String accessToken) {
-        throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+    public MemberLoginResponse login(
+            SocialMemberClient client,
+            String accessToken
+    ) {
+        throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
     }
 
     @Override
-    public MemberLoginResponse login(SocialMemberClient client, AdminLoginRequest request) {
+    public MemberLoginResponse login(
+            SocialMemberClient client,
+            AdminLoginRequest request
+    ) {
         // 회원 조회
         Member member = memberDslRepository.findMemberByClientId(request.clientId())
                 .orElseThrow(() -> new RestApiException(AUTHENTICATION_FAILED));
 
         if (!passwordEncoder.matches(request.password(), member.getMemberLoginInfo().getPassword())) {
-            throw new RestApiException(PASSWORD_MISMATCH);
+            throw new RestApiException(INCORRECT_PASSWORD);
         }
 
         // JWT 토큰 생성

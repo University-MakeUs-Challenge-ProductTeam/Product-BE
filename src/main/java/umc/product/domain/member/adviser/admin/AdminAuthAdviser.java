@@ -28,18 +28,25 @@ public class AdminAuthAdviser {
 
     private final MemberConverter memberConverter;
 
-    public MemberIdResponse signUp(MultipartFile file, AdminSignUpRequest request){
+    public MemberIdResponse signUp(
+            MultipartFile file,
+            AdminSignUpRequest request
+    ){
+        //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
         if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         }
         memberAuthService.verifyClientId(request.clientId());
         University university = universityService.findUniversity(request.universityName());
         Member member = adminMemberService.toAdminMember(request, "", university.getName());
+        //임시로 기본 프로필 사진으로 지정
         Member newMember = adminAuthService.signUp(request, member, university, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 
-    public MemberLoginResponse login(AdminLoginRequest request) {
+    public MemberLoginResponse login(
+            AdminLoginRequest request
+    ) {
         return adminAuthService.login(request);
     }
 }

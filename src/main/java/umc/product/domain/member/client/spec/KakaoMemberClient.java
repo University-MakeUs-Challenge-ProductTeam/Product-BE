@@ -14,14 +14,19 @@ public class KakaoMemberClient implements SocialMemberClient {
     private static final String KAKAO_URL = "https://kapi.kakao.com/v2/user/me";
 
     @Override
-    public SocialLoginResponse getSocialLoginResponse(String accessToken) {
+    public SocialLoginResponse getSocialLoginResponse(
+            String accessToken
+    ) {
         String idPath = "$.id";
 
-        return socialClient.getSocialLoginResponse(accessToken, KAKAO_URL, idPath);
+        return socialClient.getSocialLoginResponse(
+                accessToken,
+                KAKAO_URL, idPath);
     }
 
     @Override
-    public LoginType getLoginType() {
+    public LoginType getLoginType(
+    ) {
         return LoginType.KAKAO;
     }
 }

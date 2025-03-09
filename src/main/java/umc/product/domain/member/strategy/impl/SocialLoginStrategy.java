@@ -11,12 +11,11 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.strategy.LoginStrategy;
 import umc.product.global.common.exception.RestApiException;
-import umc.product.global.common.exception.code.status.AuthErrorStatus;
+import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 
-import static umc.product.domain.member.status.MemberErrorStatus.EMPTY_MEMBER;
-import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
+import static umc.product.domain.member.status.MemberErrorStatus.*;
 
 @RequiredArgsConstructor
 @Component
@@ -31,8 +30,10 @@ public class SocialLoginStrategy implements LoginStrategy {
      * SocialMemberClient로 Social을 구분
      */
     @Override
-    public MemberLoginResponse login(SocialMemberClient client, String accessToken) {
-
+    public MemberLoginResponse login(
+            SocialMemberClient client,
+            String accessToken
+    ) {
         SocialLoginResponse socialLoginResponse;
         try {
             socialLoginResponse = client.getSocialLoginResponse(accessToken);
@@ -49,15 +50,18 @@ public class SocialLoginStrategy implements LoginStrategy {
         System.out.println(clientId);
 
         Member member = memberDslRepository.findByClientIdAndLoginType(clientId, client.getLoginType())
-                .orElseThrow(() -> new RestApiException(EMPTY_MEMBER));
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
         TokenInfo tokenInfo = generateToken(member);
 
         return memberConverter.toLoginMemberResponse(member, tokenInfo, member.getRole());
     }
 
     @Override
-    public MemberLoginResponse login(SocialMemberClient client, AdminLoginRequest request) {
-        throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+    public MemberLoginResponse login(
+            SocialMemberClient client,
+            AdminLoginRequest request
+    ) {
+        throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
     }
 
     private TokenInfo generateToken(Member member) {

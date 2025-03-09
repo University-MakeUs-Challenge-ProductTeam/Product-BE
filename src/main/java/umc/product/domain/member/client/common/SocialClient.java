@@ -9,8 +9,11 @@ import umc.product.global.common.exception.RestApiException;
 import java.util.List;
 import java.util.Map;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.FAILED_SOCIAL_LOGIN;
+import static umc.product.domain.member.status.AuthErrorStatus.FAILED_SOCIAL_LOGIN;
 
+/**
+ * Social Login마다 공통적으로 수행하는 accessToken 검증 로직
+ */
 @Component
 public class SocialClient {
     private final WebClient webClient;
@@ -18,8 +21,11 @@ public class SocialClient {
         this.webClient = webClientBuilder.build();
     }
 
-    public SocialLoginResponse getSocialLoginResponse(final String accessToken, String url, String idPath) {
-
+    public SocialLoginResponse getSocialLoginResponse(
+            final String accessToken,
+            String url,
+            String idPath
+    ) {
         try {
             String response = webClient.get()
                     .uri(url)
@@ -41,7 +47,9 @@ public class SocialClient {
         }
     }
 
-    public List<Map<String, Object>> getPublicKeys(String url) {
+    public List<Map<String, Object>> getPublicKeys(
+            String url
+    ) {
         try {
             String response = webClient.get()
                     .uri(url)

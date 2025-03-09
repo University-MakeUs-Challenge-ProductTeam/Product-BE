@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static umc.product.domain.member.status.MemberErrorStatus.MEMBER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -22,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 
     public Member findById(Long id) throws UsernameNotFoundException {
         return memberDslRepository.findById(id)
-                .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER));
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
     // 회원 저장

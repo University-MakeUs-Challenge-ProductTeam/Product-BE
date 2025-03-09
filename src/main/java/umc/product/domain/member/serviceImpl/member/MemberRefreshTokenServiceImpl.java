@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final JwtProvider jwtProvider;
-    private static final long EXPIRATION_TIME = 60*60*24*14;
+    private static final long REFRESH_EXPIRATION_TIME = 60*60*24*14;
 
     // memberId에 등록된 리프레쉬 토큰 지우고, 새로운 값 저장
     @Transactional
@@ -32,7 +32,7 @@ public class MemberRefreshTokenServiceImpl implements MemberRefreshTokenService 
 
         // 새로운 리프레쉬 토큰 저장
         redisTemplate.opsForHash().put(key, "refreshToken", token);
-        redisTemplate.expire(key, EXPIRATION_TIME, TimeUnit.SECONDS);
+        redisTemplate.expire(key, REFRESH_EXPIRATION_TIME, TimeUnit.SECONDS);
 
         return token;
     }

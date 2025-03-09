@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static umc.product.domain.member.status.MemberErrorStatus.ERROR_TO_SAVE_DB;
+import static umc.product.domain.member.status.MemberErrorStatus.DB_SAVE_ERROR;
 
 
 @Repository
@@ -45,7 +45,11 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
      */
     @Transactional
     @Override
-    public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
+    public List<Member> saveRegisterMembers(
+            List<Member> memberList,
+            List<SemesterPart> semesterPartList,
+            List<SemesterPosition> semesterPositionList
+    ) {
         final int batchSize = 50;  // 배치 크기 설정
         int threadPoolSize = Runtime.getRuntime().availableProcessors() * 2;
         LocalDateTime now = LocalDateTime.now();
@@ -137,7 +141,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                         return memberIdList;
                     } catch (Exception e) {
                         status.setRollbackOnly(); // 예외 발생 시 롤백 처리
-                        throw new RestApiException(ERROR_TO_SAVE_DB);
+                        throw new RestApiException(DB_SAVE_ERROR);
                     }
                 });
             }, executor);
@@ -154,7 +158,9 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
         return findMembersByIds(allMemberIds);
     }
 
-    private List<Member> findMembersByIds(List<Long> memberIds) {
+    private List<Member> findMembersByIds(
+            List<Long> memberIds
+    ) {
         if (memberIds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -164,7 +170,12 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                 .fetch();
     }
 
-    private void processMember(Member member, StringBuilder memberValues, List<Object> memberParams, LocalDateTime now) {
+    private void processMember(
+            Member member,
+            StringBuilder memberValues,
+            List<Object> memberParams,
+            LocalDateTime now
+    ) {
         memberValues.append("(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?),");
         memberParams.addAll(Arrays.asList(
                 null, null, Timestamp.valueOf(now), null, null, null,
@@ -173,7 +184,13 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
         ));
     }
 
-    private void processSemesterPosition(SemesterPosition semesterPosition, Long memberId, StringBuilder semesterPositionValues, List<Object> semesterPositionParams, LocalDateTime now) {
+    private void processSemesterPosition(
+            SemesterPosition semesterPosition,
+            Long memberId,
+            StringBuilder semesterPositionValues,
+            List<Object> semesterPositionParams,
+            LocalDateTime now
+    ) {
         if (semesterPosition.getPosition() != null) {
             semesterPositionValues.append("(?, ?, ?, ?, ?, ?),");
             semesterPositionParams.addAll(Arrays.asList(
@@ -183,7 +200,13 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
         }
     }
 
-    private void processSemesterPart(SemesterPart semesterPart, Long memberId, StringBuilder semesterPartValues, List<Object> semesterPartParams, LocalDateTime now) {
+    private void processSemesterPart(
+            SemesterPart semesterPart,
+            Long memberId,
+            StringBuilder semesterPartValues,
+            List<Object> semesterPartParams,
+            LocalDateTime now
+    ) {
         if (semesterPart.getPart() != null) {
             semesterPartValues.append("(?, ?, ?, ?, ?, ?),");
             semesterPartParams.addAll(Arrays.asList(

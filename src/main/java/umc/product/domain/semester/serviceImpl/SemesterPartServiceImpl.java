@@ -2,9 +2,8 @@ package umc.product.domain.semester.serviceImpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminRegisterMemberRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartListRequest;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -25,7 +24,11 @@ import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMES
 public class SemesterPartServiceImpl implements SemesterPartService {
     private final SemesterPartMapper semesterPartMapper;
     @Override
-    public List<SemesterPart> toSemesterPart(Member targetMember, List<AdminInsertSemesterPartRequest> partList, Map<Long, Semester> semesterMap) {
+    public List<SemesterPart> toSemesterPart(
+            Member targetMember,
+            List<AdminInsertSemesterPartListRequest.AdminInsertSemesterPartRequest> partList,
+            Map<Long, Semester> semesterMap
+    ) {
         return partList.stream()
                 .map(part -> {
                     Semester semester = Optional.ofNullable(semesterMap.get(part.semesterId()))
@@ -36,10 +39,10 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     }
 
     @Override
-    public List<SemesterPart> toSemesterPart(AdminRegisterRequest request, List<Member> memberList, Semester recentSemester) {
+    public List<SemesterPart> toSemesterPart(AdminRegisterListRequest request, List<Member> memberList, Semester recentSemester) {
         return IntStream.range(0, request.registerMemberList().size())
                 .mapToObj(i -> {
-                    AdminRegisterMemberRequest ar = request.registerMemberList().get(i);
+                    AdminRegisterListRequest.AdminRegisterMemberRequest ar = request.registerMemberList().get(i);
                     return SemesterPart.builder()
                             .member(memberList.get(i))
                             .semester(recentSemester)

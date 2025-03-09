@@ -1,32 +1,45 @@
 package umc.product.domain.member.mapper;
 
 import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminRegisterMemberRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.entity.enums.Status;
 import org.springframework.stereotype.Component;
 import umc.product.domain.university.entity.University;
-import umc.product.global.dto.excel.ExcelMember;
+import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static umc.product.domain.member.status.MemberErrorStatus.NULL_VALUE_IN_MEMBER;
+
 
 @Component
 public class MemberMapper {
 
-    public List<Member> toMember(AdminRegisterRequest request, List<University> universityList) {
+    public List<Member> toMemberEntity(
+            AdminRegisterListRequest request,
+            List<University> universityList
+    ) {
+        //map으로 변환하여 빠르게 university를 찾음
         Map<String, University> universityMap = universityList.stream()
                 .collect(Collectors.toMap(University::getName, university -> university));
 
-        return request.registerMemberList().stream()
-                .map(request1 -> toMemberFromExcelMember(request1, universityMap))
+        return IntStream.range(0, request.registerMemberList().size())
+                .mapToObj(i -> {
+                        return toMemberEntityFromExcelMember(request.registerMemberList().get(i), universityMap, i);
+                })
                 .collect(Collectors.toList());
     }
-    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName){
+    public Member toAdminMemberEntity(
+            AdminSignUpRequest request,
+            String avatarUrl,
+            String universityName
+    ){
         return Member.builder()
                 .email(request.email())
                 .avatarUrl(avatarUrl)
@@ -38,8 +51,15 @@ public class MemberMapper {
                 .build();
     }
 
-    private Member toMemberFromExcelMember(AdminRegisterMemberRequest request, Map<String, University> universityMap){
+    private Member toMemberEntityFromExcelMember(
+            AdminRegisterListRequest.AdminRegisterMemberRequest request,
+            Map<String, University> universityMap,
+            int index
+    ){
         Role role = Role.valueOf(determineRole(request.centralPosition(), request.universityPosition()));
+        if(request.name() == null || request.nickName() == null || request.universityName() ==null){
+            throw new RestApiException(NULL_VALUE_IN_MEMBER);
+        }
         return Member.builder()
                 .name(request.name())
                 .nickName(request.nickName())
@@ -48,7 +68,16 @@ public class MemberMapper {
                 .build();
     }
 
-    private String determineRole(String centralPosition, String universityPosition) {
+    /**
+     *
+     * @param centralPosition 총괄/부총괄/... etc(중앙 직책)
+     * @param universityPosition 회장/부회장/~파트장/... etc(교내 운영진 직책)
+     * @return Role (권한)
+     */
+    private String determineRole(
+            String centralPosition,
+            String universityPosition
+    ) {
         if (centralPosition == null && universityPosition == null) {
             return "CHALLENGER";
         }
