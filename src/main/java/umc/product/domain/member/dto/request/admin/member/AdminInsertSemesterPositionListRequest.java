@@ -6,4 +6,10 @@ import java.util.List;
 public record AdminInsertSemesterPositionListRequest(
         List<AdminInsertSemesterPositionRequest> semesterPositionList
 ){
+    public record AdminInsertSemesterPositionRequest(
+            Long semesterId,
+            String position
+    ){
+
+    }
 }

@@ -1,4 +1,4 @@
-package umc.product.global.common.exception.code.status;
+package umc.product.domain.member.status;
 
 import umc.product.global.common.exception.code.BaseCodeDto;
 import umc.product.global.common.exception.code.BaseCodeInterface;

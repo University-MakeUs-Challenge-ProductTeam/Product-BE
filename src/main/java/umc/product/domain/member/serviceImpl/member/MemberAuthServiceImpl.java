@@ -13,7 +13,7 @@ import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.global.common.exception.RestApiException;
-import umc.product.global.common.exception.code.status.AuthErrorStatus;
+import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;

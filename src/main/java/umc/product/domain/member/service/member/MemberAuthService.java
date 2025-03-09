@@ -10,11 +10,16 @@ import umc.product.domain.semester.entity.SemesterPart;
 import java.util.List;
 
 public interface MemberAuthService {
-    Member signUp(String clientId, Member member, List<SemesterPart> semesterPartList, String avatarUrl);
+    Member signUp(String clientId,
+                  Member member,
+                  List<SemesterPart> semesterPartList,
+                  String avatarUrl);
     // 소셜 로그인
-    MemberLoginResponse socialLogin(final String accessToken, LoginType loginType);
+    MemberLoginResponse socialLogin(final String accessToken,
+                                    LoginType loginType);
     // 새로운 액세스 토큰 발급
-    MemberCreateTokenResponse generateNewAccessToken(String refreshToken, Member member);
+    MemberCreateTokenResponse generateNewAccessToken(String refreshToken,
+                                                     Member member);
     // 로그아웃
     MemberIdResponse logout(Member member);
     // 회원 탈퇴

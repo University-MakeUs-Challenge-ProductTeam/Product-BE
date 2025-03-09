@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
+import static umc.product.domain.member.status.MemberErrorStatus.UNSUPPORTED_LOGIN_TYPE;
 
 @Component
 @RequiredArgsConstructor
@@ -38,11 +38,13 @@ public class LoginContext {
      * @param strategyList bean에 등록된 Internal, Social 구현체 가져옴
      */
     @Autowired
-    public LoginContext(List<SocialMemberClient> socialMemberClientList,
-                        List<LoginStrategy> strategyList,
-                        AppleMemberClient appleMemberClient,
-                        GoogleMemberClient googleMemberClient,
-                        KakaoMemberClient kakaoMemberClient) {
+    public LoginContext(
+            List<SocialMemberClient> socialMemberClientList,
+            List<LoginStrategy> strategyList,
+            AppleMemberClient appleMemberClient,
+            GoogleMemberClient googleMemberClient,
+            KakaoMemberClient kakaoMemberClient
+    ) {
         this.appleMemberClient = appleMemberClient;
         this.googleMemberClient = googleMemberClient;
         this.kakaoMemberClient = kakaoMemberClient;
@@ -89,19 +91,23 @@ public class LoginContext {
         });
     }
 
-    public MemberLoginResponse executeStrategy(String accessToken, LoginType loginType) {
+    public MemberLoginResponse executeStrategy(
+            String accessToken, LoginType loginType
+    ) {
         LoginStrategy strategy = clientMap.get(loginType).getStrategy();
         if (strategy == null) {
-            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+            throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
         }
         return strategy.login(clientMap.get(loginType).getClient(), accessToken);
     }
 
-    public MemberLoginResponse executeStrategy(AdminLoginRequest request) {
+    public MemberLoginResponse executeStrategy(
+            AdminLoginRequest request
+    ) {
         LoginType loginType = LoginType.INTERNAL;
         LoginStrategy strategy = clientMap.get(loginType).getStrategy();
         if (strategy == null) {
-            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+            throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
         }
         return strategy.login(null, request);
     }

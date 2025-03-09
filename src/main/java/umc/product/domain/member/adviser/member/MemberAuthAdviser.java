@@ -34,7 +34,11 @@ public class MemberAuthAdviser {
 
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
-    public MemberIdResponse signUp(MultipartFile file, MemberSignUpRequest request){
+    public MemberIdResponse signUp(
+            MultipartFile file,
+            MemberSignUpRequest request
+    ){
+        //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
         if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         }
@@ -49,20 +53,31 @@ public class MemberAuthAdviser {
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 
-    public MemberLoginResponse socialLogin(String accessToken, LoginType loginType) {
+    public MemberLoginResponse socialLogin(
+            String accessToken,
+            LoginType loginType
+    ) {
         return memberAuthService.socialLogin(accessToken, loginType);
     }
 
-    public MemberCreateTokenResponse regenerateToken(String refreshToken) {
+    public MemberCreateTokenResponse regenerateToken(
+            String refreshToken
+    ) {
         Claims claims = memberRefreshTokenService.getClaims(refreshToken);
         Long memberId = Long.parseLong(claims.get("memberId").toString());
         Member member = memberService.findById(memberId);
         return memberAuthService.generateNewAccessToken(refreshToken, member);
     }
 
-    public MemberIdResponse logout(Member member) {return memberAuthService.logout(member);}
+    public MemberIdResponse logout(
+            Member member
+    ) {
+        return memberAuthService.logout(member);
+    }
 
-    public MemberIdResponse withdrawal(Member member) {return memberAuthService.withdrawal(member);}
-
-
+    public MemberIdResponse withdrawal(
+            Member member
+    ) {
+        return memberAuthService.withdrawal(member);
+    }
 }

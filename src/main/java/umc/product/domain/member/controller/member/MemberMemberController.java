@@ -18,7 +18,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
-@Tag(name = "멤버 API", description = "멤버 관련 API")
+@Tag(name = "일반 사용자(App)용 Member API", description = "일반 사용자(App)용 Member 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -36,7 +36,9 @@ public class MemberMemberController {
             @Parameter(name = "code", description = "발급받은 UMC 인증 코드"),
     })
     @GetMapping("/code/verify")
-    public BaseResponse<MemberCodeVerifyResponse> verifyMemberCode(@RequestParam String code) {
+    public BaseResponse<MemberCodeVerifyResponse> verifyMemberCode(
+            @RequestParam String code
+    ) {
         return BaseResponse.onSuccess(memberMemberAdviser.verifyAppCode(code));
     }
 
@@ -48,9 +50,11 @@ public class MemberMemberController {
             )
     })
     @PatchMapping(path = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(@CurrentMember Member member,
-                                                                @RequestPart(name = "avatarImage", required = false)
-                                                                @Parameter(description = "사용자 프로필 이미지(선택 사항)") MultipartFile file) {
+    public BaseResponse<MemberIdResponse> modifyMyProfileAvatar(
+            @CurrentMember Member member,
+            @RequestPart(name = "avatarImage")
+            @Parameter(description = "사용자 프로필 이미지(선택 사항)") MultipartFile file
+    ) {
         return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member, file));
     }
 
@@ -65,8 +69,8 @@ public class MemberMemberController {
             @Parameter(name = "memberId", description = "조회하고 싶은 사용자의 Id"),
     })
     @GetMapping("/profile/{memberId}")
-    public BaseResponse<MemberSearchResponse> getProfile(@CurrentMember Member member,
-                                                         @PathVariable(name = "memberId") Long memberId) {
+    public BaseResponse<MemberSearchResponse> getProfile(
+            @PathVariable(name = "memberId") Long memberId) {
         return BaseResponse.onSuccess(memberMemberAdviser.getProfile(memberId));
     }
 }

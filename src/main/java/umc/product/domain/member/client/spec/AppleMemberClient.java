@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.FAILED_GET_APPLE_KEY;
+import static umc.product.domain.member.status.AuthErrorStatus.FAILED_GET_APPLE_KEY;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +30,9 @@ public class AppleMemberClient implements SocialMemberClient {
     private static final String APPLE_ISSUER_URL = "https://appleid.apple.com";
 
     @Override
-    public SocialLoginResponse getSocialLoginResponse(String accessToken) throws Exception {
+    public SocialLoginResponse getSocialLoginResponse(
+            String accessToken
+    ) throws Exception {
         DecodedJWT decodedJWT = JWT.decode(accessToken);
 
         List<Map<String, Object>> keys = socialClient.getPublicKeys(APPLE_KEYS_URL);
@@ -62,13 +64,17 @@ public class AppleMemberClient implements SocialMemberClient {
     }
 
     @Override
-    public LoginType getLoginType() {
+    public LoginType getLoginType(
+    ) {
         return LoginType.APPLE;
     }
 
     // X.509 공개 키 생성
-    private RSAPublicKey getRSAPublicKey(String n, String e) throws Exception {
-        // 'n'과 'e' 값을 디코딩하고, 공개 키를 생성합니다.
+    private RSAPublicKey getRSAPublicKey(
+            String n,
+            String e
+    ) throws Exception {
+        // 'n'과 'e' 값을 디코딩하고, 공개 키를 생성
         byte[] modulus = Base64.getUrlDecoder().decode(n);
         byte[] exponent = Base64.getUrlDecoder().decode(e);
 

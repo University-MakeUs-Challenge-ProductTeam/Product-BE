@@ -4,10 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.member.AdminRegisterRequest;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPartRequest;
-import umc.product.domain.member.dto.request.admin.member.AdminUpdateSemesterPositionRequest;
 import umc.product.domain.member.dto.request.admin.auth.AdminSignUpRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
@@ -35,63 +33,96 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     private final MemberMapper memberMapper;
 
     @Override
-    public Member toAdminMember(AdminSignUpRequest request, String avatarUrl, String universityName) {
-        return memberMapper.toAdminMember(request, avatarUrl, universityName);
+    public Member toAdminMember(
+            AdminSignUpRequest request,
+            String avatarUrl,
+            String universityName
+    ) {
+        return memberMapper.toAdminMemberEntity(request, avatarUrl, universityName);
     }
 
     @Override
-    public List<Member> findMembers(Member member, Pageable pageable, Long semesterId, Role role, Part part) {
+    public List<Member> findMembers(
+            Member member,
+            Pageable pageable,
+            Long semesterId,
+            Role role,
+            Part part
+    ) {
         return memberDslRepository.findMemberList(pageable,member, semesterId, role, part);
     }
 
 
     @Override
-    public List<Member> findMembersBySearchString(Member member, String searchString) {
+    public List<Member> findMembersBySearchString(
+            Member member,
+            String searchString
+    ) {
         return memberDslRepository.findMembersBySearchString(member, searchString);
     }
 
     @Override
-    public List<Member> toMemberFromExcelMember(AdminRegisterRequest request, List<University> universityList) {
-        return memberMapper.toMember(request, universityList);
+    public List<Member> toMemberFromExcelMember(
+            AdminRegisterListRequest request,
+            List<University> universityList
+    ) {
+        return memberMapper.toMemberEntity(request, universityList);
     }
 
     @Override
-    public List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
+    public List<Member> saveRegisterMembers(
+            List<Member> memberList,
+            List<SemesterPart> semesterPartList,
+            List<SemesterPosition> semesterPositionList
+    ) {
         return memberJdbcRepository.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
     }
 
     @Transactional
     @Override
-    public void modifyMemberInfo(Member targetMember, University university, AdminUpdateMemberProfileRequest request, Map<Long, Semester> partSemesterMap, Map<Long, Semester> positionSemesterMap) {
+    public void modifyMemberInfo(
+            Member targetMember,
+            University university,
+            AdminUpdateMemberProfileRequest request,
+            Map<Long, Semester> partSemesterMap,
+            Map<Long, Semester> positionSemesterMap
+    ) {
         targetMember.modifyProfile(request, university);
 
-        Map<Long, AdminUpdateSemesterPartRequest> semesterPartRequestMap = request.semesterPartList().stream()
-                .collect(Collectors.toMap(AdminUpdateSemesterPartRequest::semesterPartId, Function.identity()));
+        //semesterPartId를 기준으로 request를 map으로 변환
+        Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest> semesterPartRequestMap = request.semesterPartList().stream()
+                .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest::semesterPartId, Function.identity()));
 
         targetMember.getMemberSemesterPart()
                 .forEach(semesterPart -> {
-                    AdminUpdateSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
+                    AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
                     if(matchingRequest != null) semesterPart.updateSemesterPart(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.part());
                 });
 
-        Map<Long, AdminUpdateSemesterPositionRequest> semesterPositionRequestMap = request.semesterPositionList().stream()
-                .collect(Collectors.toMap(AdminUpdateSemesterPositionRequest::semesterPositionId, Function.identity()));
+        Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest> semesterPositionRequestMap = request.semesterPositionList().stream()
+                .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest::semesterPositionId, Function.identity()));
 
         targetMember.getMemberSemesterPosition()
                 .forEach(semesterPosition -> {
-                    AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
+                    AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
                     if(matchingRequest != null) semesterPosition.updateSemesterPosition(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.position());
                 });
     }
 
     @Transactional
     @Override
-    public void addSemesterPositionList(Member targetMember, List<SemesterPosition> semesterPositionList) {
+    public void addSemesterPositionList(
+            Member targetMember,
+            List<SemesterPosition> semesterPositionList
+    ) {
         targetMember.addSemesterPosition(semesterPositionList);
     }
     @Transactional
     @Override
-    public void addSemesterPartList(Member targetMember, List<SemesterPart> semesterPartList) {
+    public void addSemesterPartList(
+            Member targetMember,
+            List<SemesterPart> semesterPartList
+    ) {
         targetMember.addSemesterPart(semesterPartList);
     }
 }

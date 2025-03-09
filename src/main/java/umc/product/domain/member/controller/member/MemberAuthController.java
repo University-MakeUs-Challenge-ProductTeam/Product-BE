@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "인증 API", description = "멤버 인증 관련 API")
+@Tag(name = "일반 사용자(App)용 Member Auth API", description = "일반 사용자(App)용 Member Auth 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members/auth")
@@ -36,9 +36,11 @@ public class MemberAuthController {
             )
     })
     @PostMapping(path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public BaseResponse<MemberIdResponse> signUp(@RequestPart MemberSignUpRequest request,
-                                                 @RequestPart(name = "avatarImage", required = false)
-                                                 @Parameter(description = "사용자 프로필 이미지(선택 사항)", required = false) MultipartFile file) {
+    public BaseResponse<MemberIdResponse> signUp(
+            @RequestPart MemberSignUpRequest request,
+            @RequestPart(name = "avatarImage", required = false)
+            @Parameter(description = "사용자 프로필 이미지(선택 사항)", required = false) MultipartFile file
+    ) {
         return BaseResponse.onSuccess(memberAuthAdviser.signUp(file, request));
     }
 
@@ -54,8 +56,10 @@ public class MemberAuthController {
             @Parameter(name = "loginType", description = "Social의 종류"),
     })
     @PostMapping("/social/login")
-    public BaseResponse<MemberLoginResponse> socialLogin(@RequestHeader(value = "accessToken") String accessToken,
-                                                         @RequestParam(value = "loginType") LoginType loginType) {
+    public BaseResponse<MemberLoginResponse> socialLogin(
+            @RequestHeader(value = "accessToken") String accessToken,
+            @RequestParam(value = "loginType") LoginType loginType
+    ) {
         return BaseResponse.onSuccess(memberAuthAdviser.socialLogin(accessToken, loginType));
     }
 
@@ -70,19 +74,25 @@ public class MemberAuthController {
             @Parameter(name = "refreshToken", description = "로그인시 받는 refreshToken"),
     })
     @GetMapping("/token/refresh")
-    public BaseResponse<MemberCreateTokenResponse> regenerateToken(@RequestHeader(value = "refreshToken") String refreshToken) {
+    public BaseResponse<MemberCreateTokenResponse> regenerateToken(
+            @RequestHeader(value = "refreshToken") String refreshToken
+    ) {
         return BaseResponse.onSuccess(memberAuthAdviser.regenerateToken(refreshToken));
     }
 
     @Operation(summary = "로그아웃 API", description = "해당 유저의 refreshToken을 삭제하는 API입니다.")
     @DeleteMapping("/logout")
-    public BaseResponse<MemberIdResponse> logout(@CurrentMember Member member) {
+    public BaseResponse<MemberIdResponse> logout(
+            @CurrentMember Member member
+    ) {
         return BaseResponse.onSuccess(memberAuthAdviser.logout(member));
     }
 
     @Operation(summary = "회원 탈퇴 API", description = "해당 유저 정보를 삭제하는 API입니다.")
     @DeleteMapping
-    public BaseResponse<MemberIdResponse> withdrawal(@CurrentMember Member member) {
+    public BaseResponse<MemberIdResponse> withdrawal(
+            @CurrentMember Member member
+    ) {
         return BaseResponse.onSuccess(memberAuthAdviser.withdrawal(member));
     }
 

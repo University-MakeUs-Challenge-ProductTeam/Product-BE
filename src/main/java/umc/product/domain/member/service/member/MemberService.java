@@ -8,7 +8,8 @@ import java.util.List;
 public interface MemberService {
     Member findById(Long id);
     Member saveEntity(Member member);
-    Member modifyMyProfileAvatar(Member member, String avatarUrl);
+    Member modifyMyProfileAvatar(Member member,
+                                 String avatarUrl);
     List<Member> findWaitingMemberByUniversity(University university);
     List<Member> findWaitingMember();
 }

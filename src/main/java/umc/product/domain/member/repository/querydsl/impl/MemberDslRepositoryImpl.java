@@ -2,15 +2,10 @@ package umc.product.domain.member.repository.querydsl.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
 import umc.product.domain.member.entity.QMemberLoginInfo;
@@ -18,23 +13,10 @@ import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
-import umc.product.domain.semester.entity.SemesterPart;
-import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.university.entity.University;
-import umc.product.global.common.exception.RestApiException;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
-import static umc.product.domain.member.status.MemberErrorStatus.ERROR_TO_SAVE_DB;
 
 
 @Repository
@@ -60,6 +42,7 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
         return Optional.ofNullable(
                 jpaQueryFactory
                         .selectFrom(qMember)
+                        //fetchJoin하여 한번에 가져옴
                         .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
                         .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
                         .fetchFirst()
@@ -71,9 +54,11 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
+            //학교 web 계정이라면 query에 university를 추가
             if(currentMember.getRole().equals(Role.SCHOOL_ADMIN)){
                 builder.and(qMember.university.name.eq(currentMember.getUniversity().getName()));
             }
+            //검색되는 member의 범위는 role의 priority가 더 낮은 것들만
             builder.and(qMember.role.gt(currentMember.getRole()));
         }
 
@@ -81,6 +66,7 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
             builder.and(qMember.role.eq(role));
         }
         if (semesterId != null) {
+            //직책 및 파트에 포함된 semester 모두를 검색
             builder.and(qMember.memberSemesterPart.any().semester.id.eq(semesterId)
                         .or(qMember.memberSemesterPosition.any().semester.id.eq(semesterId))
         );
@@ -102,9 +88,10 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     public List<Member> findMembersBySearchString(Member member, String searchString) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
-        builder.and(qMember.deletedAt.isNull());
+        builder.and(qMember.deletedAt.isNull());    //삭제된 사용자는 검색에서 제외.
 
         if (member != null && member.getRole() != null) {
+            //학교 web 계정이라면 query에 university 추가
             if(member.getRole().equals(Role.SCHOOL_ADMIN)){
                 builder.and(qMember.university.name.eq(member.getUniversity().getName()));
             }

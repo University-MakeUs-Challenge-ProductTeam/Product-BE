@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.adviser.admin.AdminCodeAdviser;
 import umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse;
 import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse;
-import umc.product.domain.member.dto.request.admin.register.AdminRegisterResponse;
+import umc.product.domain.member.dto.response.admin.register.AdminRegisterListResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
-@Tag(name = "어드민 Member Code 공통 로직 API", description = "Admin Member Code 관련 API")
+@Tag(name = "운영진용(Web) Member Code API", description = "운영진용(Web) Member Code 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/web/admin/members")
@@ -35,7 +35,9 @@ public class AdminCodeController {
             @Parameter(name = "code", description = "발급받은 UMC 인증 코드")
     })
     @GetMapping("/code/verify")
-    public BaseResponse<AdminVerifyCodeResponse> verifyMemberCode(@RequestParam String code) {
+    public BaseResponse<AdminVerifyCodeResponse> verifyMemberCode(
+            @RequestParam String code
+    ) {
         return BaseResponse.onSuccess(adminCodeAdviser.verifyMemberCode(code));
     }
 
@@ -50,8 +52,9 @@ public class AdminCodeController {
             @Parameter(name = "universityName", description = "학교 이름(학교가 없다면 생성됩니다)")
     })
     @PostMapping("/create/university-code")
-    public BaseResponse<AdminCreateCodeResponse> createWebAdminCode(@CurrentMember Member member,
-                                                                    @RequestParam String universityName) {
+    public BaseResponse<AdminCreateCodeResponse> createWebAdminCode(
+            @RequestParam String universityName
+    ) {
         return BaseResponse.onSuccess(adminCodeAdviser.createWebAdminCode(null, universityName));
     }
 
@@ -66,8 +69,10 @@ public class AdminCodeController {
             @Parameter(name = "memberId", description = "개별적으로 코드를 발급받고 싶은 member의 id")
     })
     @PostMapping("/create/code/{memberId}")
-    public BaseResponse<AdminRegisterResponse> createIndividualAppCode(@CurrentMember Member member,
-                                                                       @Valid @PathVariable(name = "memberId") Long memberId) {
+    public BaseResponse<AdminRegisterListResponse> createIndividualAppCode(
+            @CurrentMember Member member,
+            @Valid @PathVariable(name = "memberId") Long memberId
+    ) {
         return BaseResponse.onSuccess(adminCodeAdviser.createIndividualAppCode(member, memberId));
     }
 }

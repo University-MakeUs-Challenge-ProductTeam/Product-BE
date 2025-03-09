@@ -13,5 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberJdbcRepository {
-    List<Member> saveRegisterMembers(List<Member> memberList, List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList);
+    List<Member> saveRegisterMembers(
+            List<Member> memberList,
+            List<SemesterPart> semesterPartList,
+            List<SemesterPosition> semesterPositionList);
 }

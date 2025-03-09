@@ -1,4 +1,4 @@
-package umc.product.groutine.global.common.exception.code.status;
+package umc.product.global.common.exception.code.status;
 
 
 import lombok.AllArgsConstructor;
