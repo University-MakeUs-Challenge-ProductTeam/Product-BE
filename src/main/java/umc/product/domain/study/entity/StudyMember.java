@@ -1,10 +1,7 @@
 package umc.product.domain.study.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import umc.product.domain.checklist.entity.Checklist;
+import lombok.*;
 import umc.product.domain.checklist.entity.ChecklistMemberAnswer;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.study.entity.enums.StudyRole;
@@ -14,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyMember extends BaseEntity {
 
