@@ -70,10 +70,8 @@ public class AdminStudyController {
     @Parameters({
             @Parameter(name = "studyId", description = "스터디 id, path variable 입니다")
     })
-    public BaseResponse<StudyCommonResponse> deleteStudy(
-            @CurrentMember Member member,
-            @PathVariable Long studyId) {
-        // 스터디를 삭제하면서 StudyMember, StudyAttendance, ChecklistStudyMember 같이 삭제
-        return BaseResponse.onSuccess(null);
+    public BaseResponse<StudyCommonResponse> deleteStudy(@PathVariable Long studyId) {
+        // 스터디를 삭제하면서 StudyMember, StudyUniversity, StudyAttendance, ChecklistStudyMember 같이 삭제
+        return BaseResponse.onSuccess(adminStudyAdviser.deleteStudy(studyId));
     }
 }

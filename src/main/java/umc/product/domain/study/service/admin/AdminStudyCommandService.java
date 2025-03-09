@@ -6,4 +6,5 @@ import umc.product.domain.study.entity.Study;
 public interface AdminStudyCommandService {
 
     Study createStudy(AdminStudyRequest request);
+    void deleteStudy(Study study);
 }

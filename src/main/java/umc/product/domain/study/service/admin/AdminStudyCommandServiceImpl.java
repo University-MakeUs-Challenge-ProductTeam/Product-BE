@@ -3,6 +3,7 @@ package umc.product.domain.study.service.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.mapper.admin.AdminStudyMapper;
@@ -21,5 +22,11 @@ public class AdminStudyCommandServiceImpl implements AdminStudyCommandService {
         Study study = adminStudyMapper.toStudy(request);
         adminStudyRepository.save(study);
         return study;
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudy(Study study) {
+        adminStudyRepository.delete(study);
     }
 }

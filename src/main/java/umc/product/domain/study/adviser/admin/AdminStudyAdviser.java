@@ -21,6 +21,7 @@ import umc.product.domain.study.service.admin.AdminStudyAttendanceCommandService
 import umc.product.domain.study.service.admin.AdminStudyCommandService;
 import umc.product.domain.study.service.admin.AdminStudyMemberCommandService;
 import umc.product.domain.study.service.admin.AdminStudyUniversityCommandService;
+import umc.product.domain.study.service.member.StudyQueryService;
 import umc.product.domain.university.entity.University;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class AdminStudyAdviser {
     private final AdminStudyAttendanceCommandService adminStudyAttendanceCommandService;
     private final AdminChecklistContentQueryServiceImpl adminChecklistContentQueryService;
     private final AdminChecklistMemberAnswerCommandServiceImpl adminChecklistMemberAnswerCommandService;
+    private final StudyQueryService studyQueryService;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     @Transactional
@@ -67,5 +69,14 @@ public class AdminStudyAdviser {
         adminChecklistMemberAnswerCommandService.createChecklistMemberAnswer(checklistContentList, studyMemberList);
 
         return StudyCommonResponse.from(study.getId());
+    }
+
+    // 스터디 수정
+
+    // 스터디 삭제
+    public StudyCommonResponse deleteStudy(Long studyId) {
+        Study study = studyQueryService.getStudy(studyId);
+        adminStudyCommandService.deleteStudy(study);
+        return StudyCommonResponse.from(studyId);
     }
 }
