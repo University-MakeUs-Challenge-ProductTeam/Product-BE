@@ -2,7 +2,7 @@ package umc.product.domain.study.adviser.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import umc.product.domain.checklist.service.ChecklistCommandService;
+import umc.product.domain.checklist.service.member.ChecklistCommandService;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;

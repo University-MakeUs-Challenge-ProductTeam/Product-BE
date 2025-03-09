@@ -1,4 +1,4 @@
-package umc.product.domain.checklist.service;
+package umc.product.domain.checklist.service.member;
 
 import umc.product.domain.study.dto.request.member.StudyChecklistListRequest;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
