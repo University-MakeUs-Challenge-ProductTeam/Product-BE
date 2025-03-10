@@ -22,8 +22,14 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDslRepository memberDslRepository;
     private final MemberJpaRepository memberJpaRepository;
 
-    public Member findById(Long id) throws UsernameNotFoundException {
-        return memberDslRepository.findById(id)
+    public Member findById(Long memberId) throws UsernameNotFoundException {
+        return memberDslRepository.findById(memberId)
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    public Member findByIdForSignup(Long memberId) {
+        return memberDslRepository.findByIdForSignup(memberId)
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
@@ -34,9 +40,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member modifyMyProfileAvatar(Member member, String avatarUrl) {
-        member.setAvatarUrl(avatarUrl);
-        return memberJpaRepository.save(member);
+    public void modifyMyProfileAvatar(Member member, String avatarUrl) {
+        memberDslRepository.updateAvatarImage(member, avatarUrl);
     }
 
     @Override
