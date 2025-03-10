@@ -28,7 +28,7 @@ public class MemberMemberAdviser {
             String code
     ) {
         Long memberId = memberCodeService.verifyAppCode(code);
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findByIdForNotLoginInfo(memberId);
         return memberCodeConverter.toMemberCodeVerifyResponse(member);
     }
 
