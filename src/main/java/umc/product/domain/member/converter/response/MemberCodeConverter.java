@@ -47,11 +47,11 @@ public class MemberCodeConverter {
                 .memberId(member.getId())
                 .name(member.getName())
                 .nickName(member.getNickName())
-                .part(member.getMemberSemesterPart() != null ?
+                .part(!member.getMemberSemesterPart().isEmpty()  ?
                         member.getMemberSemesterPart().get(0).getPart() :
                         null)
                 .positionList
-                        (member.getMemberSemesterPosition() != null ?
+                        (!member.getMemberSemesterPosition().isEmpty() ?
                         member.getMemberSemesterPosition().stream().map(SemesterPosition::getPosition).collect(Collectors.toList()):
                         null)
                 .build();
