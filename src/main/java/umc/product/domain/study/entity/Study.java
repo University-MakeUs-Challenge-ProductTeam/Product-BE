@@ -50,4 +50,9 @@ public class Study extends BaseEntity {
     public void updateWeek(int week) {
         this.currentWeek = week;
     }
+
+    // 스터디 타입 변경 메서드
+    public void updateStudyType(StudyType studyType) {
+        this.studyType = studyType;
+    }
 }
