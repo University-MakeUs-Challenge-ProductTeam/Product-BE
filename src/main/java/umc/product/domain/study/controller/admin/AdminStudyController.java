@@ -41,7 +41,7 @@ public class AdminStudyController {
     }
 
     @PatchMapping("/{studyId}")
-    @Operation(summary = "스터디 수정 API", description = "관리자가 스터디를 수정하는 API입니다. 스터디 소속, 스터디 참여 인원, 스터디장만 변경 가능합니다.")
+    @Operation(summary = "스터디 수정 API(미완 - 90% 완료)", description = "관리자가 스터디를 수정하는 API입니다. 스터디 소속, 스터디 참여 인원, 스터디장만 변경 가능합니다.")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -56,7 +56,7 @@ public class AdminStudyController {
             @Valid @RequestBody AdminStudyModifyRequest request,
             @PathVariable Long studyId) {
         // 스터디 타입(SCHOOL, BRANCH), 스터디 역할(LEADER, CHALLENGER), 스터디 참여 인원만 변경 가능
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(adminStudyAdviser.modifyStudy(studyId, request));
     }
 
     @DeleteMapping("/{studyId}")

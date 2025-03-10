@@ -10,4 +10,6 @@ import java.util.List;
 public interface AdminStudyMemberCommandService {
 
     List<StudyMember> createStudyMember(Study study, List<AdminStudyMemberRequest> memberRequestList, List<SemesterPart> semesterPartList);
+    void deleteStudyMember(List<StudyMember> removeStudyMemberList);
+
 }

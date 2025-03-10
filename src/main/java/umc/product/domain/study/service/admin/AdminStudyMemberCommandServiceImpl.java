@@ -26,4 +26,9 @@ public class AdminStudyMemberCommandServiceImpl implements AdminStudyMemberComma
         adminStudyMemberRepository.saveAll(studyMemberList);
         return studyMemberList;
     }
+
+    @Override
+    public void deleteStudyMember(List<StudyMember> removeStudyMemberList) {
+        adminStudyMemberRepository.deleteAll(removeStudyMemberList);
+    }
 }
