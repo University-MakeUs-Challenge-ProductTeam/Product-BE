@@ -9,11 +9,14 @@ import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.university.entity.University;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberDslRepository {
+    void updateAvatarImage(Member member, String avatarUrl);
     Optional<Member> findById(Long memberId);
+    Optional<Member> findByIdForSignup(Long memberId);
     Optional<Member> findMemberByClientId(String clientId);
     List<Member> findMemberList(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part);
     List<Member> findMembersBySearchString(Member member,String searchString);

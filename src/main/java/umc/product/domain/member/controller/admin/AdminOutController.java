@@ -33,7 +33,7 @@ public class AdminOutController {
     @PostMapping("/out/{memberId}")
     public BaseResponse<MemberOutIdResponse> postMemberOut(
             @PathVariable(name = "memberId") Long memberId,
-            @RequestParam @Parameter(name = "OutReason", description = "부여하려는 Out의 이유") OutReason outReason
+            @RequestParam @Parameter(name = "outReason", description = "부여하려는 Out의 이유") OutReason outReason
     ) {
         return BaseResponse.onSuccess(adminOutAdviser.postMemberOut(memberId, outReason));
     }
@@ -53,7 +53,7 @@ public class AdminOutController {
     public BaseResponse<MemberOutIdResponse> modifyMemberOut(
             @PathVariable(name = "memberId") Long memberId,
             @PathVariable(name = "outId") Long outId,
-            @RequestParam @Parameter(name = "OutReason", description = "부여하려는 Out의 이유") OutReason outReason
+            @RequestParam @Parameter(name = "outReason", description = "부여하려는 Out의 이유") OutReason outReason
     ) {
         return BaseResponse.onSuccess(adminOutAdviser.modifyMemberOut(outId, memberId, outReason));
     }

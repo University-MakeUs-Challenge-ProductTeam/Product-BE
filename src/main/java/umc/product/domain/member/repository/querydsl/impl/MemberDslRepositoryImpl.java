@@ -28,7 +28,27 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
 
     @Override
+    public void updateAvatarImage(Member member, String avatarUrl) {
+        jpaQueryFactory
+                .update(qMember)
+                .set(qMember.avatarUrl, avatarUrl)
+                .where(qMember.id.eq(member.getId()))
+                .execute();
+    }
+
+    @Override
     public Optional<Member> findById(Long memberId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(qMember)
+                        .join(qMember.memberLoginInfo, qMemberLoginInfo).fetchJoin()
+                        .where(qMember.id.eq(memberId))
+                        .fetchFirst()
+        );
+    }
+
+    @Override
+    public Optional<Member> findByIdForSignup(Long memberId) {
         return Optional.ofNullable(
                 jpaQueryFactory
                         .selectFrom(qMember)

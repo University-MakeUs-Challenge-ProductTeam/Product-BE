@@ -17,7 +17,7 @@ public class MemberCodeConverter {
     public AdminCreateCodeResponse toAdminCodeResponse(
             String code
     ){
-        return umc.product.domain.member.dto.response.admin.code.AdminCreateCodeResponse.builder()
+        return AdminCreateCodeResponse.builder()
                 .code(code)
                 .build();
     }

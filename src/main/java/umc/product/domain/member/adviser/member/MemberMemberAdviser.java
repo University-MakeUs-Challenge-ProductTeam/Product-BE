@@ -44,7 +44,7 @@ public class MemberMemberAdviser {
             MultipartFile file
     ) {
         FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
-        Member modifyMember = memberService.modifyMyProfileAvatar(member, fileCreateResponse.getUrl());
-        return  memberConverter.toMemberIdResponse(modifyMember.getId());
+        memberService.modifyMyProfileAvatar(member, fileCreateResponse.getUrl());
+        return  memberConverter.toMemberIdResponse(member.getId());
     }
 }

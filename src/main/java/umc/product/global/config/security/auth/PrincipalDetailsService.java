@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+/*@Service
 @RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
 
@@ -24,4 +24,4 @@ public class PrincipalDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Invalid ID format", e); // 잘못된 ID 형식 예외 처리
         }
     }
-}
+}*/

@@ -31,9 +31,6 @@ public class AdminAuthController {
                     description = "학교 web 계정 회원가입 성공"
             )
     })
-    @Parameters({
-            @Parameter(name = "avatarImage", description = "사용자 프로필 이미지 입니다(필수 X)")
-    })
     @PostMapping( path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public BaseResponse<MemberIdResponse> signUp(
             @RequestPart AdminSignUpRequest request,
