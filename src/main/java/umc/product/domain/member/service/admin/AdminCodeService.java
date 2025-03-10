@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AdminCodeService {
+    Map<Long, String> getAppCodeMap(List<Member> memberList);
     void saveWebAdminCode(String universityName,
                           String code);
     void saveAppCode(Map<String, Member> codeMap);

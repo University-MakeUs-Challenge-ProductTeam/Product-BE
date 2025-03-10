@@ -43,10 +43,11 @@ public class AdminMemberController {
             )
     })
     @PostMapping(path = "/register")
-    public BaseResponse<AdminRegisterListResponse> registerMember(
+    public BaseResponse<Void> registerMember(
             @RequestBody AdminRegisterListRequest request
     ) {
-        return BaseResponse.onSuccess(adminMemberAdviser.registerMember(request));
+        adminMemberAdviser.registerMember(request);
+        return BaseResponse.onSuccess(null);
     }
 
     @Operation(summary = "프로필 수정 API", description = "프로필(이름, 닉네임, 학교, 직책, 기수/파트) 수정하는 API입니다.")

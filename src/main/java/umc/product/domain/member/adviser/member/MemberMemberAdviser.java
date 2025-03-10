@@ -36,7 +36,7 @@ public class MemberMemberAdviser {
             Long memberId
     ) {
         Member member = memberService.findById(memberId);
-        return  memberConverter.toSearchMemberResponse(member);
+        return  memberConverter.toMemberSearchResponse(member);
     }
 
     public MemberIdResponse modifyMyProfileAvatar(

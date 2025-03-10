@@ -1,85 +1,48 @@
 package umc.product.domain.member.serviceImpl.admin;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.repository.redis.MemberRedisRepository;
 import umc.product.domain.member.service.admin.AdminCodeService;
-import umc.product.global.common.exception.RestApiException;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
-import static umc.product.domain.member.status.MemberErrorStatus.INVALID_UMC_CODE;
+import java.util.stream.IntStream;
 
 
 @Service
 @AllArgsConstructor
 public class AdminCodeServiceImpl implements AdminCodeService {
-    private final StringRedisTemplate stringRedisTemplate;
-    private static final long EXPIRATION_TIME = 60 * 30;
+    private final MemberRedisRepository memberRedisRepository;
+
+    @Override
+    public Map<Long, String> getAppCodeMap(List<Member> memberList) {
+        List<String> codeList = memberRedisRepository.getAppCodeList(memberList);
+
+        return IntStream.range(0, memberList.size())
+                .boxed()
+                .collect(Collectors.toMap(
+                        index -> memberList.get(index).getId(),
+                        index -> {
+                            String code = codeList.get(index);
+                            return (code != null) ? code : "";
+                        }
+                ));
+    }
 
     @Override
     public void saveWebAdminCode(
             String universityName,
             String code
     ) {
-        String key = "code:" + code;
-        stringRedisTemplate.opsForValue().set(key, universityName, EXPIRATION_TIME, TimeUnit.SECONDS);
+        memberRedisRepository.saveAdminCode(universityName,code);
     }
 
-    /**
-     * Redis pipelined + 병렬 처리로 50개씩 묶어서 병렬로 app code를 저장
-     */
     @Override
     public void saveAppCode(Map<String, Member> codeMap) {
-        // 서버에서 가능한 프로세서 * 2
-        int threadPoolSize = Runtime.getRuntime().availableProcessors() * 2;
-        ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
-        final int batchSize = 50;  // 배치 크기 설정
-        List<Future<?>> futures = new ArrayList<>();
-
-        List<Map<String, Member>> batches = new ArrayList<>();
-        List<String> keys = new ArrayList<>(codeMap.keySet());
-        for (int i = 0; i < keys.size(); i += batchSize) {
-            int end = Math.min(i + batchSize, keys.size());
-            List<String> batchKeys = keys.subList(i, end);
-            Map<String, Member> batchMap = new HashMap<>();
-            for (String key : batchKeys) {
-                batchMap.put(key, codeMap.get(key));
-            }
-            batches.add(batchMap);
-        }
-
-        for (Map<String, Member> batch : batches) {
-            //Future로 50개씩 병렬처리
-            futures.add(executor.submit(() -> {
-                stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-                    StringRedisConnection stringRedisConnection = (StringRedisConnection)connection;
-                    batch.forEach((code, member) -> {
-                        String key = "code:" + code;
-                        String value = String.valueOf(member.getId());
-                        stringRedisConnection.setEx(key, EXPIRATION_TIME, value);
-                    });
-                    return null;
-                });
-            }));
-        }
-
-        // Future가 모두 끝날때 까지 대기
-        for (Future<?> future : futures) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        executor.shutdown();
+        memberRedisRepository.saveAppCodeList(codeMap);
     }
 
 
@@ -113,10 +76,7 @@ public class AdminCodeServiceImpl implements AdminCodeService {
 
     @Override
     public String verifyWebAdminCode(String code) {
-        String key = "code:" + code;
-        String value = stringRedisTemplate.opsForValue().get(key);
-        if(value == null) throw new RestApiException(INVALID_UMC_CODE);
-        return value;
+        return memberRedisRepository.verifyWebAdminCode(code);
     }
 
     private String toBase62(UUID uuid) {

@@ -9,7 +9,8 @@ import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
 
-import static umc.product.domain.university.status.UniversityErrorStatus.EMPTY_UNIVERSITY;
+import static umc.product.domain.university.status.UniversityErrorStatus.NOT_FOUND_UNIVERSITY;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public University findUniversity(String universityName) {
         return universityRepository.findUniversityByName(universityName)
-                .orElseThrow(()-> new RestApiException(EMPTY_UNIVERSITY));
+                .orElseThrow(()-> new RestApiException(NOT_FOUND_UNIVERSITY));
     }
 
     @Override
