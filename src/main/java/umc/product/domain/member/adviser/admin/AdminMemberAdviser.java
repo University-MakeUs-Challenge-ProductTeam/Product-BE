@@ -44,9 +44,8 @@ public class AdminMemberAdviser {
     private final AdminCodeService adminCodeService;
 
     private final MemberConverter memberConverter;
-    private final MemberCodeConverter memberCodeConverter;
 
-    public AdminRegisterListResponse registerMember(
+    public void registerMember(
             AdminRegisterListRequest request
     ) {
         //최근 기수의 직책, 파트만 등록
@@ -62,7 +61,6 @@ public class AdminMemberAdviser {
         //map 형식으로 만들어 Redis에 저장
         Map<String, Member> codeMap = adminCodeService.createAppCode(newMemberList);
         adminCodeService.saveAppCode(codeMap);
-        return memberCodeConverter.toMemberCodeResponse(codeMap);
     }
 
     public MemberIdResponse modifyMemberInfo(
@@ -135,7 +133,8 @@ public class AdminMemberAdviser {
             Part part
     ) {
         List<Member> memberList = adminMemberService.findMembers(member, pageable, semesterId, role, part);
-        return memberConverter.toAdminMemberListResponse(memberList);
+        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList);
+        return memberConverter.toAdminMemberSearchListResponse(memberList, codeMap);
     }
 
     public AdminMemberSearchListResponse searchMemberList(
@@ -143,6 +142,7 @@ public class AdminMemberAdviser {
             String searchString
     ) {
         List<Member> memberList = adminMemberService.findMembersBySearchString(member, searchString);
-        return memberConverter.toAdminMemberListResponse(memberList);
+        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList);
+        return memberConverter.toAdminMemberSearchListResponse(memberList, codeMap);
     }
 }

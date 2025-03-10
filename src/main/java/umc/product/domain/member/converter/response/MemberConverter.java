@@ -17,6 +17,7 @@ import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.global.config.security.jwt.TokenInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,17 +44,41 @@ public class MemberConverter {
                 .build();
     }
 
-    public AdminMemberSearchListResponse toAdminMemberListResponse(
-            List<Member> memberList
+    public AdminMemberSearchListResponse toAdminMemberSearchListResponse(
+            List<Member> memberList,
+            Map<Long, String> codeMap
     ) {
-        List<MemberSearchResponse> memberSearchResponse = memberList.stream()
-                .map(this::toSearchMemberResponse).collect(Collectors.toList());
+        List<AdminMemberSearchListResponse.AdminMemberSearchResponse> memberSearchResponse = memberList.stream()
+                .map(member -> {
+                    return toAdminMemberSearchResponse(member, codeMap);
+                }).collect(Collectors.toList());
+
         return AdminMemberSearchListResponse.builder()
                 .memberList(memberSearchResponse)
                 .build();
     }
 
-    public MemberSearchResponse toSearchMemberResponse(
+    public AdminMemberSearchListResponse.AdminMemberSearchResponse toAdminMemberSearchResponse(
+            Member member,
+            Map<Long, String> codeMap
+    ) {
+        String code = codeMap.get(member.getId());
+        return AdminMemberSearchListResponse.AdminMemberSearchResponse.builder()
+                .memberId(member.getId())
+                .avatarUrl(member.getAvatarUrl())
+                .name(member.getName())
+                .nickName(member.getNickName())
+                .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
+                .role(member.getRole().getToKorean())
+                .status(member.getStatus())
+                .code(code)
+                .semesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
+                .semesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
+                .memberOutList(toMemberOutResponseList(member.getMemberOutList()))
+                .build();
+    }
+
+    public MemberSearchResponse toMemberSearchResponse(
             Member member
     ) {
         return MemberSearchResponse.builder()

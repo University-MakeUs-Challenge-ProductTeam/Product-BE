@@ -12,10 +12,12 @@ import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static umc.product.domain.member.status.MemberErrorStatus.NULL_VALUE_IN_MEMBER;
+import static umc.product.domain.university.status.UniversityErrorStatus.NOT_FOUND_UNIVERSITY;
 
 
 @Component
@@ -60,11 +62,14 @@ public class MemberMapper {
         if(request.name() == null || request.nickName() == null || request.universityName() ==null){
             throw new RestApiException(NULL_VALUE_IN_MEMBER);
         }
+        University university = Optional.ofNullable(universityMap.get(request.universityPosition()))
+                .orElseThrow(() -> new RestApiException(NOT_FOUND_UNIVERSITY));
+
         return Member.builder()
                 .name(request.name())
                 .nickName(request.nickName())
                 .role(role)
-                .university(universityMap.get(request.universityName()))
+                .university(university)
                 .build();
     }
 
