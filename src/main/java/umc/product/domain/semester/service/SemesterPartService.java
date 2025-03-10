@@ -2,8 +2,11 @@ package umc.product.domain.semester.service;
 
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartRequest;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
+import umc.product.domain.study.entity.Study;
 
 import java.util.List;
 import java.util.Map;
@@ -11,4 +14,5 @@ import java.util.Map;
 public interface SemesterPartService {
     List<SemesterPart> toSemesterPart(Member targetMember, List<AdminInsertSemesterPartRequest> partList, Map<Long, Semester> semesterMap);
     List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList);
+    List<SemesterPart> getSemesterPartList(Study study, List<AdminStudyMemberRequest> memberRequestList, SemesterPart baseSemesterPart);
 }
