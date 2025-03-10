@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findByIdForSignup(Long memberId) {
+    public Member findByIdForNotLoginInfo(Long memberId) {
         return memberDslRepository.findByIdForSignup(memberId)
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }

@@ -6,6 +6,7 @@ import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse
 import umc.product.domain.member.dto.response.admin.register.AdminRegisterListResponse;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.SemesterPosition;
 
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,13 @@ public class MemberCodeConverter {
                 .memberId(member.getId())
                 .name(member.getName())
                 .nickName(member.getNickName())
+                .part(member.getMemberSemesterPart() != null ?
+                        member.getMemberSemesterPart().get(0).getPart() :
+                        null)
+                .positionList
+                        (member.getMemberSemesterPosition() != null ?
+                        member.getMemberSemesterPosition().stream().map(SemesterPosition::getPosition).collect(Collectors.toList()):
+                        null)
                 .build();
     }
 
