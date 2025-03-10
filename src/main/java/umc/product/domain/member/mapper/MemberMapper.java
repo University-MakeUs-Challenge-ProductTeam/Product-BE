@@ -62,7 +62,7 @@ public class MemberMapper {
         if(request.name() == null || request.nickName() == null || request.universityName() ==null){
             throw new RestApiException(NULL_VALUE_IN_MEMBER);
         }
-        University university = Optional.ofNullable(universityMap.get(request.universityPosition()))
+        University university = Optional.ofNullable(universityMap.get(request.universityName()))
                 .orElseThrow(() -> new RestApiException(NOT_FOUND_UNIVERSITY));
 
         return Member.builder()
