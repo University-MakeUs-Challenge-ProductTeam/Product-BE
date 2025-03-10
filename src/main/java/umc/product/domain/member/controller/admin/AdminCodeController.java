@@ -53,9 +53,10 @@ public class AdminCodeController {
     })
     @PostMapping("/create/university-code")
     public BaseResponse<AdminCreateCodeResponse> createWebAdminCode(
+            @CurrentMember Member member,
             @RequestParam String universityName
     ) {
-        return BaseResponse.onSuccess(adminCodeAdviser.createWebAdminCode(null, universityName));
+        return BaseResponse.onSuccess(adminCodeAdviser.createWebAdminCode(member, universityName));
     }
 
     @Operation(summary = "앱용 개별 확인코드 발급 API", description = "앱에 신규가입, 기존 회원들의 정보를 담은 코드를 개별 발급할 수 있는 API 입니다.")
