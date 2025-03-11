@@ -2,6 +2,7 @@ package umc.product.domain.member.serviceImpl.admin;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
@@ -47,23 +48,24 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
-    public List<Member> findMembers(
+    public Page<Member> findMemberListByFilter(
             Member member,
             Pageable pageable,
             Long semesterId,
             Role role,
             Part part
     ) {
-        return memberDslRepository.findMemberList(pageable,member, semesterId, role, part);
+        return memberDslRepository.findMemberListByFilter(pageable,member, semesterId, role, part);
     }
 
 
     @Override
-    public List<Member> findMembersBySearchString(
+    public Page<Member> findMembersBySearchString(
             Member member,
+            Pageable pageable,
             String searchString
     ) {
-        return memberDslRepository.findMembersBySearchString(member, searchString);
+        return memberDslRepository.findMembersBySearchString(member, pageable, searchString);
     }
 
     @Override

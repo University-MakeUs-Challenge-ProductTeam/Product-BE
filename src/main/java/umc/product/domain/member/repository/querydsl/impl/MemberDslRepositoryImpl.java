@@ -4,6 +4,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.member.entity.Member;
@@ -70,7 +72,13 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     }
 
     @Override
-    public List<Member> findMemberList(Pageable pageable, Member currentMember, Long semesterId, Role role, Part part) {
+    public Page<Member> findMemberListByFilter(
+            Pageable pageable,
+            Member currentMember,
+            Long semesterId,
+            Role role,
+            Part part
+    ) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (currentMember != null && currentMember.getRole() != null) {
@@ -96,16 +104,28 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
         }
         builder.and(qMember.deletedAt.isNull());
 
-        return jpaQueryFactory
+        long total = jpaQueryFactory
+                .select(qMember.count())
+                .from(qMember)
+                .where(builder)
+                .fetchOne();
+
+        List<Member> memberList =  jpaQueryFactory
                 .selectFrom(qMember)
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        return new PageImpl<>(memberList, pageable, total);
     }
 
     @Override
-    public List<Member> findMembersBySearchString(Member member, String searchString) {
+    public Page<Member> findMembersBySearchString(
+            Member member,
+            Pageable pageable,
+            String searchString
+    ) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
         builder.and(qMember.deletedAt.isNull());    //삭제된 사용자는 검색에서 제외.
@@ -118,10 +138,20 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
             builder.and(qMember.role.gt(member.getRole()));
         }
 
-        return jpaQueryFactory
+        long total = jpaQueryFactory
+                .select(qMember.count())
+                .from(qMember)
+                .where(builder)
+                .fetchOne();
+
+        List<Member> memberList =  jpaQueryFactory
                 .selectFrom(qMember)
                 .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        return new PageImpl<>(memberList, pageable, total);
     }
 
     @Override

@@ -1,11 +1,14 @@
 package umc.product.domain.member.converter.response;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchPageResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminProfileDetailResponse;
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.out.MemberOutResponse;
-import umc.product.domain.member.dto.response.member.search.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.Role;
@@ -44,51 +47,61 @@ public class MemberConverter {
                 .build();
     }
 
-    public AdminMemberSearchListResponse toAdminMemberSearchListResponse(
-            List<Member> memberList,
+    public AdminMemberSearchPageResponse toAdminMemberSearchListResponse(
+            Page<Member> memberList,
             Map<Long, String> codeMap
     ) {
-        List<AdminMemberSearchListResponse.AdminMemberSearchResponse> memberSearchResponse = memberList.stream()
+        List<AdminMemberSearchPageResponse.AdminMemberSearchResponse> memberSearchResponse = memberList.getContent().stream()
                 .map(member -> {
                     return toAdminMemberSearchResponse(member, codeMap);
                 }).collect(Collectors.toList());
 
-        return AdminMemberSearchListResponse.builder()
-                .memberList(memberSearchResponse)
+        return AdminMemberSearchPageResponse.builder()
+                .memberList(new PageImpl<>(memberSearchResponse, memberList.getPageable(), memberList.getTotalElements()))
                 .build();
     }
 
-    public AdminMemberSearchListResponse.AdminMemberSearchResponse toAdminMemberSearchResponse(
+    public AdminMemberSearchPageResponse.AdminMemberSearchResponse toAdminMemberSearchResponse(
             Member member,
             Map<Long, String> codeMap
     ) {
         String code = codeMap.get(member.getId());
-        return AdminMemberSearchListResponse.AdminMemberSearchResponse.builder()
+        return AdminMemberSearchPageResponse.AdminMemberSearchResponse.builder()
                 .memberId(member.getId())
                 .avatarUrl(member.getAvatarUrl())
                 .name(member.getName())
                 .nickName(member.getNickName())
-                .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
-                .role(member.getRole().getToKorean())
-                .status(member.getStatus())
+                .universityName(member.getUniversity() != null ? member.getUniversity().getName() :null)
                 .code(code)
                 .semesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
                 .semesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
-                .memberOutList(toMemberOutResponseList(member.getMemberOutList()))
+                .outCount(member.getMemberOutList().size())
                 .build();
     }
 
-    public MemberSearchResponse toMemberSearchResponse(
+    public MemberProfileDetailResponse toMemberProfileDetailResponse(
             Member member
     ) {
-        return MemberSearchResponse.builder()
+        return MemberProfileDetailResponse.builder()
                 .memberId(member.getId())
                 .avatarUrl(member.getAvatarUrl())
                 .name(member.getName())
                 .nickName(member.getNickName())
                 .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
-                .role(member.getRole().getToKorean())
-                .status(member.getStatus())
+                .semesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
+                .semesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
+                .build();
+    }
+
+    public AdminProfileDetailResponse toAdminProfileDetailResponse(
+            Member member
+    ) {
+        return AdminProfileDetailResponse.builder()
+                .memberId(member.getId())
+                .avatarUrl(member.getAvatarUrl())
+                .name(member.getName())
+                .nickName(member.getNickName())
+                .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
                 .semesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
                 .semesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
                 .memberOutList(toMemberOutResponseList(member.getMemberOutList()))

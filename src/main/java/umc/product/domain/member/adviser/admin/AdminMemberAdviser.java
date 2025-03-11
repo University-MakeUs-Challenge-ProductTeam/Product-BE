@@ -1,14 +1,14 @@
 package umc.product.domain.member.adviser.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
-import umc.product.domain.member.dto.response.admin.register.AdminRegisterListResponse;
 import umc.product.domain.member.dto.request.admin.member.*;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
-import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchPageResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminProfileDetailResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
@@ -125,24 +125,32 @@ public class AdminMemberAdviser {
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
-    public AdminMemberSearchListResponse filterSearchMemberList(
+    public AdminMemberSearchPageResponse filterSearchMemberList(
             Member member,
             Pageable pageable,
             Long semesterId,
             Role role,
             Part part
     ) {
-        List<Member> memberList = adminMemberService.findMembers(member, pageable, semesterId, role, part);
-        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList);
+        Page<Member> memberList = adminMemberService.findMemberListByFilter(member, pageable, semesterId, role, part);
+        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList.getContent());
         return memberConverter.toAdminMemberSearchListResponse(memberList, codeMap);
     }
 
-    public AdminMemberSearchListResponse searchMemberList(
+    public AdminMemberSearchPageResponse searchMemberList(
             Member member,
+            Pageable pageable,
             String searchString
     ) {
-        List<Member> memberList = adminMemberService.findMembersBySearchString(member, searchString);
-        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList);
+        Page<Member> memberList = adminMemberService.findMembersBySearchString(member, pageable, searchString);
+        Map<Long, String> codeMap = adminCodeService.getAppCodeMap(memberList.getContent());
         return memberConverter.toAdminMemberSearchListResponse(memberList, codeMap);
+    }
+
+    public AdminProfileDetailResponse getProfileDetail(
+            Long memberId
+    ) {
+        Member member = memberService.findById(memberId);
+        return memberConverter.toAdminProfileDetailResponse(member);
     }
 }

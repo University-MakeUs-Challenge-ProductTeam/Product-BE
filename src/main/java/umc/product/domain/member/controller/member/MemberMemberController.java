@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.member.adviser.member.MemberMemberAdviser;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -58,7 +58,7 @@ public class MemberMemberController {
         return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member, file));
     }
 
-    @Operation(summary = "사용자 프로필 조회 API", description = "사용자의 Id로 프로필을 조회하는 API 입니다")
+    @Operation(summary = "사용자 프로필 세부사항 조회 API", description = "사용자의 Id로 프로필의 세부사항을 조회하는 API 입니다")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -66,11 +66,11 @@ public class MemberMemberController {
             )
     })
     @Parameters({
-            @Parameter(name = "memberId", description = "조회하고 싶은 사용자의 Id"),
+            @Parameter(name = "memberId", description = "프로필 세부사항을 조회하고 싶은 사용자의 Id"),
     })
-    @GetMapping("/profile/{memberId}")
-    public BaseResponse<MemberSearchResponse> getProfile(
+    @GetMapping("/profile/detail/{memberId}")
+    public BaseResponse<MemberProfileDetailResponse> getProfileDetail(
             @PathVariable(name = "memberId") Long memberId) {
-        return BaseResponse.onSuccess(memberMemberAdviser.getProfile(memberId));
+        return BaseResponse.onSuccess(memberMemberAdviser.getProfileDetail(memberId));
     }
 }
