@@ -1,16 +1,14 @@
 package umc.product.domain.study.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import umc.product.domain.study.entity.enums.Check;
-import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.base.BaseEntity;
-import umc.product.global.common.exception.RestApiException;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyAttendance extends BaseEntity {
 

@@ -1,4 +1,4 @@
-package umc.product.domain.checklist.service;
+package umc.product.domain.checklist.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

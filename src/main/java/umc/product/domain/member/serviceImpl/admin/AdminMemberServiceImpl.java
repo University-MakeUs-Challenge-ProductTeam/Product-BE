@@ -14,10 +14,13 @@ import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.jdbc.MemberJdbcRepository;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
+import umc.product.domain.member.status.MemberErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
+import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.university.entity.University;
+import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +34,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     private final MemberJdbcRepository memberJdbcRepository;
 
     private final MemberMapper memberMapper;
+    private final MemberJpaRepository memberJpaRepository;
 
     @Override
     public Member toAdminMember(
@@ -125,4 +129,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     ) {
         targetMember.addSemesterPart(semesterPartList);
     }
+
+    @Override
+    public List<Member> getMemberList(List<AdminStudyMemberRequest> members) {
+        return members.stream()
+                .map(request -> memberJpaRepository.findById(request.getMemberId())
+                        .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER)))
+                                .collect(Collectors.toList());
+    }
+
 }

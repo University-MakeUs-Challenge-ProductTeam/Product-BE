@@ -1,14 +1,14 @@
 package umc.product.domain.checklist.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.global.common.base.BaseEntity;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChecklistMemberAnswer extends BaseEntity {
 
