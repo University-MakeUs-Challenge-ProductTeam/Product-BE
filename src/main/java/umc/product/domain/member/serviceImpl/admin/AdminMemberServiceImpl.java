@@ -12,6 +12,7 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.mapper.MemberMapper;
 import umc.product.domain.member.repository.jdbc.MemberJdbcRepository;
+import umc.product.domain.member.repository.jpa.MemberJpaRepository;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
@@ -134,7 +135,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public List<Member> getMemberList(List<AdminStudyMemberRequest> members) {
         return members.stream()
                 .map(request -> memberJpaRepository.findById(request.getMemberId())
-                        .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER)))
+                        .orElseThrow(() -> new RestApiException(MemberErrorStatus.MEMBER_NOT_FOUND)))
                                 .collect(Collectors.toList());
     }
 
