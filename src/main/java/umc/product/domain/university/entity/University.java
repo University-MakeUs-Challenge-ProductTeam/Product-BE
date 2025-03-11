@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("deleted_at is null")
+@SQLRestriction("deleted_at is null AND is_active = true")
 public class University extends BaseEntity {
 
     @Id

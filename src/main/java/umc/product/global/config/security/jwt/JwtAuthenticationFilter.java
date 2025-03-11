@@ -1,6 +1,9 @@
 package umc.product.global.config.security.jwt;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.filter.OncePerRequestFilter;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.member.serviceImpl.member.MemberServiceImpl;
 import umc.product.global.config.security.auth.PrincipalDetails;
 import io.jsonwebtoken.Claims;
@@ -18,16 +21,15 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 오직 인증 정보를 설정하는 역할만 수행
 
     private final JwtProvider jwtTokenProvider;
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request); // 헤더에서 토큰을 받아옴
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        String token = jwtTokenProvider.resolveToken(request); // 헤더에서 토큰을 받아옴
 
         if (token != null && jwtTokenProvider.validateToken(token)) { // 토큰이 유효하다면
             Authentication authentication = getAuthentication(token); // 인증 정보를 받아옴

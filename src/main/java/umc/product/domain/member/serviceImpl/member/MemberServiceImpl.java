@@ -3,7 +3,7 @@ package umc.product.domain.member.serviceImpl.member;
 import jakarta.transaction.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.repository.jpa.MemberJpaRepository;
-import umc.product.domain.member.repository.querydsl.MemberRepository;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.member.status.MemberErrorStatus;
 import umc.product.domain.university.entity.University;
@@ -14,15 +14,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static umc.product.domain.member.status.MemberErrorStatus.MEMBER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    private final MemberRepository memberRepository;
+    private final MemberDslRepository memberDslRepository;
     private final MemberJpaRepository memberJpaRepository;
 
-    public Member findById(Long id) throws UsernameNotFoundException {
-        return memberJpaRepository.findById(id)
-                .orElseThrow(() -> new RestApiException(MemberErrorStatus.EMPTY_MEMBER));
+    public Member findById(Long memberId) throws UsernameNotFoundException {
+        return memberDslRepository.findById(memberId)
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    public Member findByIdForNotLoginInfo(Long memberId) {
+        return memberDslRepository.findByIdForSignup(memberId)
+                .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
     // 회원 저장
@@ -32,18 +40,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member modifyMyProfileAvatar(Member member, String avatarUrl) {
-        member.setAvatarUrl(avatarUrl);
-        return memberJpaRepository.save(member);
+    public void modifyMyProfileAvatar(Member member, String avatarUrl) {
+        memberDslRepository.updateAvatarImage(member, avatarUrl);
     }
 
     @Override
     public List<Member> findWaitingMemberByUniversity(University university) {
-        return memberRepository.findWaitingMemberByUniversity(university);
+        return memberDslRepository.findWaitingMemberByUniversity(university);
     }
 
     @Override
     public List<Member> findWaitingMember() {
-        return memberRepository.findWaitingMember();
+        return memberDslRepository.findWaitingMember();
     }
 }

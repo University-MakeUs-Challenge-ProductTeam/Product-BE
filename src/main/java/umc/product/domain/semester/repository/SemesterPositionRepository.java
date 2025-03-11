@@ -8,4 +8,7 @@ import java.util.List;
 
 public interface SemesterPositionRepository  {
     List<SemesterPosition> findSemesterPositionList(Member targetMember, List<Long> positionIdList);
+    List<SemesterPosition> findAll();
+
+    int count();
 }

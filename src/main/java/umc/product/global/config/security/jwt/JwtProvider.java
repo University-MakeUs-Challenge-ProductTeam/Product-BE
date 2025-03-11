@@ -1,7 +1,6 @@
 package umc.product.global.config.security.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_REFRESH_TOKEN;
+import static umc.product.domain.member.status.AuthErrorStatus.INVALID_REFRESH_TOKEN;
 
 @Component
 public class JwtProvider {

@@ -15,7 +15,7 @@ import umc.product.global.common.exception.RestApiException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static umc.product.domain.member.status.MemberErrorStatus.NOT_FOUND_OUT;
+import static umc.product.domain.member.status.MemberErrorStatus.OUT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -26,32 +26,45 @@ public class AdminOutServiceImpl implements AdminOutService {
 
     @Transactional
     @Override
-    public MemberOut postMemberOut(Member member, OutReason outReason) {
+    public MemberOut postMemberOut(
+            Member member,
+            OutReason outReason
+    ) {
         MemberOut memberOut = memberOutMapper.toMemberOut(member, outReason);
         member.addMemberOut(memberOut);
+
+        //삭제 되지 않은 out 개수 counting
         List<MemberOut> memberOutList = member.getMemberOutList().stream()
-                .filter(memberOut1 -> memberOut1.getDeletedAt() == null)    //삭제 되지 않은 것만 추출
+                .filter(memberOut1 -> memberOut1.getDeletedAt() == null)
                 .collect(Collectors.toList());
-        if(memberOutList.size() >=3) member.setStatus(Status.OUT);
+        if(memberOutList.size() >= 3) member.setStatus(Status.OUT);
         return memberOut;
     }
 
     @Transactional
     @Override
-    public void modifyMemberOut(Long outId, OutReason outReason, Member member) {
+    public void modifyMemberOut(
+            Long outId,
+            OutReason outReason,
+            Member member
+    ) {
         MemberOut memberOut = memberOutJpaRepository.findMemberOutById(outId)
-                .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
+                .orElseThrow(()-> new RestApiException(OUT_NOT_FOUND));
 
-        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
+        //out의 member와 member 검증
+        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(OUT_NOT_FOUND);
 
         memberOut.setOutReason(outReason);
     }
     @Transactional
     @Override
-    public void deleteMemberOut(Member member, Long outId) {
+    public void deleteMemberOut(
+            Member member,
+            Long outId
+    ) {
         MemberOut memberOut = memberOutJpaRepository.findMemberOutById(outId)
-                .orElseThrow(()-> new RestApiException(NOT_FOUND_OUT));
-        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(NOT_FOUND_OUT);
+                .orElseThrow(()-> new RestApiException(OUT_NOT_FOUND));
+        if(!memberOut.getMember().getId().equals(member.getId())) throw new RestApiException(OUT_NOT_FOUND);
         memberOut.delete();
         List<MemberOut> memberOutList = member.getMemberOutList().stream()
                 .filter(memberOut1 -> memberOut1.getDeletedAt() == null)    //삭제 되지 않은 것만 추출

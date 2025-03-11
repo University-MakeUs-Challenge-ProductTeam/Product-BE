@@ -1,9 +1,9 @@
-package umc.product.domain.member.dto.response.member.search;
+package umc.product.domain.semester.dto;
 
 import lombok.Builder;
 
 @Builder
-public record MemberSemesterPositionResponse(
+public record SemesterPositionResponse(
 
         Long positionId,
         String semesterName,

@@ -34,35 +34,50 @@ public class MemberAuthAdviser {
 
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
-    public MemberIdResponse signUp(MultipartFile file, MemberSignUpRequest request){
+    public MemberIdResponse signUp(
+            MultipartFile file,
+            MemberSignUpRequest request
+    ){
+        //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
         if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         }
-        Member member = memberService.findById(request.memberId());
+        Member member = memberService.findByIdForNotLoginInfo(request.memberId());
         member.updateProfile(request);
         //학기 찾기
         List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());
         //학기를 기반으로 학기/파트 생성
         List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 
-        Member newMember = memberAuthService.signUp(member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
+        Member newMember = memberAuthService.signUp(request.clientId(), member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         return memberConverter.toMemberIdResponse(newMember.getId());
     }
 
-    public MemberLoginResponse socialLogin(String accessToken, LoginType loginType) {
+    public MemberLoginResponse socialLogin(
+            String accessToken,
+            LoginType loginType
+    ) {
         return memberAuthService.socialLogin(accessToken, loginType);
     }
 
-    public MemberCreateTokenResponse regenerateToken(String refreshToken) {
+    public MemberCreateTokenResponse regenerateToken(
+            String refreshToken
+    ) {
         Claims claims = memberRefreshTokenService.getClaims(refreshToken);
         Long memberId = Long.parseLong(claims.get("memberId").toString());
         Member member = memberService.findById(memberId);
         return memberAuthService.generateNewAccessToken(refreshToken, member);
     }
 
-    public MemberIdResponse logout(Member member) {return memberAuthService.logout(member);}
+    public MemberIdResponse logout(
+            Member member
+    ) {
+        return memberAuthService.logout(member);
+    }
 
-    public MemberIdResponse withdrawal(Member member) {return memberAuthService.withdrawal(member);}
-
-
+    public MemberIdResponse withdrawal(
+            Member member
+    ) {
+        return memberAuthService.withdrawal(member);
+    }
 }

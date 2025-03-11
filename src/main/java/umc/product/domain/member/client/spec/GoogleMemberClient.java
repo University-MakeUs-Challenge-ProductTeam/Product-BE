@@ -14,14 +14,20 @@ public class GoogleMemberClient implements SocialMemberClient {
     private static final String GOOGLE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
     @Override
-    public SocialLoginResponse getSocialLoginResponse(String accessToken) {
+    public SocialLoginResponse getSocialLoginResponse(
+            String accessToken
+    ) {
         String idPath = "$.sub";
 
-        return socialClient.getSocialLoginResponse(accessToken, GOOGLE_URL, idPath);
+        return socialClient.getSocialLoginResponse(
+                accessToken,
+                GOOGLE_URL,
+                idPath);
     }
 
     @Override
-    public LoginType getLoginType() {
+    public LoginType getLoginType(
+    ) {
         return LoginType.GOOGLE;
     }
 }

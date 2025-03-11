@@ -46,8 +46,6 @@ public class Member extends BaseEntity {
     @Setter
     private String avatarUrl;
 
-    private String clientId;
-
     @Setter
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -79,7 +77,7 @@ public class Member extends BaseEntity {
     private List<MemberOut> memberOutList = new ArrayList<>();
 
     @Setter
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id")
     private University university;
 
@@ -104,7 +102,6 @@ public class Member extends BaseEntity {
         this.nickName = request.nickName();
         this.email = request.email();
         this.loginType =request.loginType();
-        this.clientId = request.clientId();
     }
 
     public void modifyProfile(AdminUpdateMemberProfileRequest request, University university) {

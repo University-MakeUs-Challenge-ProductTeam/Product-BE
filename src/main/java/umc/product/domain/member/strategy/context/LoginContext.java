@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static umc.product.domain.member.status.MemberErrorStatus.NOT_SUPPORT_LOGIN_TYPE;
+import static umc.product.domain.member.status.MemberErrorStatus.UNSUPPORTED_LOGIN_TYPE;
 
 @Component
 @RequiredArgsConstructor
@@ -32,18 +32,26 @@ public class LoginContext {
     private final GoogleMemberClient googleMemberClient;
     private final KakaoMemberClient kakaoMemberClient;
 
+    /**
+     *
+     * @param socialMemberClientList bean에 등록된 APPLE, GOOGLE, KAKAO 구현체 가져옴
+     * @param strategyList bean에 등록된 Internal, Social 구현체 가져옴
+     */
     @Autowired
-    public LoginContext(List<SocialMemberClient> socialMemberClientList,
-                        List<LoginStrategy> strategyList,
-                        AppleMemberClient appleMemberClient,
-                        GoogleMemberClient googleMemberClient,
-                        KakaoMemberClient kakaoMemberClient) {
+    public LoginContext(
+            List<SocialMemberClient> socialMemberClientList,
+            List<LoginStrategy> strategyList,
+            AppleMemberClient appleMemberClient,
+            GoogleMemberClient googleMemberClient,
+            KakaoMemberClient kakaoMemberClient
+    ) {
         this.appleMemberClient = appleMemberClient;
         this.googleMemberClient = googleMemberClient;
         this.kakaoMemberClient = kakaoMemberClient;
         this.strategyMap = new HashMap<>();
         this.clientMap = new HashMap<>();
 
+        //Social에 맞는 로직을 Map에 추가
         strategyList.forEach(strategy -> {
             if(strategy instanceof SocialLoginStrategy) {
                 strategyMap.put(LoginType.KAKAO, strategy);
@@ -54,6 +62,7 @@ public class LoginContext {
             }
         });
 
+        //Social에 맞는 LoginHandler를 Map에 추가
         socialMemberClientList.forEach(client -> {
             if (client instanceof AppleMemberClient) {
                 clientMap.put(LoginType.APPLE,
@@ -82,19 +91,23 @@ public class LoginContext {
         });
     }
 
-    public MemberLoginResponse executeStrategy(String accessToken, LoginType loginType) {
+    public MemberLoginResponse executeStrategy(
+            String accessToken, LoginType loginType
+    ) {
         LoginStrategy strategy = clientMap.get(loginType).getStrategy();
         if (strategy == null) {
-            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+            throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
         }
         return strategy.login(clientMap.get(loginType).getClient(), accessToken);
     }
 
-    public MemberLoginResponse executeStrategy(AdminLoginRequest request) {
+    public MemberLoginResponse executeStrategy(
+            AdminLoginRequest request
+    ) {
         LoginType loginType = LoginType.INTERNAL;
         LoginStrategy strategy = clientMap.get(loginType).getStrategy();
         if (strategy == null) {
-            throw new RestApiException(NOT_SUPPORT_LOGIN_TYPE);
+            throw new RestApiException(UNSUPPORTED_LOGIN_TYPE);
         }
         return strategy.login(null, request);
     }

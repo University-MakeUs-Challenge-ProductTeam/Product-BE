@@ -10,7 +10,7 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 @AllArgsConstructor
 public enum UniversityErrorStatus implements BaseCodeInterface {
 
-    EMPTY_UNIVERSITY(HttpStatus.NOT_FOUND, "UNIVERSITY404", "학교를 찾을 수 없습니다.")
+    NOT_FOUND_UNIVERSITY(HttpStatus.NOT_FOUND, "UNIVERSITY404", "학교를 찾을 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

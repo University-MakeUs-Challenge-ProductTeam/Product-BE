@@ -20,18 +20,28 @@ public class AdminOutAdviser {
 
     private final MemberOutConverter memberOutConverter;
 
-    public MemberOutIdResponse postMemberOut(Long memberId, OutReason outReason) {
-        Member member = memberService.findById(memberId);
+    public MemberOutIdResponse postMemberOut(
+            Long targetMemberId,
+            OutReason outReason
+    ) {
+        Member member = memberService.findById(targetMemberId);
         MemberOut memberOut = adminOutService.postMemberOut(member, outReason);
         return memberOutConverter.toMemberOutIdResponse(memberOut.getId(), member);
     }
-    public MemberOutIdResponse modifyMemberOut(Long outId, Long memberId, OutReason outReason) {
-        Member member = memberService.findById(memberId);
+    public MemberOutIdResponse modifyMemberOut(
+            Long outId,
+            Long targetMemberId,
+            OutReason outReason
+    ) {
+        Member member = memberService.findById(targetMemberId);
         adminOutService.modifyMemberOut(outId, outReason, member);
         return memberOutConverter.toMemberOutIdResponse(outId, member);
     }
-    public MemberOutIdResponse deleteMemberOut(Long memberId, Long outId) {
-        Member member = memberService.findById(memberId);
+    public MemberOutIdResponse deleteMemberOut(
+            Long targetMemberId,
+            Long outId
+    ) {
+        Member member = memberService.findById(targetMemberId);
         adminOutService.deleteMemberOut(member, outId);
         return memberOutConverter.toMemberOutIdResponse(outId, member);
     }

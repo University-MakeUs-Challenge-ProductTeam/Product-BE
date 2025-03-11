@@ -1,11 +1,11 @@
 package umc.product.global.config.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.service.member.MemberService;
 import umc.product.global.config.security.auth.CustomAccessDeniedHandler;
-import umc.product.global.config.security.auth.PrincipalDetailsService;
 import umc.product.global.config.security.jwt.JwtAuthenticationFilter;
 import umc.product.global.config.security.jwt.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +17,23 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import umc.product.global.config.security.jwt.JwtProvider;
 
 import java.time.LocalDateTime;
 
-import static umc.product.global.common.exception.code.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
+import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ACCESS_TOKEN;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
-    private final JwtExceptionFilter jwtExceptionFilter;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtProvider jwtProvider;
+    private final MemberService memberService;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+/*
     private final PrincipalDetailsService principalDetailsService;
+*/
 
 
     @Bean
@@ -39,7 +41,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configure(http))
-                .userDetailsService(principalDetailsService)
+                //.userDetailsService(principalDetailsService)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -63,8 +65,8 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.accessDeniedHandler(customAccessDeniedHandler)
                                 .authenticationEntryPoint(authenticationEntryPoint()))
-                .addFilterBefore(jwtExceptionFilter, LogoutFilter.class) // filter 등록시 등록되어있는 필터와 순서를 정의해야함
-                .addFilterBefore(jwtAuthenticationFilter, LogoutFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), LogoutFilter.class) // filter 등록시 등록되어있는 필터와 순서를 정의해야함
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, memberService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

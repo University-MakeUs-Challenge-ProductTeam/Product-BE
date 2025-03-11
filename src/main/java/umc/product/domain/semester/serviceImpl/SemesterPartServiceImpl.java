@@ -2,7 +2,8 @@ package umc.product.domain.semester.serviceImpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartRequest;
+import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartListRequest;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.service.admin.AdminMemberService;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMESTER;
 
@@ -30,7 +32,11 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     private final SemesterPartJpaRepository semesterPartJpaRepository;
     private final AdminMemberService adminMemberService;
     @Override
-    public List<SemesterPart> toSemesterPart(Member targetMember, List<AdminInsertSemesterPartRequest> partList, Map<Long, Semester> semesterMap) {
+    public List<SemesterPart> toSemesterPart(
+            Member targetMember,
+            List<AdminInsertSemesterPartListRequest.AdminInsertSemesterPartRequest> partList,
+            Map<Long, Semester> semesterMap
+    ) {
         return partList.stream()
                 .map(part -> {
                     Semester semester = Optional.ofNullable(semesterMap.get(part.semesterId()))
@@ -41,7 +47,20 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     }
 
     @Override
-    public List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList) {
+    public List<SemesterPart> toSemesterPart(AdminRegisterListRequest request, List<Member> memberList, Semester recentSemester) {
+        return IntStream.range(0, request.registerMemberList().size())
+                .mapToObj(i -> {
+                    AdminRegisterListRequest.AdminRegisterMemberRequest ar = request.registerMemberList().get(i);
+                    return SemesterPart.builder()
+                            .member(memberList.get(i))
+                            .semester(recentSemester)
+                            .part(ar.part())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+ 
+  @Override
+  public List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList) {
         List<SemesterPart> semesterPartList = semesterPartJpaRepository.findBySemesterAndPartAndMemberIn(semester, Part.valueOf(part.toUpperCase()), memberList);
 
         if (semesterPartList == null || semesterPartList.isEmpty()) {

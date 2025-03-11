@@ -7,12 +7,16 @@ import umc.product.domain.member.entity.enums.Role;
 @Converter(autoApply = true)
 public class RoleConverter implements AttributeConverter<Role, Integer> {
     @Override
-    public Integer convertToDatabaseColumn(Role role) {
+    public Integer convertToDatabaseColumn(
+            Role role
+    ) {
         return role != null ? role.getPriority() : null;
     }
 
     @Override
-    public Role convertToEntityAttribute(Integer priority) {
+    public Role convertToEntityAttribute(
+            Integer priority
+    ) {
         if (priority == null) {
             return null;
         }

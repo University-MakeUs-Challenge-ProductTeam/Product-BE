@@ -36,5 +36,20 @@ public class SemesterPositionRepositoryImpl implements SemesterPositionRepositor
         return positionList;
     }
 
+    @Override
+    public List<SemesterPosition> findAll() {
+        return jpaQueryFactory
+                .selectFrom(qSemesterPosition)
+                .fetch();
+    }
+
+    @Override
+    public int count() {
+        return jpaQueryFactory
+                .selectFrom(qSemesterPosition)
+                .fetch()
+                .size();
+    }
+
 
 }

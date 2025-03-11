@@ -26,4 +26,8 @@ public class MemberLoginInfo extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public void updateLoginId(String clientId) {
+        this.memberLoginId = clientId;
+    }
+
 }

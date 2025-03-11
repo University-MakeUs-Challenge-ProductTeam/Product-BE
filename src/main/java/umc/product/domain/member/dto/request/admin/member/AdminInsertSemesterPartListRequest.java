@@ -1,12 +1,18 @@
 package umc.product.domain.member.dto.request.admin.member;
 
+import umc.product.domain.member.entity.enums.Part;
+
 import java.util.List;
 import java.util.Objects;
 
 public record AdminInsertSemesterPartListRequest(
         List<AdminInsertSemesterPartRequest> semesterPartList) {
-    public AdminInsertSemesterPartListRequest(List<AdminInsertSemesterPartRequest> semesterPartList) {
-        this.semesterPartList = List.copyOf(Objects.requireNonNullElse(semesterPartList, List.of()));
+
+    public record AdminInsertSemesterPartRequest(
+            Long semesterId,
+            Part part
+    ) {
+
     }
 }
 
