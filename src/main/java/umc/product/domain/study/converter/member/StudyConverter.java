@@ -1,4 +1,4 @@
-package umc.product.domain.study.mapper.member;
+package umc.product.domain.study.converter.member;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class StudyMapper {
+public class StudyConverter {
 
     public StudyResponse toStudyResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, List<Roadmap> roadmapList) {
         Study study = studyMember.getStudy();
