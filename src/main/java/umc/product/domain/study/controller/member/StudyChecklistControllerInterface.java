@@ -3,6 +3,8 @@ package umc.product.domain.study.controller.member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -22,6 +24,54 @@ public interface StudyChecklistControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "체크리스트 조회 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "MEMBER404",
+                    description = "회원을 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "MEMBER404",
+							"message": "회원을 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_ROADMAP404",
+                    description = "해당 스터디 로드맵을 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ROADMAP404",
+							"message": "해당 스터디 로드맵을 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
@@ -41,6 +91,22 @@ public interface StudyChecklistControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "체크리스트 입력 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
@@ -58,6 +124,22 @@ public interface StudyChecklistControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "체크리스트 수정 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
