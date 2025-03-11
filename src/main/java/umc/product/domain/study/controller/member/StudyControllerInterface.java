@@ -3,6 +3,8 @@ package umc.product.domain.study.controller.member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -23,6 +25,70 @@ public interface StudyControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "스터디 정보 수정 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "스터디 이름은 비어있으면 안 됩니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_NAME400",
+							"message": "스터디 이름은 비어있으면 안 됩니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "스터디 리더 외에 접근할 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "COMMON403",
+							"message": "금지된 요청입니다."
+						}
+						"""
+                            )
+                    )
+            ),
+			@ApiResponse(
+					responseCode = "STUDY_MEMBER404",
+					description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+							)
+					)
+			),
+            @ApiResponse(
+                    responseCode = "STUDY404",
+                    description = "해당 스터디를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY404",
+							"message": "해당 스터디를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
@@ -38,6 +104,54 @@ public interface StudyControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "스터디 참석 여부 체크 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "유효하지 않은 참석 여부 체크값입니다. YES, NO 중에 보내주세요.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ATTENDANCE400",
+							"message": "유효하지 않은 참석 여부 체크값입니다. YES, NO 중에 보내주세요."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_ATTENDANCE404",
+                    description = "해당 스터디 출석 정보를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ATTENDANCE404",
+							"message": "해당 스터디 출석 정보를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
@@ -55,6 +169,38 @@ public interface StudyControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "스터디 정보 조회 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_ROADMAP404",
+                    description = "해당 스터디 로드맵을 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ROADMAP404",
+							"message": "해당 스터디 로드맵을 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
             )
     })
     @Parameters({
@@ -71,7 +217,71 @@ public interface StudyControllerInterface {
             @ApiResponse(
                     responseCode = "200",
                     description = "워크북 조회 성공"
-            )
+            ),
+            @ApiResponse(
+                    responseCode = "MEMBER404",
+                    description = "회원을 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "MEMBER404",
+							"message": "회원을 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY404",
+                    description = "해당 스터디를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY404",
+							"message": "해당 스터디를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "STUDY_MEMBER404",
+                    description = "해당 스터디에 속한 사용자를 찾을 수 없습니다.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER404",
+							"message": "해당 스터디에 속한 사용자를 찾을 수 없습니다."
+						}
+						"""
+                            )
+                    )
+            ),
+			@ApiResponse(
+					responseCode = "STUDY_ROADMAP404",
+					description = "해당 스터디 로드맵을 찾을 수 없습니다.",
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ROADMAP404",
+							"message": "해당 스터디 로드맵을 찾을 수 없습니다."
+						}
+						"""
+							)
+					)
+			)
     })
     @Parameters({
             @Parameter(name = "studyId", description = "스터디 id, path variable 입니다"),
@@ -83,5 +293,4 @@ public interface StudyControllerInterface {
             @RequestParam(name = "memberId", required = false) Long memberId,
             @RequestParam(name = "week", required = false) Integer week,
             @PathVariable Long studyId);
-
 }
