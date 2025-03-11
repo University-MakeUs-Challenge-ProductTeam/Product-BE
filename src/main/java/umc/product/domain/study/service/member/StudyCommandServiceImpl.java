@@ -25,8 +25,12 @@ public class StudyCommandServiceImpl implements StudyCommandService {
             throw new RestApiException(GlobalErrorStatus._FORBIDDEN);
         }
         // 스터디 정보 수정
-        study.changeName(request.getStudyName());
-        study.updateWeek(request.getWeek());
+        if (request.getStudyName() != null) {
+            study.changeName(request.getStudyName());
+        }
+        if (request.getWeek() != null) {
+            study.updateWeek(request.getWeek());
+        }
 
         return StudyCommonResponse.from(study.getId());
     }

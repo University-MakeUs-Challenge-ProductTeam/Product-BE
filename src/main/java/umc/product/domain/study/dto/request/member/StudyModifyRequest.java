@@ -15,5 +15,5 @@ public class StudyModifyRequest {
     private String studyName;
 
     @Schema(description = "주차", example = "1")
-    private int week;
+    private Integer week;
 }

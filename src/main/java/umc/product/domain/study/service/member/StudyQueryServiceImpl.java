@@ -11,7 +11,7 @@ import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
 import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
-import umc.product.domain.study.mapper.member.StudyMapper;
+import umc.product.domain.study.converter.member.StudyConverter;
 import umc.product.domain.study.repository.member.StudyRepository;
 import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.exception.RestApiException;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class StudyQueryServiceImpl implements StudyQueryService {
 
     private final StudyRepository studyRepository;
-    private final StudyMapper studyMapper;
+    private final StudyConverter studyMapper;
 
     @Override
     public Study getStudy(Long studyId) {
