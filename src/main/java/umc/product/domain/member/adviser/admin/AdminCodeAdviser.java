@@ -50,7 +50,7 @@ public class AdminCodeAdviser {
             Member member,
             Long memberId
     ) {
-        Member targetMember = memberService.findByIdForNotLoginInfo(memberId);
+        Member targetMember = memberService.findByIdNotFetchLoginInfo(memberId);
         //등록된 사용자가 맞는지 체크
         if(targetMember.getStatus() != Status.WAITING_FOR_UPDATE) throw new RestApiException(INVALID_MEMBER_STATUS);
         //더 상위 권한의 유저의 코드는 발급할 수 없음

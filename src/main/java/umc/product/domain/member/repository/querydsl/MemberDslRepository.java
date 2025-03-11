@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public interface MemberDslRepository {
     void updateAvatarImage(Member member, String avatarUrl);
-    Optional<Member> findById(Long memberId);
-    Optional<Member> findByIdForSignup(Long memberId);
+    Optional<Member> findByIdAndFetchLoginInfo(Long memberId);
+    Optional<Member> findByIdNotFetchLoginInfo(Long memberId);
     Optional<Member> findMemberByClientId(String clientId);
     Page<Member> findMemberListByFilter(Pageable pageable,
                                 Member currentMember,

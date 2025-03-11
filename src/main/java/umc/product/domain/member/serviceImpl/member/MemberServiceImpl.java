@@ -23,13 +23,13 @@ public class MemberServiceImpl implements MemberService {
     private final MemberJpaRepository memberJpaRepository;
 
     public Member findById(Long memberId) throws UsernameNotFoundException {
-        return memberDslRepository.findById(memberId)
+        return memberDslRepository.findByIdNotFetchLoginInfo(memberId)
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
     @Override
-    public Member findByIdForNotLoginInfo(Long memberId) {
-        return memberDslRepository.findByIdForSignup(memberId)
+    public Member findByIdNotFetchLoginInfo(Long memberId) {
+        return memberDslRepository.findByIdNotFetchLoginInfo(memberId)
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
