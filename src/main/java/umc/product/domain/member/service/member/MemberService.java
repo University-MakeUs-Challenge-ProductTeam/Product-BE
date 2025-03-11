@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MemberService {
     Member findById(Long memberId);
-    Member findByIdForNotLoginInfo(Long memberId);
+    Member findByIdNotFetchLoginInfo(Long memberId);
     Member saveEntity(Member member);
     void modifyMyProfileAvatar(Member member,
                                  String avatarUrl);

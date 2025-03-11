@@ -42,7 +42,7 @@ public class MemberAuthAdviser {
         if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
         }
-        Member member = memberService.findByIdForNotLoginInfo(request.memberId());
+        Member member = memberService.findByIdNotFetchLoginInfo(request.memberId());
         member.updateProfile(request);
         //학기 찾기
         List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());

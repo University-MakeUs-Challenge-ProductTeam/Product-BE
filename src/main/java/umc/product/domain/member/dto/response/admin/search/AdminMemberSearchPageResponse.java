@@ -2,6 +2,7 @@ package umc.product.domain.member.dto.response.admin.search;
 
 import lombok.Builder;
 import org.springframework.data.domain.Page;
+import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.semester.dto.SemesterPartResponse;
 import umc.product.domain.semester.dto.SemesterPositionResponse;
 
@@ -20,6 +21,7 @@ public record AdminMemberSearchPageResponse(
             String nickName,
             String universityName,
             String code,
+            Status status,
             List<SemesterPartResponse> semesterPartList,
             List<SemesterPositionResponse> semesterPositionList,
             Integer outCount

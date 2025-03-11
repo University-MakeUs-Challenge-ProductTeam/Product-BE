@@ -39,7 +39,7 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     }
 
     @Override
-    public Optional<Member> findById(Long memberId) {
+    public Optional<Member> findByIdAndFetchLoginInfo(Long memberId) {
         return Optional.ofNullable(
                 jpaQueryFactory
                         .selectFrom(qMember)
@@ -50,7 +50,7 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     }
 
     @Override
-    public Optional<Member> findByIdForSignup(Long memberId) {
+    public Optional<Member> findByIdNotFetchLoginInfo(Long memberId) {
         return Optional.ofNullable(
                 jpaQueryFactory
                         .selectFrom(qMember)
@@ -59,6 +59,9 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
         );
     }
 
+    /**
+     * 소셜로그인용
+     */
     @Override
     public Optional<Member> findMemberByClientId(String clientId) {
         return Optional.ofNullable(
