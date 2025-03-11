@@ -10,13 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
-import umc.product.domain.member.dto.response.admin.register.AdminRegisterListResponse;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPartListRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminInsertSemesterPositionListRequest;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
-import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchListResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchPageResponse;
+import umc.product.domain.member.dto.response.admin.search.AdminProfileDetailResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
@@ -123,7 +124,7 @@ public class AdminMemberController {
             @Parameter(name = "part", description = "검색하려는 사용자의 진행 or 완료된 파트")
     })
     @GetMapping("/filter")
-    public BaseResponse<AdminMemberSearchListResponse> filterSearchMemberList(
+    public BaseResponse<AdminMemberSearchPageResponse> filterSearchMemberList(
             @CurrentMember Member member,
             @RequestParam Integer cursor,
             @RequestParam Integer size,
@@ -142,13 +143,33 @@ public class AdminMemberController {
             )
     })
     @Parameters({
+            @Parameter(name = "cursor", description = "page의 위치"),
+            @Parameter(name = "size", description = "받고 싶은 page 당 size(통일해주세요)"),
             @Parameter(name = "searchString", description = "검색하고 싶은 사용자의 이름 또는 닉네임"),
     })
     @GetMapping("/search")
-    public BaseResponse<AdminMemberSearchListResponse> searchMemberList(
+    public BaseResponse<AdminMemberSearchPageResponse> searchMemberList(
             @CurrentMember Member member,
+            @RequestParam Integer cursor,
+            @RequestParam Integer size,
             @RequestParam(required = false) String searchString
     ) {
-        return BaseResponse.onSuccess(adminMemberAdviser.searchMemberList(member, searchString));
+        return BaseResponse.onSuccess(adminMemberAdviser.searchMemberList(member, PageRequest.of(cursor, size), searchString));
+    }
+
+    @Operation(summary = "사용자 프로필 세부사항 조회(web) API", description = "웹에서 사용자의 Id로 프로필의 세부사항을 조회하는 API 입니다")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "사용자 프로필 조회 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "memberId", description = "프로필 세부사항을 조회하고 싶은 사용자의 Id"),
+    })
+    @GetMapping("/profile/detail/{memberId}")
+    public BaseResponse<AdminProfileDetailResponse> getProfileDetail(
+            @PathVariable(name = "memberId") Long memberId) {
+        return BaseResponse.onSuccess(adminMemberAdviser.getProfileDetail(memberId));
     }
 }

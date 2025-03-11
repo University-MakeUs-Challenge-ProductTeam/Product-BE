@@ -9,7 +9,7 @@ import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberSearchResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberCodeService;
 import umc.product.domain.member.service.member.MemberService;
@@ -32,11 +32,11 @@ public class MemberMemberAdviser {
         return memberCodeConverter.toMemberCodeVerifyResponse(member);
     }
 
-    public MemberSearchResponse getProfile(
+    public MemberProfileDetailResponse getProfileDetail(
             Long memberId
     ) {
         Member member = memberService.findById(memberId);
-        return  memberConverter.toMemberSearchResponse(member);
+        return  memberConverter.toMemberProfileDetailResponse(member);
     }
 
     public MemberIdResponse modifyMyProfileAvatar(

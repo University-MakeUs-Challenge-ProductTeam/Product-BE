@@ -1,5 +1,6 @@
 package umc.product.domain.member.service.admin;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
@@ -19,12 +20,13 @@ public interface AdminMemberService {
     Member toAdminMember(AdminSignUpRequest request,
                          String avatarUrl,
                          String universityName);
-    List<Member> findMembers(Member member,
+    Page<Member> findMemberListByFilter(Member member,
                              Pageable pageable,
                              Long semesterId,
                              Role role,
                              Part part);
-    List<Member> findMembersBySearchString(Member member,
+    Page<Member> findMembersBySearchString(Member member,
+                                           Pageable pageable,
                                            String searchString);
     List<Member> toMemberFromExcelMember(AdminRegisterListRequest request,
                                          List<University> universityList);
