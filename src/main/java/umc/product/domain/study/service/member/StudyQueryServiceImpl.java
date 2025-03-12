@@ -44,11 +44,11 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     @Override
-    public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList) {
+    public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList, Long loginId) {
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
-        List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, studyMember.getSemesterPart().getMember().getId());
+        List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, loginId);
         List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), week);
         return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, roadmapTitleList, studyChecklistList);
     }
@@ -60,9 +60,9 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     // (나) 붙이는 메서드
-    private List<StudyMemberResponse> mark(List<StudyMemberResponse> responseList, Long memberId) {
+    private List<StudyMemberResponse> mark(List<StudyMemberResponse> responseList, Long loginId) {
         return responseList.stream()
-                .map(response -> response.getMemberId().equals(memberId)
+                .map(response -> response.getMemberId().equals(loginId)
                         ? response.toBuilder().nickname(response.getNickname() + "(나)").build()
                         : response)
                 .collect(Collectors.toList());
