@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class StudyQueryServiceImpl implements StudyQueryService {
 
     private final StudyRepository studyRepository;
-    private final StudyConverter studyMapper;
+    private final StudyConverter studyConverter;
 
     @Override
     public Study getStudy(Long studyId) {
@@ -40,7 +40,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
         List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, studyMember.getSemesterPart().getMember().getId());
-        return studyMapper.toStudyResponse(studyMember, markedstudyMemberResponseList, roadmapList);
+        return studyConverter.toStudyResponse(studyMember, markedstudyMemberResponseList, roadmapList);
     }
 
     @Override
@@ -49,14 +49,14 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
         List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, studyMember.getSemesterPart().getMember().getId());
-        List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists = studyRepository.getStudyChecklists(studyMember.getId(), week);
-        return studyMapper.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, roadmapTitleList, studyChecklists);
+        List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), week);
+        return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, roadmapTitleList, studyChecklistList);
     }
 
     @Override
     public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList) {
         List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList = studyRepository.getChecklistResponses(studyMember, week);
-        return studyMapper.toStudyWeekCheckListResponse(week, roadmapTitleList, checklistResponseList);
+        return studyConverter.toStudyWeekCheckListResponse(week, roadmapTitleList, checklistResponseList);
     }
 
     // (나) 붙이는 메서드
