@@ -17,16 +17,16 @@ public class StudyMemberResponse {
     private String university;
 
     @Schema(description = "닉네임", example = "델로")
-    private String nickname;
+    private String nickName;
 
     @Schema(description = "출석 상태", example = "UNSET")
     private String attendance;
 
     @QueryProjection
-    public StudyMemberResponse(Long memberId, String university, String nickname, String attendance) {
+    public StudyMemberResponse(Long memberId, String university, String nickName, String attendance) {
         this.memberId = memberId;
         this.university = university;
-        this.nickname = nickname;
+        this.nickName = nickName;
         this.attendance = attendance;
     }
 }

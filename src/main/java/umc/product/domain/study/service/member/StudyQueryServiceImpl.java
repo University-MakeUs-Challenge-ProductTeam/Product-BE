@@ -63,7 +63,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     private List<StudyMemberResponse> mark(List<StudyMemberResponse> responseList, Long loginId) {
         return responseList.stream()
                 .map(response -> response.getMemberId().equals(loginId)
-                        ? response.toBuilder().nickname(response.getNickname() + "(나)").build()
+                        ? response.toBuilder().nickName(response.getNickName() + "(나)").build()
                         : response)
                 .collect(Collectors.toList());
     }

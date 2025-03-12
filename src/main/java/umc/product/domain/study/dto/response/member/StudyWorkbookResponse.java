@@ -15,7 +15,7 @@ import java.util.List;
 public class StudyWorkbookResponse {
 
     @Schema(description = "닉네임", example = "델로")
-    private String nickname;
+    private String nickName;
 
     @Schema(description = "주차", example = "1")
     private int week;

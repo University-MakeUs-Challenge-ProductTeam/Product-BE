@@ -54,7 +54,7 @@ public class StudyConverter {
         Member member = studyMember.getSemesterPart().getMember();
 
         return StudyWorkbookResponse.builder()
-                .nickname(member.getNickName())
+                .nickName(member.getNickName())
                 .week(week)
                 .workbookContents(roadmapTitleList)
                 .members(studyMemberResponseList)
