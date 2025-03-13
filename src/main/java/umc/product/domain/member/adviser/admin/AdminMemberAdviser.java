@@ -74,9 +74,14 @@ public class AdminMemberAdviser {
         List<SemesterPosition> existMemberSemesterPositionList = semesterPositionService.toSemesterPositionForRegisterMember(request, existedMemberList, recentSemester);
 
         //새로운 Member의 DB 등록
-        List<Member> newRegisterMember = adminMemberService.saveRegisterNewMemberList(newMemberList, newMemberSemesterPartList, newMemberSemesterPositionList);
+        List<Member> newRegisterMember = new ArrayList<>();
+        if(!newMemberList.isEmpty()) {
+            newRegisterMember = adminMemberService.saveRegisterNewMemberList(newMemberList, newMemberSemesterPartList, newMemberSemesterPositionList);
+        }
         //기존 Member의 DB 반영(이미 엔티티 반영 되어 있음)
-        adminMemberService.saveRegisterExistMemberList(existMemberSemesterPartList, existMemberSemesterPositionList);
+        if(!existedMemberList.isEmpty()) {
+            adminMemberService.saveRegisterExistMemberList(existMemberSemesterPartList, existMemberSemesterPositionList);
+        }
 
         //기존 Member와 완성된 새로운 Member를 합침
         List<Member> registerMemberList = new ArrayList<>();

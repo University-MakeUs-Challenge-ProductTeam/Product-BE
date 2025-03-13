@@ -119,9 +119,6 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
 
                             if (i + 1 < batchSemesterPositions.size()) {
                                 SemesterPosition semesterPosition2 = batchSemesterPositions.get(i * 2 + 1);
-                                if (semesterPosition2.getPosition() == null && semesterPosition1.getPosition() == null) {
-                                    semesterPosition2.updateSemesterPosition(semesterPosition2.getSemester(), "챌린저");
-                                }
                                 processSemesterPosition(semesterPosition2, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
                             }
                         }
