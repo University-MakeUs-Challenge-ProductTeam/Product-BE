@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SemesterPositionService {
+    Map<Long, List<SemesterPosition>> findSemesterPositionMapByMemberId(Long memberId);
     List<SemesterPosition> toSemesterPosition(AdminRegisterListRequest request,
                                               List<Member> memberList,
                                               Semester recentSemester);

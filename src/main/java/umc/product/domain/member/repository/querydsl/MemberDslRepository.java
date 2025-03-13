@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberDslRepository {
+    boolean existById(Long memberId);
     void updateAvatarImage(Member member, String avatarUrl);
     Optional<Member> findByIdAndFetchLoginInfo(Long memberId);
     Optional<Member> findByIdNotFetchLoginInfo(Long memberId);
@@ -24,8 +25,6 @@ public interface MemberDslRepository {
     Page<Member> findMembersBySearchString(Member member,
                                            Pageable pageable,
                                            String searchString);
-    List<Member> findWaitingMemberByUniversity(University university);
-    List<Member> findWaitingMember();
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
     boolean existsMemberByClientId(String clientId);
 }

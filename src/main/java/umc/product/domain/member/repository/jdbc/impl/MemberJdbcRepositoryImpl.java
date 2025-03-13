@@ -61,7 +61,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                     """;
 
         String semesterPositionSql = """
-                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at) 
+                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at, central_status) 
                     VALUES
                     """;
 
@@ -192,10 +192,10 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
             LocalDateTime now
     ) {
         if (semesterPosition.getPosition() != null) {
-            semesterPositionValues.append("(?, ?, ?, ?, ?, ?),");
+            semesterPositionValues.append("(?, ?, ?, ?, ?, ?, ?),");
             semesterPositionParams.addAll(Arrays.asList(
                     Timestamp.valueOf(now), null, memberId, semesterPosition.getPosition(),
-                    semesterPosition.getSemester().getId(), Timestamp.valueOf(now)
+                    semesterPosition.getSemester().getId(), Timestamp.valueOf(now), semesterPosition.getCentralStatus()
             ));
         }
     }

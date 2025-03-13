@@ -55,6 +55,7 @@ public class AppleMemberClient implements SocialMemberClient {
                 verifier.verify(accessToken);
 
                 String id = decodedJWT.getClaim("sub").asString();
+                System.out.println(id);
                 return SocialLoginResponse.builder()
                         .id(id)
                         .build();

@@ -8,7 +8,8 @@ import umc.product.domain.member.dto.response.admin.search.AdminProfileDetailRes
 import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.dto.response.member.out.MemberOutResponse;
-import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
+import umc.product.domain.member.dto.response.member.search.MemberParticipateInfoResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.member.entity.enums.Role;
@@ -19,9 +20,9 @@ import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.global.config.security.jwt.TokenInfo;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class MemberConverter {
@@ -80,17 +81,80 @@ public class MemberConverter {
                 .build();
     }
 
-    public MemberProfileDetailResponse toMemberProfileDetailResponse(
+    public MemberParticipateInfoResponse toMemberParticipateInfoResponse(
+            Long memberId,
+            Map<Long, SemesterPart> semesterPartMap,
+            Map<Long, List<SemesterPosition>> semesterPositionMap
+    ) {
+        return MemberParticipateInfoResponse.builder()
+                .memberId(memberId)
+                .semesterList(toMemberSemesterInfoResponseList(semesterPartMap, semesterPositionMap))
+                .build();
+    }
+
+    private List<MemberParticipateInfoResponse.MemberSemesterInfoResponse> toMemberSemesterInfoResponseList(
+            Map<Long, SemesterPart> semesterPartMap,
+            Map<Long, List<SemesterPosition>> semesterPositionMap
+    ) {
+
+        Set<Long> allSemesterIdSet = new HashSet<>();
+        allSemesterIdSet.addAll(semesterPartMap.keySet());
+        allSemesterIdSet.addAll(semesterPositionMap.keySet());
+
+        return allSemesterIdSet.stream()
+                .flatMap(semesterId -> {
+                    SemesterPart semesterPart = semesterPartMap.get(semesterId);        //파트는 반드시 한 기수당 하나
+                    List<SemesterPosition> semesterPositionList = semesterPositionMap.get(semesterId);  //최대 2개임(챌린저면서 운영진이면서 중앙인 경우는 제외)
+
+                    if (semesterPositionList == null || semesterPositionList.isEmpty()) {
+                        if(semesterPart == null) {      //조회할 대상이 없음
+                            return Stream.empty();
+                        }
+                        return Stream.of(
+                                MemberParticipateInfoResponse.MemberSemesterInfoResponse.builder()
+                                        .semesterId(semesterId)
+                                        .semester(semesterPart.getSemester().getName())
+                                        .part(semesterPart.getPart())
+                                        .centralPosition(null)
+                                        .universityPosition(null)
+                                        .build()
+                        );
+                    }
+                    //position 존재
+                    String centralPosition = null;
+                    String universityPosition = null;
+
+                    for (SemesterPosition semesterPosition : semesterPositionList) {
+                        if (semesterPosition.getCentralStatus()) {      //중앙
+                            centralPosition = semesterPosition.getPosition();
+                        } else {
+                            universityPosition = semesterPosition.getPosition();
+                        }
+                    }
+
+                    return Stream.of(
+                            MemberParticipateInfoResponse.MemberSemesterInfoResponse.builder()
+                                    .semesterId(semesterId)
+                                    .semester(semesterPositionList.get(0).getSemester().getName())
+                                    .part(semesterPart != null ? semesterPart.getPart() : null)
+                                    .centralPosition(centralPosition)
+                                    .universityPosition(universityPosition)
+                                    .build()
+                    );
+
+                })
+                .collect(Collectors.toList());
+    }
+
+    public MemberProfileResponse toMemberProfileResponse(
             Member member
     ) {
-        return MemberProfileDetailResponse.builder()
+        return MemberProfileResponse.builder()
                 .memberId(member.getId())
                 .avatarUrl(member.getAvatarUrl())
                 .name(member.getName())
                 .nickName(member.getNickName())
                 .university(member.getUniversity() != null ? member.getUniversity().getName() :null)
-                .semesterPartList(toMemberSemesterPartResponseList(member.getMemberSemesterPart()))
-                .semesterPositionList(toMemberSemesterPositionResponse(member.getMemberSemesterPosition()))
                 .build();
     }
 

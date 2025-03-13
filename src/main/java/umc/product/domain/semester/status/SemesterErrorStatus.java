@@ -13,7 +13,8 @@ public enum SemesterErrorStatus implements BaseCodeInterface {
     EMPTY_SEMESTER(HttpStatus.NOT_FOUND, "SEMESTER404", "기수를 찾을 수 없습니다."),
     NOT_MATCH_POSITION_MEMBER(HttpStatus.BAD_REQUEST, "SEMESTER-POSITION400", "사용자에게 없는 직책 id 입니다"),
 
-    NOT_MATCH_PART_MEMBER(HttpStatus.BAD_REQUEST, "SEMESTER-PART400", "사용자에게 없는 파트 id 입니다")
+    NOT_MATCH_PART_MEMBER(HttpStatus.BAD_REQUEST, "SEMESTER-PART400", "사용자에게 없는 파트 id 입니다"),
+    NOT_VALID_POSITION(HttpStatus.BAD_REQUEST, "SEMESTER-POSITION400", "교내와 중앙 운영진 중 하나만 입력해주세요.(나머진 null로 보내주세요)")
     ;
 
     private final HttpStatus httpStatus;

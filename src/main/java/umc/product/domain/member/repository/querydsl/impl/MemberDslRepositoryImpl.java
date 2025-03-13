@@ -30,6 +30,14 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
 
     @Override
+    public boolean existById(Long memberId) {
+        return jpaQueryFactory
+                .selectFrom(qMember)
+                .where(qMember.id.eq(memberId))
+                .fetchFirst() != null;
+    }
+
+    @Override
     public void updateAvatarImage(Member member, String avatarUrl) {
         jpaQueryFactory
                 .update(qMember)
@@ -155,31 +163,6 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
                 .fetch();
 
         return new PageImpl<>(memberList, pageable, total);
-    }
-
-    @Override
-    public List<Member> findWaitingMemberByUniversity(University university) {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.status.eq(Status.WAITING_FOR_UPDATE));
-        builder.and(qMember.university.eq(university));
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .fetch();
-    }
-
-    @Override
-    public List<Member> findWaitingMember() {
-        BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qMember.status.eq(Status.WAITING_FOR_UPDATE));
-        builder.and(qMember.role.in(Role.ADMIN, Role.CENTRAL_ADMIN, Role.SCHOOL_ADMIN));
-
-
-        return jpaQueryFactory
-                .selectFrom(qMember)
-                .where(builder)
-                .fetch();
     }
 
     @Override
