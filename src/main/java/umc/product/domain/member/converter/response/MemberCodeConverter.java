@@ -43,6 +43,19 @@ public class MemberCodeConverter {
     public MemberCodeVerifyResponse toMemberCodeVerifyResponse(
             Member member
     ) {
+        List<SemesterPosition> positionList = member.getMemberSemesterPosition();
+
+        String universityPosition = null;
+        String centralPosition = null;
+
+        for (SemesterPosition semesterPosition : positionList) {
+            if (semesterPosition.getCentralStatus()) {
+                centralPosition = semesterPosition.getPosition();
+            } else {
+                universityPosition = semesterPosition.getPosition();
+            }
+        }
+
         return MemberCodeVerifyResponse.builder()
                 .memberId(member.getId())
                 .name(member.getName())
@@ -50,10 +63,8 @@ public class MemberCodeConverter {
                 .part(!member.getMemberSemesterPart().isEmpty()  ?
                         member.getMemberSemesterPart().get(0).getPart() :
                         null)
-                .positionList
-                        (!member.getMemberSemesterPosition().isEmpty() ?
-                        member.getMemberSemesterPosition().stream().map(SemesterPosition::getPosition).collect(Collectors.toList()):
-                        null)
+                .universityPosition(universityPosition)
+                .centralPosition(centralPosition)
                 .build();
     }
 
