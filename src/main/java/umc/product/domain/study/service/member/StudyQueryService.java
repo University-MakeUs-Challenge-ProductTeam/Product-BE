@@ -13,6 +13,6 @@ public interface StudyQueryService {
 
     Study getStudy(Long studyId);
     StudyResponse getStudyResponse(StudyMember studyMember, List<Roadmap> roadmapList);
-    StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList);
+    StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList, Long loginId);
     StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList);
 }

@@ -78,7 +78,7 @@ public class StudyAdviser {
 
         List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
 
-        return studyQueryService.getStudyWorkbookResponse(studyMember, week, roadmapTitleList);
+        return studyQueryService.getStudyWorkbookResponse(studyMember, week, roadmapTitleList, loginMember.getId());
     }
 
     // 워크북 체크리스트 조회
