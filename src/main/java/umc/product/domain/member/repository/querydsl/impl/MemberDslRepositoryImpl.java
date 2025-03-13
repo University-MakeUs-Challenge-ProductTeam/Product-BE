@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
 import umc.product.domain.member.entity.QMemberLoginInfo;
@@ -16,9 +17,11 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.entity.enums.Status;
+import umc.product.domain.university.entity.QUniversity;
 import umc.product.domain.university.entity.University;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -28,6 +31,7 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QMember qMember = QMember.member;
     private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
+    private final QUniversity qUniversity = QUniversity.university;
 
     @Override
     public boolean existById(Long memberId) {
@@ -35,6 +39,29 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
                 .selectFrom(qMember)
                 .where(qMember.id.eq(memberId))
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public List<Member> findByNameAndNickNameAndUniversity(List<AdminRegisterListRequest.AdminRegisterMemberRequest> registerMemberList) {
+        List<String> names = registerMemberList.stream()
+                .map(AdminRegisterListRequest.AdminRegisterMemberRequest::name)
+                .collect(Collectors.toList());
+
+        List<String> nickNames = registerMemberList.stream()
+                .map(AdminRegisterListRequest.AdminRegisterMemberRequest::nickName)
+                .collect(Collectors.toList());
+
+        List<String> universityNames = registerMemberList.stream()
+                .map(AdminRegisterListRequest.AdminRegisterMemberRequest::universityName)
+                .collect(Collectors.toList());
+
+        return jpaQueryFactory
+                .selectFrom(qMember)
+                .join(qMember.university, qUniversity).fetchJoin()
+                .where(qMember.name.in(names)
+                        .and(qMember.nickName.in(nickNames))
+                        .and(qUniversity.name.in(universityNames)))
+                .fetch();
     }
 
     @Override

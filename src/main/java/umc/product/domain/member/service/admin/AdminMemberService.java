@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AdminMemberService {
+    List<Member> findExistedMemberList(AdminRegisterListRequest request);
     Member toAdminMember(AdminSignUpRequest request,
                          String avatarUrl,
                          String universityName);
@@ -29,10 +30,13 @@ public interface AdminMemberService {
     Page<Member> findMembersBySearchString(Member member,
                                            Pageable pageable,
                                            String searchString);
-    List<Member> toMemberFromExcelMember(AdminRegisterListRequest request,
+    List<Member> toMemberFromNewRegisterMember(List<AdminRegisterListRequest.AdminRegisterMemberRequest> newMemberRequestList,
                                          List<University> universityList);
-    List<Member> saveRegisterMembers(List<Member> memberList,
+    List<Member> saveRegisterNewMemberList(List<Member> memberList,
                                      List<SemesterPart> semesterPartList,
+                                     List<SemesterPosition> semesterPositionList);
+
+    void saveRegisterExistMemberList(List<SemesterPart> semesterPartList,
                                      List<SemesterPosition> semesterPositionList);
     void modifyMemberInfo(Member targetMember,
                           University university,

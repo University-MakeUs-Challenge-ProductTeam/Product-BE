@@ -9,6 +9,7 @@ import umc.product.domain.semester.entity.SemesterPosition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,28 +33,38 @@ public class SemesterPositionMapper {
             List<Member> memberList,
             Semester recentSemester
     ) {
-        return IntStream.range(0, memberList.size())
-                .mapToObj(i -> {
-                    AdminRegisterListRequest.AdminRegisterMemberRequest registerMemberRequest = request.registerMemberList().get(i);
-                    List<SemesterPosition> semesterPositions = new ArrayList<>();
-                    semesterPositions.add(
-                            SemesterPosition.builder()
-                                    .member(memberList.get(i))
-                                    .semester(recentSemester)
-                                    .position(registerMemberRequest.centralPosition())
-                                    .centralStatus(true)
-                                    .build()
-                    );
+        Map<String, AdminRegisterListRequest.AdminRegisterMemberRequest> requestMap = request.registerMemberList().stream()
+                .collect(Collectors.toMap(
+                        ar -> ar.name() + "|"+  ar.nickName() + "|"+ ar.universityName() ,
+                        ar -> ar
+                ));
 
-                    semesterPositions.add(
-                            SemesterPosition.builder()
-                                    .member(memberList.get(i))
-                                    .semester(recentSemester)
-                                    .position(registerMemberRequest.universityPosition())
-                                    .centralStatus(false)
-                                    .build()
+        return IntStream.range(0, memberList.size())
+                .mapToObj(i -> {    //반드시 2개 생성됨(직책이 없으면 NUll을 넣어줌)
+                    AdminRegisterListRequest.AdminRegisterMemberRequest ar = requestMap.get(
+                            memberList.get(i).getName() + "|" +
+                                    memberList.get(i).getNickName() + "|" +
+                                    memberList.get(i).getUniversity().getName()
                     );
-                    return semesterPositions;
+                        List<SemesterPosition> semesterPositionList = new ArrayList<>();
+                        semesterPositionList.add(
+                                SemesterPosition.builder()
+                                        .member(memberList.get(i))
+                                        .semester(recentSemester)
+                                        .position(ar != null ? ar.centralPosition(): null)
+                                        .centralStatus(true)
+                                        .build()
+                        );
+
+                        semesterPositionList.add(
+                                SemesterPosition.builder()
+                                        .member(memberList.get(i))
+                                        .semester(recentSemester)
+                                        .position(ar != null ? ar.universityPosition(): null)
+                                        .centralStatus(false)
+                                        .build()
+                        );
+                        return semesterPositionList;
                 })
                 .flatMap(List::stream)
                 .collect(Collectors.toList());

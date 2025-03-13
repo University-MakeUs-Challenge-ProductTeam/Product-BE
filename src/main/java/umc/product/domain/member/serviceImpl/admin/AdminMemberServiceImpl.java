@@ -24,8 +24,10 @@ import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,11 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final MemberMapper memberMapper;
     private final MemberJpaRepository memberJpaRepository;
+
+    @Override
+    public List<Member> findExistedMemberList(AdminRegisterListRequest request) {
+        return memberDslRepository.findByNameAndNickNameAndUniversity(request.registerMemberList());
+    }
 
     @Override
     public Member toAdminMember(
@@ -69,20 +76,28 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
-    public List<Member> toMemberFromExcelMember(
-            AdminRegisterListRequest request,
+    public List<Member> toMemberFromNewRegisterMember(
+            List<AdminRegisterListRequest.AdminRegisterMemberRequest> newMemberRequestList,
             List<University> universityList
     ) {
-        return memberMapper.toMemberEntity(request, universityList);
+        return memberMapper.toNewMemberEntity(newMemberRequestList, universityList);
     }
 
     @Override
-    public List<Member> saveRegisterMembers(
+    public List<Member> saveRegisterNewMemberList(
             List<Member> memberList,
             List<SemesterPart> semesterPartList,
             List<SemesterPosition> semesterPositionList
     ) {
-        return memberJdbcRepository.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
+        return memberJdbcRepository.saveRegisterNewMemberList(memberList, semesterPartList, semesterPositionList);
+    }
+
+    @Override
+    public void saveRegisterExistMemberList(
+            List<SemesterPart> semesterPartList,
+            List<SemesterPosition> semesterPositionList
+    ) {
+        memberJdbcRepository.saveRegisterExistMemberList(semesterPartList, semesterPositionList);
     }
 
     @Transactional

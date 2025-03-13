@@ -45,7 +45,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
      */
     @Transactional
     @Override
-    public List<Member> saveRegisterMembers(
+    public List<Member> saveRegisterNewMemberList(
             List<Member> memberList,
             List<SemesterPart> semesterPartList,
             List<SemesterPosition> semesterPositionList
@@ -55,7 +55,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
         LocalDateTime now = LocalDateTime.now();
         ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
 
-        String memberSql = """
+        String memberInsertSql = """
                     INSERT INTO member (avatar_url, client_id, created_at, deleted_at, email, login_type, name, nick_name, role, status, university_id, updated_at) 
                     VALUES
                     """;
@@ -97,7 +97,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
                         jdbcTemplate.update(
                                 connection -> {
-                                    PreparedStatement ps = connection.prepareStatement(memberSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
+                                    PreparedStatement ps = connection.prepareStatement(memberInsertSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
                                     for (int i = 0; i < memberParams.size(); i++) {
                                         ps.setObject(i + 1, memberParams.get(i));
                                     }
@@ -158,6 +158,41 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
         return findMembersByIds(allMemberIds);
     }
 
+    @Override
+    public void saveRegisterExistMemberList(List<SemesterPart> semesterPartList, List<SemesterPosition> semesterPositionList) {
+        String semesterPartSql = """
+                    INSERT INTO semester_part (created_at, deleted_at, member_id, part, semester_id, updated_at)
+                    VALUES
+            """;
+
+        String semesterPositionSql = """
+                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at, central_status) 
+                    VALUES
+                    """;
+        LocalDateTime now = LocalDateTime.now();
+        //part insert
+        StringBuilder semesterPartValues = new StringBuilder();
+        List<Object> semesterPartParams = new ArrayList<>();
+        for (int i = 0; i < semesterPartList.size(); i++) {
+            SemesterPart semesterPart = semesterPartList.get(i);
+            processSemesterPart(semesterPart, semesterPart.getMember().getId(), semesterPartValues, semesterPartParams, now);
+        }
+
+        if (!semesterPartValues.isEmpty()) semesterPartValues.setLength(semesterPartValues.length() - 1);
+        if(!semesterPartParams.isEmpty()) jdbcTemplate.update(semesterPartSql + semesterPartValues, semesterPartParams.toArray());
+
+        //position insert
+        StringBuilder semesterPositionValues = new StringBuilder();
+        List<Object> semesterPositionParams = new ArrayList<>();
+        for (int i = 0; i < semesterPositionList.size(); i++) {
+            SemesterPosition semesterPosition = semesterPositionList.get(i);
+            processSemesterPosition(semesterPosition, semesterPosition.getMember().getId() ,semesterPositionValues, semesterPositionParams, now);
+        }
+
+        if (!semesterPositionValues.isEmpty()) semesterPositionValues.setLength(semesterPositionValues.length() - 1);
+        jdbcTemplate.update(semesterPositionSql + semesterPositionValues, semesterPositionParams.toArray());
+    }
+
     private List<Member> findMembersByIds(
             List<Long> memberIds
     ) {
@@ -199,6 +234,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
             ));
         }
     }
+
 
     private void processSemesterPart(
             SemesterPart semesterPart,

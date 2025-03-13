@@ -26,9 +26,8 @@ import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ROLE;
 import static umc.product.domain.semester.status.SemesterErrorStatus.NOT_VALID_POSITION;
@@ -53,14 +52,39 @@ public class AdminMemberAdviser {
         Semester recentSemester = semesterService.findRecentSemester();
         //미리 모든 학교를 불러옴
         List<University> universityList = universityService.findUniversityList();
+        //이름, 닉네임, 학교로 이미 존재하는 Member 검색(파트/직책 업데이트)
+        List<Member> existedMemberList = adminMemberService.findExistedMemberList(request);
+        //이름|닉네임|학교 로 묶기
+        Set<String> existedKeys = existedMemberList.stream()
+                .map(member -> member.getName() + "|" + member.getNickName() + "|" + member.getUniversity().getName())
+                .collect(Collectors.toSet());
+        //새로운 Member 필터링(새로 추가)
+        List<AdminRegisterListRequest.AdminRegisterMemberRequest> newMemberRequestList = request.registerMemberList().stream()
+                .filter(req -> !existedKeys.contains(req.name() + "|" + req.nickName() + "|" + req.universityName()))
+                .collect(Collectors.toList());
+        //새로운 Member Entity로 변환
+        List<Member> newMemberList = adminMemberService.toMemberFromNewRegisterMember(newMemberRequestList, universityList);
 
-        List<Member> memberList = adminMemberService.toMemberFromExcelMember(request, universityList);
-        List<SemesterPart> semesterPartList = semesterPartService.toSemesterPart(request, memberList, recentSemester);
-        List<SemesterPosition> semesterPositionList = semesterPositionService.toSemesterPosition(request, memberList, recentSemester);
-        List<Member> newMemberList = adminMemberService.saveRegisterMembers(memberList, semesterPartList, semesterPositionList);
+        //새로운 Member의 Semester Part, Position 생성
+        List<SemesterPart> newMemberSemesterPartList = semesterPartService.toSemesterPartForRegisterMember(request, newMemberList, recentSemester);
+        List<SemesterPosition> newMemberSemesterPositionList = semesterPositionService.toSemesterPositionForRegisterMember(request, newMemberList, recentSemester);
+
+        //기존 Member의 Semester Part, Position 생성
+        List<SemesterPart> existMemberSemesterPartList = semesterPartService.toSemesterPartForRegisterMember(request, existedMemberList, recentSemester);
+        List<SemesterPosition> existMemberSemesterPositionList = semesterPositionService.toSemesterPositionForRegisterMember(request, existedMemberList, recentSemester);
+
+        //새로운 Member의 DB 등록
+        List<Member> newRegisterMember = adminMemberService.saveRegisterNewMemberList(newMemberList, newMemberSemesterPartList, newMemberSemesterPositionList);
+        //기존 Member의 DB 반영(이미 엔티티 반영 되어 있음)
+        adminMemberService.saveRegisterExistMemberList(existMemberSemesterPartList, existMemberSemesterPositionList);
+
+        //기존 Member와 완성된 새로운 Member를 합침
+        List<Member> registerMemberList = new ArrayList<>();
+        registerMemberList.addAll(newRegisterMember);
+        registerMemberList.addAll(existedMemberList);
 
         //map 형식으로 만들어 Redis에 저장
-        Map<String, Member> codeMap = adminCodeService.createAppCode(newMemberList);
+        Map<String, Member> codeMap = adminCodeService.createAppCode(registerMemberList);
         adminCodeService.saveAppCode(codeMap);
     }
 

@@ -31,7 +31,7 @@ public class SemesterPositionServiceImpl implements SemesterPositionService {
     }
 
     @Override
-    public List<SemesterPosition> toSemesterPosition(
+    public List<SemesterPosition> toSemesterPositionForRegisterMember(
             AdminRegisterListRequest request,
             List<Member> memberList,
             Semester recentSemester) {

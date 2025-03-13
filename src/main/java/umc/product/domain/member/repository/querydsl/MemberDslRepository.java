@@ -2,6 +2,7 @@ package umc.product.domain.member.repository.querydsl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
@@ -13,7 +14,11 @@ import java.util.Optional;
 
 public interface MemberDslRepository {
     boolean existById(Long memberId);
+
+    List<Member> findByNameAndNickNameAndUniversity(List<AdminRegisterListRequest.AdminRegisterMemberRequest> registerMemberList);
+
     void updateAvatarImage(Member member, String avatarUrl);
+
     Optional<Member> findByIdAndFetchLoginInfo(Long memberId);
     Optional<Member> findByIdNotFetchLoginInfo(Long memberId);
     Optional<Member> findMemberByClientId(String clientId);
