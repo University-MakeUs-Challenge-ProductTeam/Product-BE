@@ -35,13 +35,12 @@ public class MemberAuthAdviser {
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
     public MemberIdResponse signUp(
-            MultipartFile file,
             MemberSignUpRequest request
     ){
         //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
-        if(file != null) {
+        /*if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
-        }
+        }*/
         Member member = memberService.findByIdNotFetchLoginInfo(request.memberId());
         member.updateProfile(request);
         //학기 찾기

@@ -35,13 +35,11 @@ public class MemberAuthController {
                     description = "App 회원가입 성공"
             )
     })
-    @PostMapping(path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/signup")
     public BaseResponse<MemberIdResponse> signUp(
-            @RequestPart MemberSignUpRequest request,
-            @RequestPart(name = "avatarImage", required = false)
-            @Parameter(description = "사용자 프로필 이미지(선택 사항)", required = false) MultipartFile file
+            @RequestBody MemberSignUpRequest request
     ) {
-        return BaseResponse.onSuccess(memberAuthAdviser.signUp(file, request));
+        return BaseResponse.onSuccess(memberAuthAdviser.signUp(request));
     }
 
     @Operation(summary = "소셜 로그인 API", description = "네이버, 카카오, 구글 로그인을 수행하는 API입니다. 소셜 로그인은 App 전용입니다.")

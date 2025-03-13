@@ -29,13 +29,12 @@ public class AdminAuthAdviser {
     private final MemberConverter memberConverter;
 
     public MemberIdResponse signUp(
-            MultipartFile file,
             AdminSignUpRequest request
     ){
         //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
-        if(file != null) {
+        /*if(file != null) {
             FileCreateResponse fileCreateResponse = fileService.createFile("avatar", file);
-        }
+        }*/
         memberAuthService.verifyClientId(request.clientId());
         University university = universityService.findUniversity(request.universityName());
         Member member = adminMemberService.toAdminMember(request, "", university.getName());

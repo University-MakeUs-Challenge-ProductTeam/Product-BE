@@ -31,13 +31,11 @@ public class AdminAuthController {
                     description = "학교 web 계정 회원가입 성공"
             )
     })
-    @PostMapping( path = "/signup",consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping( path = "/signup")
     public BaseResponse<MemberIdResponse> signUp(
-            @RequestPart AdminSignUpRequest request,
-            @RequestPart(name = "avatarImage", required = false)
-            @Parameter(description = "사용자 프로필 이미지(선택 사항)", required = false) MultipartFile file
+            @RequestBody AdminSignUpRequest request
     ) {
-        return BaseResponse.onSuccess(adminAuthAdviser.signUp(file, request));
+        return BaseResponse.onSuccess(adminAuthAdviser.signUp(request));
     }
 
     @Operation(summary = "web 계정 로그인 API", description = "web 계정을 로그인하는 API입니다")
