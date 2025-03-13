@@ -6,11 +6,9 @@ import umc.product.domain.university.entity.University;
 import java.util.List;
 
 public interface MemberService {
+    void existById(Long memberId);
     Member findById(Long memberId);
     Member findByIdNotFetchLoginInfo(Long memberId);
-    Member saveEntity(Member member);
     void modifyMyProfileAvatar(Member member,
                                  String avatarUrl);
-    List<Member> findWaitingMemberByUniversity(University university);
-    List<Member> findWaitingMember();
 }

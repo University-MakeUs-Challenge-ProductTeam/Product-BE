@@ -17,7 +17,6 @@ import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfi
 import umc.product.domain.member.dto.response.admin.search.AdminMemberSearchPageResponse;
 import umc.product.domain.member.dto.response.admin.search.AdminProfileDetailResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;

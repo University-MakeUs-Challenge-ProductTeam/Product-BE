@@ -20,7 +20,11 @@ import static umc.product.domain.member.status.MemberErrorStatus.MEMBER_NOT_FOUN
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberDslRepository memberDslRepository;
-    private final MemberJpaRepository memberJpaRepository;
+
+    @Override
+    public void existById(Long memberId) {
+        if(!memberDslRepository.existById(memberId)) throw new RestApiException(MEMBER_NOT_FOUND);
+    }
 
     public Member findById(Long memberId) throws UsernameNotFoundException {
         return memberDslRepository.findByIdNotFetchLoginInfo(memberId)
@@ -33,24 +37,9 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new RestApiException(MEMBER_NOT_FOUND));
     }
 
-    // 회원 저장
-    public Member saveEntity(Member member) {
-        return memberJpaRepository.save(member);
-    }
-
     @Transactional
     @Override
     public void modifyMyProfileAvatar(Member member, String avatarUrl) {
         memberDslRepository.updateAvatarImage(member, avatarUrl);
-    }
-
-    @Override
-    public List<Member> findWaitingMemberByUniversity(University university) {
-        return memberDslRepository.findWaitingMemberByUniversity(university);
-    }
-
-    @Override
-    public List<Member> findWaitingMember() {
-        return memberDslRepository.findWaitingMember();
     }
 }

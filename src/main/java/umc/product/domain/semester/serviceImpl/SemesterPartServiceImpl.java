@@ -10,6 +10,7 @@ import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.mapper.SemesterPartMapper;
+import umc.product.domain.semester.repository.SemesterPartDslRepository;
 import umc.product.domain.semester.repository.SemesterPartJpaRepository;
 import umc.product.domain.semester.service.SemesterPartService;
 import umc.product.domain.semester.status.SemesterErrorStatus;
@@ -30,7 +31,14 @@ import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMES
 public class SemesterPartServiceImpl implements SemesterPartService {
     private final SemesterPartMapper semesterPartMapper;
     private final SemesterPartJpaRepository semesterPartJpaRepository;
+    private final SemesterPartDslRepository semesterPartDslRepository;
     private final AdminMemberService adminMemberService;
+
+    @Override
+    public Map<Long,SemesterPart> findSemesterPartMapByMemberId(Long memberId) {
+        return semesterPartDslRepository.findSemesterPartListByMemberId(memberId);
+    }
+
     @Override
     public List<SemesterPart> toSemesterPart(
             Member targetMember,

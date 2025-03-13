@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ROLE;
+import static umc.product.domain.semester.status.SemesterErrorStatus.NOT_VALID_POSITION;
 
 @Component
 @RequiredArgsConstructor
@@ -70,6 +71,13 @@ public class AdminMemberAdviser {
     ) {
         Member targetMember = memberService.findById(targetMemberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
+
+        request.semesterPositionList().stream()
+                .filter(position -> !position.isValid())
+                .findFirst()
+                .ifPresent(position -> {
+                    throw new RestApiException(NOT_VALID_POSITION);
+                });
 
         University university = universityService.findUniversity(request.universityName());
         Map<Long, Semester> partSemesterMap = new HashMap<>();
@@ -113,6 +121,13 @@ public class AdminMemberAdviser {
     ) {
         Member targetMember = memberService.findById(targetMemberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
+
+        request.semesterPositionList().stream()
+                .filter(position -> !position.isValid())
+                .findFirst()
+                .ifPresent(position -> {
+                    throw new RestApiException(NOT_VALID_POSITION);
+                });
 
         Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(
                 request.semesterPositionList(),

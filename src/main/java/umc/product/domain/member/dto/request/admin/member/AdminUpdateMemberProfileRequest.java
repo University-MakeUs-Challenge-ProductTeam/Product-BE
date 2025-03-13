@@ -1,5 +1,6 @@
 package umc.product.domain.member.dto.request.admin.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Status;
 
@@ -24,9 +25,13 @@ public record AdminUpdateMemberProfileRequest(
     public record AdminUpdateSemesterPositionRequest(
             Long semesterPositionId,
             Long semesterId,
-            String position
+            String centralPosition,
+            String universityPosition
     ){
-
+        @JsonIgnore
+        public boolean isValid() {
+            return (centralPosition != null && universityPosition == null) || (centralPosition == null && universityPosition != null);
+        }
     }
 
 }

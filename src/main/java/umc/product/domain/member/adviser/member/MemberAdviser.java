@@ -9,16 +9,26 @@ import umc.product.domain.member.converter.response.MemberCodeConverter;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
+import umc.product.domain.member.dto.response.member.search.MemberParticipateInfoResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberCodeService;
 import umc.product.domain.member.service.member.MemberService;
+import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.entity.SemesterPosition;
+import umc.product.domain.semester.service.SemesterPartService;
+import umc.product.domain.semester.service.SemesterPositionService;
+
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class MemberMemberAdviser {
+public class MemberAdviser {
     private final MemberService memberService;
     private final MemberCodeService memberCodeService;
+    private final SemesterPartService semesterPartService;
+    private final SemesterPositionService semesterPositionService;
     private final FileService fileService;
 
     private final MemberConverter memberConverter;
@@ -32,11 +42,20 @@ public class MemberMemberAdviser {
         return memberCodeConverter.toMemberCodeVerifyResponse(member);
     }
 
-    public MemberProfileDetailResponse getProfileDetail(
+    public MemberProfileResponse getProfile(
             Long memberId
     ) {
         Member member = memberService.findById(memberId);
-        return  memberConverter.toMemberProfileDetailResponse(member);
+        return  memberConverter.toMemberProfileResponse(member);
+    }
+
+    public MemberParticipateInfoResponse getParticipateInfo(
+            Long memberId
+    ) {
+        memberService.existById(memberId);  //검색하려는 사용자 검증
+        Map<Long, SemesterPart> semesterPartMap = semesterPartService.findSemesterPartMapByMemberId(memberId);
+        Map<Long, List<SemesterPosition>> semesterPositionMap = semesterPositionService.findSemesterPositionMapByMemberId(memberId);
+        return  memberConverter.toMemberParticipateInfoResponse(memberId, semesterPartMap, semesterPositionMap);
     }
 
     public MemberIdResponse modifyMyProfileAvatar(

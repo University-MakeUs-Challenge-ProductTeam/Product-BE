@@ -10,10 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import umc.product.domain.member.adviser.member.MemberMemberAdviser;
+import umc.product.domain.member.adviser.member.MemberAdviser;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
-import umc.product.domain.member.dto.response.member.search.MemberProfileDetailResponse;
+import umc.product.domain.member.dto.response.member.search.MemberParticipateInfoResponse;
+import umc.product.domain.member.dto.response.member.search.MemberProfileResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -23,7 +24,7 @@ import umc.product.global.config.security.auth.CurrentMember;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberMemberController {
-    private final MemberMemberAdviser memberMemberAdviser;
+    private final MemberAdviser memberAdviser;
 
     @Operation(summary = "app UMC 코드 인증 API", description = "발급받은 UMC 코드를 app에서 인증하는 API 입니다. 결과값을 회원가입시에 넣어주세요.")
     @ApiResponses({
@@ -39,7 +40,7 @@ public class MemberMemberController {
     public BaseResponse<MemberCodeVerifyResponse> verifyMemberCode(
             @RequestParam String code
     ) {
-        return BaseResponse.onSuccess(memberMemberAdviser.verifyAppCode(code));
+        return BaseResponse.onSuccess(memberAdviser.verifyAppCode(code));
     }
 
     @Operation(summary = "사용자 프로필 사진 변경 API", description = "사용자의 사진 변경하는 API 입니다")
@@ -55,10 +56,10 @@ public class MemberMemberController {
             @RequestPart(name = "avatarImage")
             @Parameter(description = "사용자 프로필 이미지(선택 사항)") MultipartFile file
     ) {
-        return BaseResponse.onSuccess(memberMemberAdviser.modifyMyProfileAvatar(member, file));
+        return BaseResponse.onSuccess(memberAdviser.modifyMyProfileAvatar(member, file));
     }
 
-    @Operation(summary = "사용자 프로필 세부사항 조회 API", description = "사용자의 Id로 프로필의 세부사항을 조회하는 API 입니다")
+    @Operation(summary = "사용자 프로필 조회 API", description = "사용자의 Id로 프로필을 조회하는 API 입니다")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -66,11 +67,27 @@ public class MemberMemberController {
             )
     })
     @Parameters({
-            @Parameter(name = "memberId", description = "프로필 세부사항을 조회하고 싶은 사용자의 Id"),
+            @Parameter(name = "memberId", description = "사용자 프로필 조회하고 싶은 사용자의 Id"),
     })
-    @GetMapping("/profile/detail/{memberId}")
-    public BaseResponse<MemberProfileDetailResponse> getProfileDetail(
+    @GetMapping("/profile/{memberId}")
+    public BaseResponse<MemberProfileResponse> getProfile(
             @PathVariable(name = "memberId") Long memberId) {
-        return BaseResponse.onSuccess(memberMemberAdviser.getProfileDetail(memberId));
+        return BaseResponse.onSuccess(memberAdviser.getProfile(memberId));
+    }
+
+    @Operation(summary = "사용자 참여 기수별 파트 및 직책 조회 API", description = "사용자의 Id로 참여 기수별 파트 및 직책을 조회하는 API 입니다")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "사용자 참여 기수별 파트 및 직책 조회 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "memberId", description = "사용자 프로필 조회하고 싶은 사용자의 Id"),
+    })
+    @GetMapping("/profile/participate/{memberId}")
+    public BaseResponse<MemberParticipateInfoResponse> getParticipateInfo(
+            @PathVariable(name = "memberId") Long memberId) {
+        return BaseResponse.onSuccess(memberAdviser.getParticipateInfo(memberId));
     }
 }

@@ -21,8 +21,9 @@ public class SemesterPositionMapper {
     ){
         return SemesterPosition.builder()
                 .member(member)
-                .position(request.position())
+                .position(request.centralPosition() != null ? request.centralPosition() : request.universityPosition())
                 .semester(semester)
+                .centralStatus(request.centralPosition() != null)
                 .build();
     }
 
@@ -40,6 +41,7 @@ public class SemesterPositionMapper {
                                     .member(memberList.get(i))
                                     .semester(recentSemester)
                                     .position(registerMemberRequest.centralPosition())
+                                    .centralStatus(true)
                                     .build()
                     );
 
@@ -48,6 +50,7 @@ public class SemesterPositionMapper {
                                     .member(memberList.get(i))
                                     .semester(recentSemester)
                                     .position(registerMemberRequest.universityPosition())
+                                    .centralStatus(false)
                                     .build()
                     );
                     return semesterPositions;

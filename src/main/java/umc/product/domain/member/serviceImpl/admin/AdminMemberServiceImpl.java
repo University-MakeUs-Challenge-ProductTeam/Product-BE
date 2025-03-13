@@ -97,23 +97,34 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         targetMember.modifyProfile(request, university);
 
         //semesterPartId를 기준으로 request를 map으로 변환
-        Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest> semesterPartRequestMap = request.semesterPartList().stream()
-                .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest::semesterPartId, Function.identity()));
+        if(!request.semesterPartList().isEmpty()) {
+            Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest> semesterPartRequestMap = request.semesterPartList().stream()
+                    .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest::semesterPartId, Function.identity()));
 
-        targetMember.getMemberSemesterPart()
-                .forEach(semesterPart -> {
-                    AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
-                    if(matchingRequest != null) semesterPart.updateSemesterPart(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.part());
-                });
+            targetMember.getMemberSemesterPart()
+                    .forEach(semesterPart -> {
+                        AdminUpdateMemberProfileRequest.AdminUpdateSemesterPartRequest matchingRequest = semesterPartRequestMap.get(semesterPart.getId());
+                        if (matchingRequest != null)
+                            semesterPart.updateSemesterPart(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.part());
+                    });
+        }
 
-        Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest> semesterPositionRequestMap = request.semesterPositionList().stream()
-                .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest::semesterPositionId, Function.identity()));
+        if(!request.semesterPositionList().isEmpty()) {
+            Map<Long, AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest> semesterPositionRequestMap = request.semesterPositionList().stream()
+                    .collect(Collectors.toMap(AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest::semesterPositionId, Function.identity()));
 
-        targetMember.getMemberSemesterPosition()
-                .forEach(semesterPosition -> {
-                    AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
-                    if(matchingRequest != null) semesterPosition.updateSemesterPosition(partSemesterMap.get(matchingRequest.semesterId()), matchingRequest.position());
-                });
+            targetMember.getMemberSemesterPosition()
+                    .forEach(semesterPosition -> {
+                        AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
+                        if (matchingRequest != null) {
+                            if (matchingRequest.centralPosition() != null) {
+                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), matchingRequest.centralPosition(), true);
+                            } else {
+                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), matchingRequest.universityPosition(), false);
+                            }
+                        }
+                    });
+        }
     }
 
     @Transactional

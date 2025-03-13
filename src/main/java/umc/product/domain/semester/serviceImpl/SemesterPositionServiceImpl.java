@@ -8,6 +8,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.semester.mapper.SemesterPositionMapper;
+import umc.product.domain.semester.repository.SemesterPositionDslRepository;
 import umc.product.domain.semester.service.SemesterPositionService;
 import umc.product.global.common.exception.RestApiException;
 
@@ -21,7 +22,13 @@ import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMES
 @Service
 @AllArgsConstructor
 public class SemesterPositionServiceImpl implements SemesterPositionService {
+    private final SemesterPositionDslRepository semesterPositionDslRepository;
     private final SemesterPositionMapper semesterPositionMapper;
+
+    @Override
+    public Map<Long, List<SemesterPosition>> findSemesterPositionMapByMemberId(Long memberId) {
+        return semesterPositionDslRepository.findSemesterPositionListByMemberId(memberId);
+    }
 
     @Override
     public List<SemesterPosition> toSemesterPosition(
