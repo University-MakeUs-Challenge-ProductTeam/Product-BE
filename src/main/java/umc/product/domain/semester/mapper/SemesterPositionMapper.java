@@ -46,16 +46,29 @@ public class SemesterPositionMapper {
                                     memberList.get(i).getNickName() + "|" +
                                     memberList.get(i).getUniversity().getName()
                     );
-                        List<SemesterPosition> semesterPositionList = new ArrayList<>();
+                    List<SemesterPosition> semesterPositionList = new ArrayList<>();
+                    //없으면 null로
+                    semesterPositionList.add(
+                            SemesterPosition.builder()
+                                    .member(memberList.get(i))
+                                    .semester(recentSemester)
+                                    .position(ar != null ? ar.centralPosition(): null)
+                                    .centralStatus(true)
+                                    .build()
+                    );
+
+
+                    if(ar.centralPosition() == null && ar.universityPosition() == null) {  //central랑 university 둘다 null -> 챌린저
                         semesterPositionList.add(
                                 SemesterPosition.builder()
                                         .member(memberList.get(i))
                                         .semester(recentSemester)
-                                        .position(ar != null ? ar.centralPosition(): null)
-                                        .centralStatus(true)
+                                        .position("챌린저")
+                                        .centralStatus(false)
                                         .build()
                         );
-
+                        return semesterPositionList;
+                    }else { //두개 다 null은 아님
                         semesterPositionList.add(
                                 SemesterPosition.builder()
                                         .member(memberList.get(i))
@@ -65,6 +78,7 @@ public class SemesterPositionMapper {
                                         .build()
                         );
                         return semesterPositionList;
+                    }
                 })
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
