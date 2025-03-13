@@ -55,15 +55,29 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     }
 
     @Override
-    public List<SemesterPart> toSemesterPart(AdminRegisterListRequest request, List<Member> memberList, Semester recentSemester) {
-        return IntStream.range(0, request.registerMemberList().size())
+    public List<SemesterPart> toSemesterPartForRegisterMember(AdminRegisterListRequest request, List<Member> memberList, Semester recentSemester) {
+        Map<String, AdminRegisterListRequest.AdminRegisterMemberRequest> requestMap = request.registerMemberList().stream()
+                .collect(Collectors.toMap(
+                        ar -> ar.name() + "|"+  ar.nickName() + "|"+ ar.universityName(),   //겹치지 않음
+                        ar -> ar
+                ));
+
+        return IntStream.range(0, memberList.size())
                 .mapToObj(i -> {
-                    AdminRegisterListRequest.AdminRegisterMemberRequest ar = request.registerMemberList().get(i);
-                    return SemesterPart.builder()
-                            .member(memberList.get(i))
-                            .semester(recentSemester)
-                            .part(ar.part())
-                            .build();
+                    AdminRegisterListRequest.AdminRegisterMemberRequest ar = requestMap.get(
+                            memberList.get(i).getName() + "|" +
+                                    memberList.get(i).getNickName() + "|" +
+                                    memberList.get(i).getUniversity().getName()
+                    );
+                    if(ar != null) {
+                        return SemesterPart.builder()
+                                .member(memberList.get(i))
+                                .semester(recentSemester)
+                                .part(ar.part())
+                                .build();
+                    } else {
+                        return null;
+                    }
                 }).collect(Collectors.toList());
     }
  

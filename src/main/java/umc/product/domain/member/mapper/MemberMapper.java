@@ -23,17 +23,17 @@ import static umc.product.domain.university.status.UniversityErrorStatus.NOT_FOU
 @Component
 public class MemberMapper {
 
-    public List<Member> toMemberEntity(
-            AdminRegisterListRequest request,
+    public List<Member> toNewMemberEntity(
+            List<AdminRegisterListRequest.AdminRegisterMemberRequest> request,
             List<University> universityList
     ) {
         //map으로 변환하여 빠르게 university를 찾음
         Map<String, University> universityMap = universityList.stream()
                 .collect(Collectors.toMap(University::getName, university -> university));
 
-        return IntStream.range(0, request.registerMemberList().size())
+        return IntStream.range(0, request.size())
                 .mapToObj(i -> {
-                        return toMemberEntityFromExcelMember(request.registerMemberList().get(i), universityMap, i);
+                        return toMemberEntityFromExcelMember(request.get(i), universityMap, i);
                 })
                 .collect(Collectors.toList());
     }

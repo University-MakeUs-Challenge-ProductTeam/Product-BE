@@ -17,7 +17,7 @@ public interface SemesterPartService {
     List<SemesterPart> toSemesterPart(Member targetMember,
                                       List<AdminInsertSemesterPartListRequest.AdminInsertSemesterPartRequest> partList,
                                       Map<Long, Semester> semesterMap);
-    List<SemesterPart> toSemesterPart(AdminRegisterListRequest request,
+    List<SemesterPart> toSemesterPartForRegisterMember(AdminRegisterListRequest request,
                                       List<Member> memberList,
                                       Semester recentSemester);
     List<SemesterPart> getSemesterPartList(String part, Semester semester, List<Member> memberList);
