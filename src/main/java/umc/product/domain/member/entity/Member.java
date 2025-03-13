@@ -77,7 +77,7 @@ public class Member extends BaseEntity {
     private List<MemberOut> memberOutList = new ArrayList<>();
 
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id")
     private University university;
 
