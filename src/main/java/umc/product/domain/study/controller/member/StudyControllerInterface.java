@@ -15,6 +15,7 @@ import umc.product.domain.study.dto.request.member.StudyModifyRequest;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyResponse;
 import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
@@ -293,4 +294,29 @@ public interface StudyControllerInterface {
             @RequestParam(name = "memberId", required = false) Long memberId,
             @RequestParam(name = "week", required = false) Integer week,
             @PathVariable Long studyId);
+
+	@Operation(summary = "나의 스터디 목록 조회 API", description = "나의 스터디 목록을 조회하는 API입니다.")
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "나의 스터디 목록 조회 성공"
+			),
+			@ApiResponse(
+					responseCode = "500",
+					description = "나의 스터디 참여 목록 조회에 실패했습니다.",
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_INFO500",
+							"message": "스터디 참여 정보 조회에 실패했습니다."
+						}
+						"""
+							)
+					)
+			)
+	})
+	BaseResponse<StudyListResponse> getMyStudyList(@CurrentMember Member member);
 }

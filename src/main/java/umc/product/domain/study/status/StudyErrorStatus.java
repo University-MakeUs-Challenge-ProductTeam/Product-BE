@@ -22,6 +22,7 @@ public enum StudyErrorStatus implements BaseCodeInterface {
     UNIVERSITY_LIST_EMPTY(HttpStatus.BAD_REQUEST, "UNIVERSITY_EMPTY400", "학교 목록이 비어 있습니다."),
     UNIVERSITY_DIFFERENT_BRANCH(HttpStatus.BAD_REQUEST, "UNIVERSITY_BRANCH400", "모든 회원의 학교는 동일 지부에 속해야 합니다."),
     UNSUPPORTED_STUDY_TYPE(HttpStatus.BAD_REQUEST, "STUDY_TYPE400", "지원되지 않는 스터디 유형입니다."),
+    STUDY_INFO_GET_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "STUDY_INFO500", "스터디 참여 정보 조회에 실패했습니다."),
     ;
 
     private final HttpStatus httpStatus;

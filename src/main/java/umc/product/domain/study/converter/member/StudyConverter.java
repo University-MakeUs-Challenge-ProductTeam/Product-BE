@@ -4,10 +4,8 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapTitle;
-import umc.product.domain.study.dto.response.member.StudyMemberResponse;
-import umc.product.domain.study.dto.response.member.StudyResponse;
-import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.*;
+import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
@@ -68,6 +66,12 @@ public class StudyConverter {
                 .week(week)
                 .workbookContents(roadmapTitleList)
                 .checklists(checklistResponseList)
+                .build();
+    }
+
+    public StudyListResponse toStudyListResponse(List<StudyInfoResponse> studyInfoResponseList) {
+        return StudyListResponse.builder()
+                .studyResponseList(studyInfoResponseList)
                 .build();
     }
 

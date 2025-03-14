@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum StudyType {
 
-    SCHOOL("교내 스터디"),
-    BRANCH("지부 스터디")
+    SCHOOL("교내"),
+    BRANCH("지부")
     ;
     private final String name;
 }

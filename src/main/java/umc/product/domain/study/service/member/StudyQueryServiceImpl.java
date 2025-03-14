@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
-import umc.product.domain.study.dto.response.member.StudyMemberResponse;
-import umc.product.domain.study.dto.response.member.StudyResponse;
-import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
-import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.*;
+import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.converter.member.StudyConverter;
@@ -66,5 +65,15 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                         ? response.toBuilder().nickName(response.getNickName() + "(나)").build()
                         : response)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public StudyListResponse getStudyInfoList(Member member) {
+        try {
+            // N + 1 문제를 해결하기 위해 Querydsl 사용
+            return studyConverter.toStudyListResponse(studyRepository.getStudyInfoList(member));
+        } catch (Exception e) {
+            throw new RestApiException(StudyErrorStatus.STUDY_INFO_GET_FAILED);
+        }
     }
 }
