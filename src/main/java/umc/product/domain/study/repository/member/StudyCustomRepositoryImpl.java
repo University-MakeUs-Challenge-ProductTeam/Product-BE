@@ -10,15 +10,13 @@ import umc.product.domain.checklist.entity.QChecklist;
 import umc.product.domain.checklist.entity.QChecklistContent;
 import umc.product.domain.checklist.entity.QChecklistMemberAnswer;
 import umc.product.domain.checklist.entity.enums.ChecklistType;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
 import umc.product.domain.roadmap.entity.QRoadmap;
 import umc.product.domain.roadmap.entity.QRoadmapSemester;
 import umc.product.domain.semester.entity.QSemesterPart;
 import umc.product.domain.study.dto.response.member.*;
-import umc.product.domain.study.entity.QStudyAttendance;
-import umc.product.domain.study.entity.QStudyMember;
-import umc.product.domain.study.entity.Study;
-import umc.product.domain.study.entity.StudyMember;
+import umc.product.domain.study.entity.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +37,7 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     private final QChecklistMemberAnswer checklistMemberAnswer = QChecklistMemberAnswer.checklistMemberAnswer;
     private final QRoadmapSemester roadmapSemester = QRoadmapSemester.roadmapSemester;
     private final QRoadmap roadmap = QRoadmap.roadmap;
+    private final QStudy study = QStudy.study;
 
     @Override
     public List<StudyMemberResponse> getStudyMembers(Study study) {
@@ -188,6 +187,35 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                                         checklistContent.content,
                                         checklistMemberAnswer.checkStatus
                                 ))
+                        ))
+                );
+    }
+
+    // 스터디 참여 멤버 닉네임 리스트 조회
+    @Override
+    public List<StudyInfoResponse> getStudyInfoList(Member member) {
+        QStudyMember allStudyMember = new QStudyMember("allStudyMember");
+        QSemesterPart allSemesterPart = new QSemesterPart("allSemesterPart");
+        QMember participant = new QMember("participant");
+
+        return jpaQueryFactory
+                .from(semesterPart)
+                .join(semesterPart.studyMemberList, studyMember)
+                .join(studyMember.study, study)
+                // leftjoin -> 모든 StudyMember 조회
+                .leftJoin(study.studyMemberList, allStudyMember)
+                .leftJoin(allStudyMember.semesterPart, allSemesterPart)
+                .leftJoin(allSemesterPart.member, participant)
+                // 로그인한 멤버의 SemesterPart
+                .where(semesterPart.member.eq(member))
+                .transform(GroupBy.groupBy(study.id)
+                        .list(new QStudyInfoResponse(
+                                study.id,
+                                semesterPart.semester.name,
+                                study.studyType.stringValue(),
+                                semesterPart.part.stringValue(),
+                                study.name,
+                                GroupBy.list(participant.nickName)
                         ))
                 );
     }

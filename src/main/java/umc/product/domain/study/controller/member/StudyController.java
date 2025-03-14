@@ -12,6 +12,7 @@ import umc.product.domain.study.dto.request.member.StudyModifyRequest;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyResponse;
 import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
@@ -63,5 +64,11 @@ public class StudyController implements StudyControllerInterface {
         // memberId가 존재하면, 해당 멤버의 워크북 조회 로직을 처리하고. memberId가 없으면, 현재 로그인한 member의 워크북 조회 로직을 처리
         // week가 존재하면, 해당 주차의 워크북을 조회하고, week가 없다면 스터디 진행 주차의 워크북이 조회
         return BaseResponse.onSuccess(studyAdviser.getStudyWorkbook(member, memberId, week, studyId));
+    }
+
+    // 나의 스터디 목록 조회
+    @GetMapping("/my")
+    public BaseResponse<StudyListResponse> getMyStudyList(@CurrentMember Member member) {
+        return BaseResponse.onSuccess(studyAdviser.getMyStudyList(member));
     }
 }

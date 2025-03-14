@@ -7,6 +7,8 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
+import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.service.SemesterPartService;
 import umc.product.domain.study.dto.request.member.StudyAttendanceRequest;
 import umc.product.domain.study.dto.request.member.StudyChecklistListRequest;
 import umc.product.domain.study.dto.request.member.StudyModifyRequest;
@@ -14,6 +16,7 @@ import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyResponse;
 import umc.product.domain.study.dto.response.member.StudyWeekChecklistResponse;
 import umc.product.domain.study.dto.response.member.StudyWorkbookResponse;
+import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyAttendance;
 import umc.product.domain.study.entity.StudyMember;
@@ -33,6 +36,7 @@ public class StudyAdviser {
     private final RoadmapQueryService roadmapQueryService;
     private final MemberService memberService;
     private final ChecklistCommandService checklistCommandService;
+    private final SemesterPartService semesterPartService;
 
     // 스터디 정보 수정
     public StudyCommonResponse modifyStudy(Member member, StudyModifyRequest request, Long studyId) {
@@ -112,5 +116,10 @@ public class StudyAdviser {
 
         // request의 contentId에 맞는 ChecklistMemberAnswer를 가져와 checkStatus 업데이트
         return checklistCommandService.updateChecklistAnswers(studyMember, week, request.getAnswers());
+    }
+
+    // 내 스터디 목록 조회
+    public StudyListResponse getMyStudyList(Member member) {
+        return studyQueryService.getStudyInfoList(member);
     }
 }
