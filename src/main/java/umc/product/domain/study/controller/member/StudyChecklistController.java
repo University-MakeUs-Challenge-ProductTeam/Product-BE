@@ -51,6 +51,6 @@ public class StudyChecklistController implements StudyChecklistControllerInterfa
             @PathVariable Long studyId,
             @PathVariable int week) {
         // 수정할 checklistContentId 만 받기
-        return BaseResponse.onSuccess(studyAdviser.postChecklist(member, studyId, week, request));
+        return BaseResponse.onSuccess(studyAdviser.modifyChecklist(member, studyId, week, request));
     }
 }
