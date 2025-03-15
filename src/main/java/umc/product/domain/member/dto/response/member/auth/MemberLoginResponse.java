@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record MemberLoginResponse (
         Long memberId,
+        String nickName,
         String accessToken,
         String refreshToken,
         boolean activeStatus,

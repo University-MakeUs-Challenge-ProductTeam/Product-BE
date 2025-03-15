@@ -41,6 +41,7 @@ public class MemberConverter {
     ) {
         return MemberLoginResponse.builder()
                 .memberId(member.getId())
+                .nickName(member.getNickName())
                 .accessToken(tokenInfo.accessToken())
                 .refreshToken(tokenInfo.refreshToken())
                 .activeStatus(member.getStatus() != Status.WAITING_FOR_UPDATE)

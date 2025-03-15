@@ -20,6 +20,8 @@ import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.mapper.SemesterPartMapper;
 import umc.product.domain.semester.service.SemesterService;
+import umc.product.global.config.security.jwt.JwtProvider;
+import umc.product.global.config.security.jwt.TokenInfo;
 
 import java.util.List;
 
@@ -32,9 +34,11 @@ public class MemberAuthAdviser {
     private final MemberRefreshTokenService memberRefreshTokenService;
     private final FileService fileService;
 
+    private final JwtProvider jwtProvider;
+
     private final MemberConverter memberConverter;
     private final SemesterPartMapper semesterPartMapper;
-    public MemberIdResponse signUp(
+    public MemberLoginResponse signUp(
             MemberSignUpRequest request
     ){
         //1차 MVP이후 회원가입 시 프로필 사진 설정 생기면 사용
@@ -49,7 +53,8 @@ public class MemberAuthAdviser {
         List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 
         Member newMember = memberAuthService.signUp(request.clientId(), member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
-        return memberConverter.toMemberIdResponse(newMember.getId());
+        TokenInfo tokenInfo = jwtProvider.generateToken(newMember.getId().toString(), newMember.getRole().toString());
+        return memberConverter.toLoginMemberResponse(newMember, tokenInfo, newMember.getRole());
     }
 
     public MemberLoginResponse socialLogin(

@@ -36,7 +36,7 @@ public class MemberAuthController {
             )
     })
     @PostMapping(path = "/signup")
-    public BaseResponse<MemberIdResponse> signUp(
+    public BaseResponse<MemberLoginResponse> signUp(
             @RequestBody MemberSignUpRequest request
     ) {
         return BaseResponse.onSuccess(memberAuthAdviser.signUp(request));
