@@ -130,6 +130,9 @@ public class StudyAdviser {
 
         // 현기수와 Member 정보를 통해 StudyMember 가져오기
         StudyMember studyMember = studyMemberQueryService.getStudyMember(currentSemester, member);
+        if (studyMember == null) {
+            return null;
+        }
 
         // 특정 주차, 파트의 로드맵 가져오기
         List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);

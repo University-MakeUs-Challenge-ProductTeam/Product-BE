@@ -34,7 +34,7 @@ public class StudyMemberQueryServiceImpl implements StudyMemberQueryService {
     @Override
     public StudyMember getStudyMember(Semester currentSemester, Member member) {
         return studyMemberRepository.findStudyMember(currentSemester, member)
-                .orElseThrow(() -> new RestApiException(StudyErrorStatus.STUDY_MEMBER_SEMESTER_NOT_FOUND));
+                .orElse(null);
     }
 }
 
