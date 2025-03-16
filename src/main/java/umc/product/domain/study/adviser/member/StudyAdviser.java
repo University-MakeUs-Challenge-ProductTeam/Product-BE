@@ -7,8 +7,8 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
-import umc.product.domain.semester.entity.SemesterPart;
-import umc.product.domain.semester.service.SemesterPartService;
+import umc.product.domain.semester.entity.Semester;
+import umc.product.domain.semester.service.SemesterCurrentService;
 import umc.product.domain.study.dto.request.member.StudyAttendanceRequest;
 import umc.product.domain.study.dto.request.member.StudyChecklistListRequest;
 import umc.product.domain.study.dto.request.member.StudyModifyRequest;
@@ -36,7 +36,7 @@ public class StudyAdviser {
     private final RoadmapQueryService roadmapQueryService;
     private final MemberService memberService;
     private final ChecklistCommandService checklistCommandService;
-    private final SemesterPartService semesterPartService;
+    private final SemesterCurrentService semesterCurrentService;
 
     // 스터디 정보 수정
     public StudyCommonResponse modifyStudy(Member member, StudyModifyRequest request, Long studyId) {
@@ -121,5 +121,19 @@ public class StudyAdviser {
     // 내 스터디 목록 조회
     public StudyListResponse getMyStudyList(Member member) {
         return studyQueryService.getStudyInfoList(member);
+    }
+
+    // 현기수 스터디 정보 조회
+    public StudyResponse getCurrentStudyInfo(Member member) {
+        // SemesterCurrent 정보 가져오기
+        Semester currentSemester = semesterCurrentService.getCurrentSemester();
+
+        // 현기수와 Member 정보를 통해 StudyMember 가져오기
+        StudyMember studyMember = studyMemberQueryService.getStudyMember(currentSemester, member);
+
+        // 특정 주차, 파트의 로드맵 가져오기
+        List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);
+
+        return studyQueryService.getStudyResponse(studyMember, roadmapList);
     }
 }
