@@ -44,3 +44,8 @@ out/
 
 # appspec.yml 무시하지 않음
 !appspec.yml
+
+### MAC OS ###
+.DS_Store
+.AppleDouble
+.LSOverride
