@@ -4,6 +4,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
@@ -29,4 +30,13 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
             "JOIN sm.semesterPart sp " +
             "WHERE sm.study = :study")
     List<Member> findMembersByStudy(@Param("study") Study study);
+
+    // Semester와 Member를 통해 StudyMember 조회
+    @Query("SELECT sm FROM StudyMember sm " +
+            "JOIN FETCH sm.semesterPart sp " +
+            "JOIN FETCH sp.semester s " +
+            "WHERE s = :semester AND sp.member = :member")
+    Optional<StudyMember> findStudyMember(
+            @Param("semester") Semester semester,
+            @Param("member") Member member);
 }

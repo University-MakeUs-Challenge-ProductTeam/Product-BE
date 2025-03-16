@@ -319,4 +319,61 @@ public interface StudyControllerInterface {
 			)
 	})
 	BaseResponse<StudyListResponse> getMyStudyList(@CurrentMember Member member);
+
+	@Operation(summary = "나의 현기수 스터디 정보 조회 API", description = "나의 현기수 스터디 정보를 조회하는 API입니다.")
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "현기수 스터디 정보 조회 성공"
+			),
+			@ApiResponse(
+					responseCode = "SEMESTER_CURRENT404",
+					description = "현재 기수 정보를 찾을 수 없습니다.",
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "SEMESTER_CURRENT404",
+							"message": "현재 기수 정보를 찾을 수 없습니다."
+						}
+						"""
+							)
+					)
+			),
+			@ApiResponse(
+					responseCode = "STUDY_MEMBER_SEMESTER404",
+					description = "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다.",
+					content = @Content(
+							mediaType = "applicㄸation/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_MEMBER_SEMESTER404",
+							"message": "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다."
+						}
+						"""
+							)
+					)
+			),
+			@ApiResponse(
+					responseCode = "STUDY_ROADMAP404",
+					description = "해당 스터디 로드맵을 찾을 수 없습니다.",
+					content = @Content(
+							mediaType = "application/json",
+							examples = @ExampleObject(
+									value = """
+						{
+							"timestamp": "2025-01-26T15:15:54.334Z",
+							"code": "STUDY_ROADMAP404",
+							"message": "해당 스터디 로드맵을 찾을 수 없습니다."
+						}
+						"""
+							)
+					)
+			)
+	})
+	BaseResponse<StudyResponse> getMyCurrentStudy(@CurrentMember Member member);
 }

@@ -71,4 +71,10 @@ public class StudyController implements StudyControllerInterface {
     public BaseResponse<StudyListResponse> getMyStudyList(@CurrentMember Member member) {
         return BaseResponse.onSuccess(studyAdviser.getMyStudyList(member));
     }
+
+    // 나의 현기수 스터디 정보 조회
+    @GetMapping()
+    public BaseResponse<StudyResponse> getMyCurrentStudy(@CurrentMember Member member) {
+        return BaseResponse.onSuccess(studyAdviser.getCurrentStudyInfo(member));
+    }
 }
