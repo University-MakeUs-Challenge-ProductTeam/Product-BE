@@ -23,7 +23,7 @@ public enum StudyErrorStatus implements BaseCodeInterface {
     UNIVERSITY_DIFFERENT_BRANCH(HttpStatus.BAD_REQUEST, "UNIVERSITY_BRANCH400", "모든 회원의 학교는 동일 지부에 속해야 합니다."),
     UNSUPPORTED_STUDY_TYPE(HttpStatus.BAD_REQUEST, "STUDY_TYPE400", "지원되지 않는 스터디 유형입니다."),
     STUDY_INFO_GET_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "STUDY_INFO500", "스터디 참여 정보 조회에 실패했습니다."),
-    STUDY_MEMBER_SEMESTER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER_SEMESTER404", "해당 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다."),
+    STUDY_MEMBER_SEMESTER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER_SEMESTER404", "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;
