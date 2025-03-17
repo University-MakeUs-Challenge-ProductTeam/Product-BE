@@ -10,7 +10,6 @@ import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.repository.admin.AdminStudyMemberRepository;
-import umc.product.domain.study.repository.member.StudyMemberRepository;
 import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 
@@ -22,12 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminStudyMemberQueryServiceImpl implements AdminStudyMemberQueryService {
 
-    private final StudyMemberRepository studyMemberRepository;
     private final AdminStudyMemberRepository adminStudyMemberRepository;
 
     @Override
     public List<Member> getMemberList(Study study) {
-        return studyMemberRepository.findMembersByStudy(study);
+        return adminStudyMemberRepository.findMembersByStudy(study);
     }
 
     @Override
