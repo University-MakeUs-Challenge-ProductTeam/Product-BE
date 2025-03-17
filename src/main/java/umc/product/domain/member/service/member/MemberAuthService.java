@@ -6,6 +6,7 @@ import umc.product.domain.member.dto.response.member.auth.MemberLoginResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.entity.SemesterPosition;
 
 import java.util.List;
 

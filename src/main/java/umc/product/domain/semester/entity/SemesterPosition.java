@@ -26,18 +26,13 @@ public class SemesterPosition extends BaseEntity {
     @JoinColumn(name = "semester_id", nullable = false)
     private Semester semester;
 
-    private String position;
+    private String universityPosition;
 
-    private Boolean centralStatus;
+    private String centralPosition;
 
-    public void updateSemesterPosition(Semester semester, String position) {
+    public void updateSemesterPosition(Semester semester, String universityPosition, String centralPosition) {
         this.semester =semester;
-        this.position = position;
-    }
-
-    public void updateSemesterPosition(Semester semester, String position, boolean centralStatus) {
-        this.semester =semester;
-        this.position = position;
-        this.centralStatus = centralStatus;
+        this.universityPosition = universityPosition;
+        this.centralPosition = centralPosition;
     }
 }

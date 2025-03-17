@@ -20,11 +20,19 @@ public class SemesterPositionMapper {
             Semester semester,
             AdminInsertSemesterPositionListRequest.AdminInsertSemesterPositionRequest request
     ){
+        if(request.centralPosition() == null && request.universityPosition() == null) {
+            return SemesterPosition.builder()
+                    .member(member)
+                    .universityPosition("챌린저")
+                    .centralPosition(null)
+                    .semester(semester)
+                    .build();
+        }
         return SemesterPosition.builder()
                 .member(member)
-                .position(request.centralPosition() != null ? request.centralPosition() : request.universityPosition())
+                .universityPosition(request.universityPosition())
+                .centralPosition(request.centralPosition())
                 .semester(semester)
-                .centralStatus(request.centralPosition() != null)
                 .build();
     }
 
@@ -40,47 +48,28 @@ public class SemesterPositionMapper {
                 ));
 
         return IntStream.range(0, memberList.size())
-                .mapToObj(i -> {    //반드시 2개 생성됨(직책이 없으면 NUll을 넣어줌)
+                .mapToObj(i -> {
                     AdminRegisterListRequest.AdminRegisterMemberRequest ar = requestMap.get(
                             memberList.get(i).getName() + "|" +
                                     memberList.get(i).getNickName() + "|" +
                                     memberList.get(i).getUniversity().getName()
                     );
-                    List<SemesterPosition> semesterPositionList = new ArrayList<>();
-                    //없으면 null로
-                    semesterPositionList.add(
-                            SemesterPosition.builder()
-                                    .member(memberList.get(i))
-                                    .semester(recentSemester)
-                                    .position(ar != null ? ar.centralPosition(): null)
-                                    .centralStatus(true)
-                                    .build()
-                    );
-
-
-                    if(ar.centralPosition() == null && ar.universityPosition() == null) {  //central랑 university 둘다 null -> 챌린저
-                        semesterPositionList.add(
-                                SemesterPosition.builder()
-                                        .member(memberList.get(i))
-                                        .semester(recentSemester)
-                                        .position("챌린저")
-                                        .centralStatus(false)
-                                        .build()
-                        );
-                        return semesterPositionList;
-                    }else { //두개 다 null은 아님
-                        semesterPositionList.add(
-                                SemesterPosition.builder()
-                                        .member(memberList.get(i))
-                                        .semester(recentSemester)
-                                        .position(ar != null ? ar.universityPosition(): null)
-                                        .centralStatus(false)
-                                        .build()
-                        );
-                        return semesterPositionList;
+                    if(ar.centralPosition() == null && ar.universityPosition() == null) {
+                        return SemesterPosition.builder()
+                                .member(memberList.get(i))
+                                .semester(recentSemester)
+                                .universityPosition("챌린저")
+                                .centralPosition(null)
+                                .build();
+                    }else {
+                        return SemesterPosition.builder()
+                                .member(memberList.get(i))
+                                .semester(recentSemester)
+                                .universityPosition(ar.universityPosition())
+                                .centralPosition(ar.centralPosition())
+                                .build();
                     }
                 })
-                .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 }

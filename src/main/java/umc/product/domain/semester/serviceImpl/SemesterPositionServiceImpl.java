@@ -26,7 +26,7 @@ public class SemesterPositionServiceImpl implements SemesterPositionService {
     private final SemesterPositionMapper semesterPositionMapper;
 
     @Override
-    public Map<Long, List<SemesterPosition>> findSemesterPositionMapByMemberId(Long memberId) {
+    public Map<Long, SemesterPosition> findSemesterPositionMapByMemberId(Long memberId) {
         return semesterPositionDslRepository.findSemesterPositionListByMemberId(memberId);
     }
 

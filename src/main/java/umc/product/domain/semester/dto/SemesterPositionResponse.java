@@ -7,7 +7,8 @@ public record SemesterPositionResponse(
 
         Long positionId,
         String semesterName,
-        String position
+        String universityPosition,
+        String centralPosition
 ){
 
 }

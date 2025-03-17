@@ -151,7 +151,7 @@ public class AdminMemberController {
             @CurrentMember Member member,
             @RequestParam Integer cursor,
             @RequestParam Integer size,
-            @RequestParam(required = false) String searchString
+            @RequestParam String searchString
     ) {
         return BaseResponse.onSuccess(adminMemberAdviser.searchMemberList(member, PageRequest.of(cursor, size), searchString));
     }

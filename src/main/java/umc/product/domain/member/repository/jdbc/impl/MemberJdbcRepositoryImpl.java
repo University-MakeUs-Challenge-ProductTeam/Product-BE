@@ -61,7 +61,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                     """;
 
         String semesterPositionSql = """
-                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at, central_status) 
+                    INSERT INTO semester_position (created_at, deleted_at, member_id, university_position, central_position, semester_id, updated_at) 
                     VALUES
                     """;
 
@@ -78,7 +78,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
             //batch size별로 리스트 분할
             List<Member> batchMembers = memberList.subList(start, end);
             List<SemesterPart> batchSemesterPart = semesterPartList.subList(start, end);
-            List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start * 2, end * 2);
+            List<SemesterPosition> batchSemesterPositions = semesterPositionList.subList(start, end );
 
             //병렬 수행
             CompletableFuture<List<Long>> future = CompletableFuture.supplyAsync(() -> {
@@ -114,13 +114,8 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                         StringBuilder semesterPositionValues = new StringBuilder();
                         List<Object> semesterPositionParams = new ArrayList<>();
                         for (int i = 0; i < memberIdList.size(); i++) {
-                            SemesterPosition semesterPosition1 = batchSemesterPositions.get(i * 2);
-                            processSemesterPosition(semesterPosition1, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
-
-                            if (i + 1 < batchSemesterPositions.size()) {
-                                SemesterPosition semesterPosition2 = batchSemesterPositions.get(i * 2 + 1);
-                                processSemesterPosition(semesterPosition2, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
-                            }
+                            SemesterPosition semesterPosition = batchSemesterPositions.get(i);
+                            processSemesterPosition(semesterPosition, memberIdList.get(i), semesterPositionValues, semesterPositionParams, now);
                         }
 
                         if (!semesterPositionValues.isEmpty()) semesterPositionValues.setLength(semesterPositionValues.length() - 1);
@@ -163,7 +158,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
             """;
 
         String semesterPositionSql = """
-                    INSERT INTO semester_position (created_at, deleted_at, member_id, position, semester_id, updated_at, central_status) 
+                    INSERT INTO semester_position (created_at, deleted_at, member_id, university_position, central_position, semester_id, updated_at) 
                     VALUES
                     """;
         LocalDateTime now = LocalDateTime.now();
@@ -223,15 +218,19 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
             List<Object> semesterPositionParams,
             LocalDateTime now
     ) {
-        if (semesterPosition.getPosition() != null) {
+        if (semesterPosition.getCentralPosition() != null || semesterPosition.getUniversityPosition() != null) {
             semesterPositionValues.append("(?, ?, ?, ?, ?, ?, ?),");
             semesterPositionParams.addAll(Arrays.asList(
-                    Timestamp.valueOf(now), null, memberId, semesterPosition.getPosition(),
-                    semesterPosition.getSemester().getId(), Timestamp.valueOf(now), semesterPosition.getCentralStatus()
+                    Timestamp.valueOf(now),
+                    null,
+                    memberId,
+                    semesterPosition.getUniversityPosition(),
+                    semesterPosition.getCentralPosition(),
+                    semesterPosition.getSemester().getId(),
+                    Timestamp.valueOf(now)
             ));
         }
     }
-
 
     private void processSemesterPart(
             SemesterPart semesterPart,

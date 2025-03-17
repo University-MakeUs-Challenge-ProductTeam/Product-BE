@@ -102,13 +102,6 @@ public class AdminMemberAdviser {
         Member targetMember = memberService.findById(targetMemberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
 
-        request.semesterPositionList().stream()
-                .filter(position -> !position.isValid())
-                .findFirst()
-                .ifPresent(position -> {
-                    throw new RestApiException(NOT_VALID_POSITION);
-                });
-
         University university = universityService.findUniversity(request.universityName());
         Map<Long, Semester> partSemesterMap = new HashMap<>();
         Map<Long, Semester> positionSemesterMap = new HashMap<>();
@@ -157,13 +150,6 @@ public class AdminMemberAdviser {
     ) {
         Member targetMember = memberService.findById(targetMemberId);
         if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
-
-        request.semesterPositionList().stream()
-                .filter(position -> !position.isValid())
-                .findFirst()
-                .ifPresent(position -> {
-                    throw new RestApiException(NOT_VALID_POSITION);
-                });
 
         Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(
                 request.semesterPositionList(),
