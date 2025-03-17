@@ -18,12 +18,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMESTER;
+import static umc.product.domain.semester.status.SemesterErrorStatus.EXIST_SEMESTER;
 
 @Service
 @AllArgsConstructor
 public class SemesterPositionServiceImpl implements SemesterPositionService {
     private final SemesterPositionDslRepository semesterPositionDslRepository;
     private final SemesterPositionMapper semesterPositionMapper;
+
+    @Override
+    public void validateSemesterPosition(List<Semester> semesterList, Member member) {
+        List<Long> semesterIdList = semesterList.stream()
+                .map(semester -> {
+                    return semester.getId();
+                }).collect(Collectors.toList());
+
+        if(semesterPositionDslRepository.existSemesterList(semesterIdList, member)) {
+            throw new RestApiException(EXIST_SEMESTER);
+        }
+    }
 
     @Override
     public Map<Long, SemesterPosition> findSemesterPositionMapByMemberId(Long memberId) {

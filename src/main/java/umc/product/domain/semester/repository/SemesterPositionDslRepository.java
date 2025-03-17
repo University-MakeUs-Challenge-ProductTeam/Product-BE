@@ -8,5 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SemesterPositionDslRepository {
+
+    boolean existSemesterList(List<Long> semesterIdList, Member member);
     Map<Long, SemesterPosition> findSemesterPositionListByMemberId(Long memberId);
 }

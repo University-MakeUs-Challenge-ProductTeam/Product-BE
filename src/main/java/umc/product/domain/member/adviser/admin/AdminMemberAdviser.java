@@ -27,6 +27,7 @@ import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ROLE;
@@ -99,8 +100,7 @@ public class AdminMemberAdviser {
             Long targetMemberId,
             AdminUpdateMemberProfileRequest request
     ) {
-        Member targetMember = memberService.findById(targetMemberId);
-        if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
+        Member targetMember = validateAndGetTargetMember(member, targetMemberId);
 
         University university = universityService.findUniversity(request.universityName());
         Map<Long, Semester> partSemesterMap = new HashMap<>();
@@ -123,21 +123,36 @@ public class AdminMemberAdviser {
             Long targetMemberId,
             AdminInsertSemesterPartListRequest request
     ) {
-        Member targetMember = memberService.findById(targetMemberId);
-        if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
+        Member targetMember = validateAndGetTargetMember(member, targetMemberId);
 
         Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(
                 request.semesterPartList(),
                 AdminInsertSemesterPartListRequest.AdminInsertSemesterPartRequest::semesterId);
 
         List<Semester> semesterList = semesterMap.values().stream().collect(Collectors.toList());
+        semesterPartService.validateSemesterPart(semesterList, targetMember);
 
-        if(semesterPartService.existSemesterPart(semesterList, targetMember)) {
-            throw new RestApiException(EXIST_SEMESTER);
-        }
+        Map<Long, SemesterPosition> semesterPositionMap = semesterPositionService.findSemesterPositionMapByMemberId(member.getId());
+
+        semesterList.forEach(semester -> {
+            SemesterPosition semesterPosition = semesterPositionMap.get(semester.getId());
+
+            if (semesterPosition != null) {  // 이미 해당 기수 직책이 설정되어 있음
+                if (semesterPosition.getUniversityPosition() == null) {
+                    semesterPosition.updateSemesterPosition(semester, "챌린저", semesterPosition.getCentralPosition());
+                }
+            } else {  // 해당 기수 직책이 설정되지 않은 경우
+                semesterPosition = SemesterPosition.builder()
+                        .member(targetMember)
+                        .centralPosition(null)
+                        .universityPosition("챌린저")
+                        .semester(semester)
+                        .build();
+                targetMember.addSemesterPosition(List.of(semesterPosition)); // member에 추가
+            }
+        });
 
         List<SemesterPart> newSemesterPartList = semesterPartService.toSemesterPart(targetMember, request.semesterPartList(), semesterMap);
-
         adminMemberService.addSemesterPartList(targetMember, newSemesterPartList);
 
         return memberConverter.toMemberIdResponse(targetMember.getId());
@@ -148,23 +163,17 @@ public class AdminMemberAdviser {
             Long targetMemberId,
             AdminInsertSemesterPositionListRequest request
     ) {
-        Member targetMember = memberService.findById(targetMemberId);
-        if(member.getRole().getPriority() >= targetMember.getRole().getPriority()) throw new RestApiException(INVALID_ROLE);  //권한 체크
+        Member targetMember = validateAndGetTargetMember(member, targetMemberId);
 
         Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(
                 request.semesterPositionList(),
                 AdminInsertSemesterPositionListRequest.AdminInsertSemesterPositionRequest::semesterId);
 
         List<Semester> semesterList = semesterMap.values().stream().collect(Collectors.toList());
-
-        if(semesterPartService.existSemesterPart(semesterList, targetMember)) {
-            throw new RestApiException(EXIST_SEMESTER);
-        }
+        semesterPositionService.validateSemesterPosition(semesterList, targetMember);
 
         List<SemesterPosition> newSemesterPositionList = semesterPositionService.toSemesterPosition(targetMember, request.semesterPositionList(), semesterMap);
-
         adminMemberService.addSemesterPositionList(targetMember, newSemesterPositionList);
-
         return memberConverter.toMemberIdResponse(targetMember.getId());
     }
 
@@ -196,4 +205,16 @@ public class AdminMemberAdviser {
         Member member = memberService.findById(memberId);
         return memberConverter.toAdminProfileDetailResponse(member);
     }
+
+    private Member validateAndGetTargetMember(
+            Member member,
+            Long targetMemberId
+    ) {
+        Member targetMember = memberService.findById(targetMemberId);
+        if (member.getRole().getPriority() >= targetMember.getRole().getPriority()) {
+            throw new RestApiException(INVALID_ROLE);
+        }
+        return targetMember;
+    }
+
 }

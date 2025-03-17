@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SemesterPartService {
-    boolean existSemesterPart(List<Semester> semesterList, Member member);
+    void validateSemesterPart(List<Semester> semesterList, Member member);
     Map<Long,SemesterPart> findSemesterPartMapByMemberId(Long memberId);
   
     List<SemesterPart> toSemesterPart(Member targetMember,
