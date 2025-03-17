@@ -47,7 +47,7 @@ public class AdminStudyAdviser {
     private final AdminStudyMemberQueryServiceImpl adminStudyMemberQueryService;
 
     // 스터디 생성 - 하나의 영속성으로 관리
-    // todo - 인원 제한 5명 로직 추가 필요, 최적화 필요
+    // todo - 최적화 필요
     @Transactional
     public StudyCommonResponse createStudy(AdminStudyRequest request) {
         // Study(name, studyType, currentWeek) 생성
@@ -58,6 +58,9 @@ public class AdminStudyAdviser {
         List<AdminStudyMemberRequest> memberRequestList = request.getMembers();
         List<Member> memberList = adminMemberService.getMemberList(memberRequestList);
         List<SemesterPart> semesterPartList = semesterPartService.getSemesterPartList(request.getPart(), semester, memberList);
+
+        // 멤버들이 해당 기수에 스터디가 이미 존재하면 생성이 안 되도록 제한
+        adminStudyMemberQueryService.validateStudyMember(semesterPartList);
 
         // StudyUniversity(study, university(memberList)) 생성
         adminStudyUniversityCommandService.createStudyUniversity(study, memberList);

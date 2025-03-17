@@ -21,6 +21,7 @@ import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
+import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.domain.university.entity.University;
 import umc.product.global.common.exception.RestApiException;
 
@@ -161,10 +162,14 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     @Override
     public List<Member> getMemberList(List<AdminStudyMemberRequest> members) {
-        return members.stream()
+        List<Member> memberList = members.stream()
                 .map(request -> memberJpaRepository.findById(request.getMemberId())
                         .orElseThrow(() -> new RestApiException(MemberErrorStatus.MEMBER_NOT_FOUND)))
-                                .collect(Collectors.toList());
+                .collect(Collectors.toList());
+        if (memberList.size() > 5) {
+            throw new RestApiException(StudyErrorStatus.STUDY_MEMBER_COUNT_EXCEEDED);
+        }
+        return memberList;
     }
 
 }

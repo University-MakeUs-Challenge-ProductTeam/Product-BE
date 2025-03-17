@@ -5,10 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
-import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> {
@@ -24,12 +22,6 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
     Optional<StudyMember> findBySemesterPart_MemberAndStudy_IdFetch(
             @Param("member") Member member,
             @Param("studyId") Long studyId);
-
-    @Query("SELECT sp.member " +
-            "FROM StudyMember sm " +
-            "JOIN sm.semesterPart sp " +
-            "WHERE sm.study = :study")
-    List<Member> findMembersByStudy(@Param("study") Study study);
 
     // Semester와 Member를 통해 StudyMember 조회
     @Query("SELECT sm FROM StudyMember sm " +
