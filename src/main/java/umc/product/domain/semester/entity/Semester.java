@@ -21,9 +21,6 @@ public class Semester extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "semester", cascade = CascadeType.ALL)
-    private List<SemesterPart> semesterParts;
-
-    @OneToMany(mappedBy = "semester", cascade = CascadeType.ALL)
     private List<RoadmapSemester> roadmapSemesterList;
 
     @OneToOne(mappedBy = "semester", cascade = CascadeType.ALL)

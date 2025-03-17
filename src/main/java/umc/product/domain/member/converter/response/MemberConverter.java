@@ -85,7 +85,7 @@ public class MemberConverter {
     public MemberParticipateInfoResponse toMemberParticipateInfoResponse(
             Long memberId,
             Map<Long, SemesterPart> semesterPartMap,
-            Map<Long, List<SemesterPosition>> semesterPositionMap
+            Map<Long, SemesterPosition> semesterPositionMap
     ) {
         return MemberParticipateInfoResponse.builder()
                 .memberId(memberId)
@@ -95,7 +95,7 @@ public class MemberConverter {
 
     private List<MemberParticipateInfoResponse.MemberSemesterInfoResponse> toMemberSemesterInfoResponseList(
             Map<Long, SemesterPart> semesterPartMap,
-            Map<Long, List<SemesterPosition>> semesterPositionMap
+            Map<Long, SemesterPosition> semesterPositionMap
     ) {
 
         Set<Long> allSemesterIdSet = new HashSet<>();
@@ -105,9 +105,9 @@ public class MemberConverter {
         return allSemesterIdSet.stream()
                 .flatMap(semesterId -> {
                     SemesterPart semesterPart = semesterPartMap.get(semesterId);        //파트는 반드시 한 기수당 하나
-                    List<SemesterPosition> semesterPositionList = semesterPositionMap.get(semesterId);  //최대 2개임(챌린저면서 운영진이면서 중앙인 경우는 제외)
+                    SemesterPosition semesterPosition = semesterPositionMap.get(semesterId);  //최대 2개임(챌린저면서 운영진이면서 중앙인 경우는 제외)
 
-                    if (semesterPositionList == null || semesterPositionList.isEmpty()) {
+                    if (semesterPosition == null) {
                         if(semesterPart == null) {      //조회할 대상이 없음
                             return Stream.empty();
                         }
@@ -122,24 +122,14 @@ public class MemberConverter {
                         );
                     }
                     //position 존재
-                    String centralPosition = null;
-                    String universityPosition = null;
-
-                    for (SemesterPosition semesterPosition : semesterPositionList) {
-                        if (semesterPosition.getCentralStatus()) {      //중앙
-                            centralPosition = semesterPosition.getPosition();
-                        } else {
-                            universityPosition = semesterPosition.getPosition();
-                        }
-                    }
 
                     return Stream.of(
                             MemberParticipateInfoResponse.MemberSemesterInfoResponse.builder()
                                     .semesterId(semesterId)
-                                    .semester(semesterPositionList.get(0).getSemester().getName())
+                                    .semester(semesterPosition.getSemester().getName())
                                     .part(semesterPart != null ? semesterPart.getPart() : null)
-                                    .centralPosition(centralPosition)
-                                    .universityPosition(universityPosition)
+                                    .centralPosition(semesterPosition.getCentralPosition())
+                                    .universityPosition(semesterPosition.getUniversityPosition())
                                     .build()
                     );
 
@@ -186,7 +176,6 @@ public class MemberConverter {
                 }).collect(Collectors.toList());
     }
 
-    //todo: 위치 리펙토링해야함
     private List<SemesterPartResponse> toMemberSemesterPartResponseList(
             List<SemesterPart> semesterPartList
     ) {
@@ -199,7 +188,7 @@ public class MemberConverter {
                             .build();
                 }).collect(Collectors.toList());
     }
-    //todo: 위치 리펙토링해야함
+
     private List<SemesterPositionResponse> toMemberSemesterPositionResponse(
             List<SemesterPosition> semesterPositionList
     ) {
@@ -207,7 +196,8 @@ public class MemberConverter {
                 .map(semesterPosition -> {
                     return SemesterPositionResponse.builder()
                             .positionId(semesterPosition.getId())
-                            .position(semesterPosition.getPosition())
+                            .universityPosition(semesterPosition.getUniversityPosition())
+                            .centralPosition(semesterPosition.getCentralPosition())
                             .semesterName(semesterPosition.getSemester().getName())
                             .build();
                 }).collect(Collectors.toList());

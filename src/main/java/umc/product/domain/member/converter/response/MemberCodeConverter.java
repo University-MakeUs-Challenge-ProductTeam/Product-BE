@@ -9,6 +9,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,18 +45,10 @@ public class MemberCodeConverter {
     public MemberCodeVerifyResponse toMemberCodeVerifyResponse(
             Member member
     ) {
-        List<SemesterPosition> positionList = member.getMemberSemesterPosition();
+        SemesterPosition latestPosition = member.getMemberSemesterPosition().stream()
+                .max(Comparator.comparing(p -> p.getSemester().getId()))
+                .orElse(null);
 
-        String universityPosition = null;
-        String centralPosition = null;
-
-        for (SemesterPosition semesterPosition : positionList) {
-            if (semesterPosition.getCentralStatus()) {
-                centralPosition = semesterPosition.getPosition();
-            } else {
-                universityPosition = semesterPosition.getPosition();
-            }
-        }
 
         return MemberCodeVerifyResponse.builder()
                 .memberId(member.getId())
@@ -64,8 +57,8 @@ public class MemberCodeConverter {
                 .part(!member.getMemberSemesterPart().isEmpty()  ?
                         member.getMemberSemesterPart().get(0).getPart() :
                         null)
-                .universityPosition(universityPosition)
-                .centralPosition(centralPosition)
+                .universityPosition(latestPosition.getUniversityPosition())
+                .centralPosition(latestPosition.getCentralPosition())
                 .existSemesterPartList(
                         !member.getMemberSemesterPart().isEmpty() ?
                         toMemberCodePartResponse(member.getMemberSemesterPart()) :

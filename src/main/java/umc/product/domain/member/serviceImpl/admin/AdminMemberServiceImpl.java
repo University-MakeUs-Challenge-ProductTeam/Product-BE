@@ -133,10 +133,10 @@ public class AdminMemberServiceImpl implements AdminMemberService {
                     .forEach(semesterPosition -> {
                         AdminUpdateMemberProfileRequest.AdminUpdateSemesterPositionRequest matchingRequest = semesterPositionRequestMap.get(semesterPosition.getId());
                         if (matchingRequest != null) {
-                            if (matchingRequest.centralPosition() != null) {
-                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), matchingRequest.centralPosition(), true);
+                            if (matchingRequest.centralPosition() == null && matchingRequest.universityPosition() == null) {
+                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), "챌린저", null);
                             } else {
-                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), matchingRequest.universityPosition(), false);
+                                semesterPosition.updateSemesterPosition(positionSemesterMap.get(matchingRequest.semesterId()), matchingRequest.universityPosition(), matchingRequest.centralPosition());
                             }
                         }
                     });

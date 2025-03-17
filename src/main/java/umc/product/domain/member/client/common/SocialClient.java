@@ -47,6 +47,9 @@ public class SocialClient {
         }
     }
 
+    /**
+     * 애플 전용
+     */
     public List<Map<String, Object>> getPublicKeys(
             String url
     ) {

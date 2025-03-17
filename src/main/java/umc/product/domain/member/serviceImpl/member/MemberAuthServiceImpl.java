@@ -12,6 +12,7 @@ import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
@@ -37,7 +38,11 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     @Override
     @Transactional
-    public Member signUp(String clientId, Member member, List<SemesterPart> semesterPartList, String avatarUrl) {
+    public Member signUp(
+            String clientId,
+            Member member,
+            List<SemesterPart> semesterPartList,
+            String avatarUrl) {
         if(member.getMemberLoginInfo() != null) member.getMemberLoginInfo().updateLoginId(clientId);
         else {
             MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(clientId, null, member);

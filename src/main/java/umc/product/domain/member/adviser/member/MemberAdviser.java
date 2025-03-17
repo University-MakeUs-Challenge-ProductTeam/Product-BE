@@ -54,7 +54,7 @@ public class MemberAdviser {
     ) {
         memberService.existById(memberId);  //검색하려는 사용자 검증
         Map<Long, SemesterPart> semesterPartMap = semesterPartService.findSemesterPartMapByMemberId(memberId);
-        Map<Long, List<SemesterPosition>> semesterPositionMap = semesterPositionService.findSemesterPositionMapByMemberId(memberId);
+        Map<Long, SemesterPosition> semesterPositionMap = semesterPositionService.findSemesterPositionMapByMemberId(memberId);
         return  memberConverter.toMemberParticipateInfoResponse(memberId, semesterPartMap, semesterPositionMap);
     }
 

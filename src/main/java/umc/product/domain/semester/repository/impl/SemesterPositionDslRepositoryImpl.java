@@ -29,7 +29,7 @@ public class SemesterPositionDslRepositoryImpl implements SemesterPositionDslRep
 
 
     @Override
-    public Map<Long, List<SemesterPosition>> findSemesterPositionListByMemberId(Long memberId) {
+    public Map<Long, SemesterPosition> findSemesterPositionListByMemberId(Long memberId) {
         List<SemesterPosition> semesterPositionList = jpaQueryFactory
                 .selectFrom(qSemesterPosition)
                 .join(qSemesterPosition.semester, qSemester).fetchJoin()
@@ -38,7 +38,10 @@ public class SemesterPositionDslRepositoryImpl implements SemesterPositionDslRep
                 .fetch();
 
         return semesterPositionList.stream()
-                .collect(Collectors.groupingBy(semesterPosition -> semesterPosition.getSemester().getId()));
+                .collect(Collectors.toMap(
+                        semesterPosition -> semesterPosition.getSemester().getId(),
+                        semesterPosition -> semesterPosition
+                ));
     }
 
 }
