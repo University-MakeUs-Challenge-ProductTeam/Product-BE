@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static umc.product.domain.member.status.AuthErrorStatus.INVALID_ROLE;
+import static umc.product.domain.semester.status.SemesterErrorStatus.EXIST_SEMESTER;
 import static umc.product.domain.semester.status.SemesterErrorStatus.NOT_VALID_POSITION;
 
 @Component
@@ -136,6 +137,12 @@ public class AdminMemberAdviser {
                 request.semesterPartList(),
                 AdminInsertSemesterPartListRequest.AdminInsertSemesterPartRequest::semesterId);
 
+        List<Semester> semesterList = semesterMap.values().stream().collect(Collectors.toList());
+
+        if(semesterPartService.existSemesterPart(semesterList, targetMember)) {
+            throw new RestApiException(EXIST_SEMESTER);
+        }
+
         List<SemesterPart> newSemesterPartList = semesterPartService.toSemesterPart(targetMember, request.semesterPartList(), semesterMap);
 
         adminMemberService.addSemesterPartList(targetMember, newSemesterPartList);
@@ -161,6 +168,12 @@ public class AdminMemberAdviser {
         Map<Long, Semester> semesterMap =  semesterService.findSemesterListForModify(
                 request.semesterPositionList(),
                 AdminInsertSemesterPositionListRequest.AdminInsertSemesterPositionRequest::semesterId);
+
+        List<Semester> semesterList = semesterMap.values().stream().collect(Collectors.toList());
+
+        if(semesterPartService.existSemesterPart(semesterList, targetMember)) {
+            throw new RestApiException(EXIST_SEMESTER);
+        }
 
         List<SemesterPosition> newSemesterPositionList = semesterPositionService.toSemesterPosition(targetMember, request.semesterPositionList(), semesterMap);
 

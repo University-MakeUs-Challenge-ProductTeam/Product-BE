@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class SemesterRepositoryImpl implements SemesterRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final QSemester qSemester = QSemester.semester;
+
     @Override
     public List<Semester> findSemesterList(List<Long> semesterIdList) {
         return jpaQueryFactory

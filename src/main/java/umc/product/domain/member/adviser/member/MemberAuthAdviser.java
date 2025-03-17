@@ -19,11 +19,16 @@ import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.mapper.SemesterPartMapper;
+import umc.product.domain.semester.service.SemesterPartService;
 import umc.product.domain.semester.service.SemesterService;
+import umc.product.global.common.exception.RestApiException;
 import umc.product.global.config.security.jwt.JwtProvider;
 import umc.product.global.config.security.jwt.TokenInfo;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static umc.product.domain.semester.status.SemesterErrorStatus.EXIST_SEMESTER;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class MemberAuthAdviser {
     private final MemberAuthService memberAuthService;
     private final MemberService memberService;
     private final SemesterService semesterService;
+    private final SemesterPartService semesterPartService;
     private final MemberRefreshTokenService memberRefreshTokenService;
     private final FileService fileService;
 
@@ -47,10 +53,19 @@ public class MemberAuthAdviser {
         }*/
         Member member = memberService.findByIdNotFetchLoginInfo(request.memberId());
         member.updateProfile(request);
-        //학기 찾기
-        List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());
-        //학기를 기반으로 학기/파트 생성
-        List<SemesterPart> semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
+
+        List<SemesterPart> semesterPartList = new ArrayList<>();
+
+        if(!request.semesterPartList().isEmpty()) {
+            //학기 찾기
+            List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());
+            //이미 해당 기수에 파트가 존재하는지 확인
+            if(semesterPartService.existSemesterPart(semesterList, member)) {
+                throw new RestApiException(EXIST_SEMESTER);
+            }
+            //학기를 기반으로 학기/파트 생성
+            semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
+        }
 
         Member newMember = memberAuthService.signUp(request.clientId(), member, semesterPartList, "https://umc-offcial-product.s3.ap-northeast-2.amazonaws.com/avatar/default-avatar-img_5182333b-1626-4ddf-b5ab-646c916253cf.jpg");
         TokenInfo tokenInfo = jwtProvider.generateToken(newMember.getId().toString(), newMember.getRole().toString());

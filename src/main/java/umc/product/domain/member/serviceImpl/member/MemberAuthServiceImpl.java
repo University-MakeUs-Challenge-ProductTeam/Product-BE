@@ -43,7 +43,9 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             MemberLoginInfo memberLoginInfo = memberInfoMapper.toMemberInfo(clientId, null, member);
             member.setMemberLoginInfo(memberLoginInfo);
         }
-        member.addSemesterPart(semesterPartList);
+        if(!semesterPartList.isEmpty()) {
+            member.addSemesterPart(semesterPartList);
+        }
         member.setStatus(Status.ACTIVE);
         member.setAvatarUrl(avatarUrl);
         return member;

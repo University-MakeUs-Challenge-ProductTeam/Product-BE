@@ -6,6 +6,7 @@ import umc.product.domain.member.dto.response.admin.code.AdminVerifyCodeResponse
 import umc.product.domain.member.dto.response.admin.register.AdminRegisterListResponse;
 import umc.product.domain.member.dto.response.member.code.MemberCodeVerifyResponse;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.entity.SemesterPosition;
 
 import java.util.List;
@@ -65,6 +66,10 @@ public class MemberCodeConverter {
                         null)
                 .universityPosition(universityPosition)
                 .centralPosition(centralPosition)
+                .existSemesterPartList(
+                        !member.getMemberSemesterPart().isEmpty() ?
+                        toMemberCodePartResponse(member.getMemberSemesterPart()) :
+                        null)
                 .build();
     }
 
@@ -78,6 +83,19 @@ public class MemberCodeConverter {
                             .code(entry.getKey())
                             .name(entry.getValue().getName())
                             .nickName(entry.getValue().getNickName())
+                            .build();
+                }).collect(Collectors.toList());
+    }
+
+    private List<MemberCodeVerifyResponse.MemberCodePartResponse> toMemberCodePartResponse(
+            List<SemesterPart> semesterPartList
+    ) {
+        return semesterPartList.stream()
+                .map(semesterPart -> {
+                    return MemberCodeVerifyResponse.MemberCodePartResponse.builder()
+                            .semesterPartId(semesterPart.getId())
+                            .semesterId(semesterPart.getSemester().getId())
+                            .part(semesterPart.getPart())
                             .build();
                 }).collect(Collectors.toList());
     }

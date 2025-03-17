@@ -35,6 +35,15 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     private final AdminMemberService adminMemberService;
 
     @Override
+    public boolean existSemesterPart(List<Semester> semesterList, Member member) {
+        List<Long> semesterIdList = semesterList.stream()
+                .map(semester -> {
+                    return semester.getId();
+                }).collect(Collectors.toList());
+        return semesterPartDslRepository.existSemesterList(semesterIdList, member);
+    }
+
+    @Override
     public Map<Long,SemesterPart> findSemesterPartMapByMemberId(Long memberId) {
         return semesterPartDslRepository.findSemesterPartListByMemberId(memberId);
     }
