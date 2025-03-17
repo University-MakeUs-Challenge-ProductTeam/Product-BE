@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
 import umc.product.domain.semester.entity.QSemester;
 import umc.product.domain.semester.entity.QSemesterPart;
@@ -37,5 +38,16 @@ public class SemesterPartDslRepositoryImpl implements SemesterPartDslRepository 
                         semesterPart -> semesterPart.getSemester().getId(),
                         semesterPart -> semesterPart
                 ));
+    }
+
+    @Override
+    public boolean existSemesterList(List<Long> semesterIdList, Member member) {
+        return jpaQueryFactory
+                .selectFrom(qSemesterPart)
+                .join(qSemesterPart.semester, qSemester).fetchJoin()
+                .where(qSemesterPart.semester.id.in(semesterIdList).and(
+                        qSemesterPart.member.id.eq(member.getId())
+                ))
+                .fetchFirst() != null;
     }
 }
