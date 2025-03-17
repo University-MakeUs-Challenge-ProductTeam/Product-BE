@@ -1,6 +1,7 @@
 package umc.product.domain.study.service.admin;
 
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
@@ -11,4 +12,5 @@ public interface AdminStudyMemberQueryService {
 
     List<Member> getMemberList(Study study);
     List<StudyMember> getRemovedStudyMemberList(Study study, List<AdminStudyMemberRequest> memberRequestList);
+    void validateStudyMember(List<SemesterPart> semesterPartList);
 }

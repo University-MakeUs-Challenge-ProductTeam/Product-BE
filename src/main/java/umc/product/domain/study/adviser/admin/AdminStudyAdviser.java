@@ -59,6 +59,9 @@ public class AdminStudyAdviser {
         List<Member> memberList = adminMemberService.getMemberList(memberRequestList);
         List<SemesterPart> semesterPartList = semesterPartService.getSemesterPartList(request.getPart(), semester, memberList);
 
+        // 멤버들이 해당 기수에 스터디가 이미 존재하면 생성이 안 되도록 제한
+        adminStudyMemberQueryService.validateStudyMember(semesterPartList);
+
         // StudyUniversity(study, university(memberList)) 생성
         adminStudyUniversityCommandService.createStudyUniversity(study, memberList);
 
