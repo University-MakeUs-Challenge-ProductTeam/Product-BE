@@ -47,7 +47,7 @@ public class AdminStudyAdviser {
     private final AdminStudyMemberQueryServiceImpl adminStudyMemberQueryService;
 
     // 스터디 생성 - 하나의 영속성으로 관리
-    // todo - 인원 제한 5명 로직 추가 필요, 최적화 필요
+    // todo - 최적화 필요
     @Transactional
     public StudyCommonResponse createStudy(AdminStudyRequest request) {
         // Study(name, studyType, currentWeek) 생성
