@@ -65,9 +65,7 @@ public class MemberAuthAdviser {
             //학기 찾기
             List<Semester> semesterList = semesterService.findSemesterListForSignup(request.semesterPartList());
             //이미 해당 기수에 파트가 존재하는지 확인
-            if(semesterPartService.existSemesterPart(semesterList, member)) {
-                throw new RestApiException(EXIST_SEMESTER);
-            }
+            semesterPartService.validateSemesterPart(semesterList, member);
             //학기를 기반으로 학기/파트 생성
             semesterPartList = semesterPartMapper.toSemesterPart(semesterList, request.semesterPartList(), member);
 

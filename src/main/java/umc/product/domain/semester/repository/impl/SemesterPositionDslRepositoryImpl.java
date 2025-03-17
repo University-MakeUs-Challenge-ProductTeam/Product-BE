@@ -29,6 +29,17 @@ public class SemesterPositionDslRepositoryImpl implements SemesterPositionDslRep
 
 
     @Override
+    public boolean existSemesterList(List<Long> semesterIdList, Member member) {
+        return jpaQueryFactory
+                .selectFrom(qSemesterPosition)
+                .join(qSemesterPosition.semester, qSemester).fetchJoin()
+                .where(qSemesterPosition.semester.id.in(semesterIdList).and(
+                        qSemesterPosition.member.id.eq(member.getId())
+                ))
+                .fetchFirst() != null;
+    }
+
+    @Override
     public Map<Long, SemesterPosition> findSemesterPositionListByMemberId(Long memberId) {
         List<SemesterPosition> semesterPositionList = jpaQueryFactory
                 .selectFrom(qSemesterPosition)

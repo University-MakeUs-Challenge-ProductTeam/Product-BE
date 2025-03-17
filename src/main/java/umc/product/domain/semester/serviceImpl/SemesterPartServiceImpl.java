@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static umc.product.domain.semester.status.SemesterErrorStatus.EMPTY_SEMESTER;
+import static umc.product.domain.semester.status.SemesterErrorStatus.EXIST_SEMESTER;
 
 @Service
 @AllArgsConstructor
@@ -35,12 +36,14 @@ public class SemesterPartServiceImpl implements SemesterPartService {
     private final AdminMemberService adminMemberService;
 
     @Override
-    public boolean existSemesterPart(List<Semester> semesterList, Member member) {
+    public void validateSemesterPart(List<Semester> semesterList, Member member) {
         List<Long> semesterIdList = semesterList.stream()
                 .map(semester -> {
                     return semester.getId();
                 }).collect(Collectors.toList());
-        return semesterPartDslRepository.existSemesterList(semesterIdList, member);
+        if (semesterPartDslRepository.existSemesterList(semesterIdList, member)) {
+            throw new RestApiException(EXIST_SEMESTER);
+        }
     }
 
     @Override
