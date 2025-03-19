@@ -28,6 +28,8 @@ public class StudyConverter {
                 .collect(Collectors.toList());
 
         return StudyResponse.builder()
+                .studyId(study.getId())
+                .currentWeek(study.getCurrentWeek())
                 .semester(studyMember.getSemesterPart().getSemester().getName())
                 .part(studyMember.getSemesterPart().getPart().toString())
                 .studyName(study.getName())
