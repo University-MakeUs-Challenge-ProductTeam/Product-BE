@@ -13,6 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 public class StudyResponse {
 
+    @Schema(description = "스터디 id", example = "1")
+    private Long studyId;
+
+    @Schema(description = "현재 주차", example = "0")
+    private int currentWeek;
+
     @Schema(description = "학기 정보", example = "5기")
     private String semester;
 
