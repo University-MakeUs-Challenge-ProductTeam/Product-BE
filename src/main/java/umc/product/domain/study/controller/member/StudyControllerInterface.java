@@ -343,22 +343,6 @@ public interface StudyControllerInterface {
 					)
 			),
 			@ApiResponse(
-					responseCode = "STUDY_MEMBER_SEMESTER404",
-					description = "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다.",
-					content = @Content(
-							mediaType = "applicㄸation/json",
-							examples = @ExampleObject(
-									value = """
-						{
-							"timestamp": "2025-01-26T15:15:54.334Z",
-							"code": "STUDY_MEMBER_SEMESTER404",
-							"message": "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다."
-						}
-						"""
-							)
-					)
-			),
-			@ApiResponse(
 					responseCode = "STUDY_ROADMAP404",
 					description = "해당 스터디 로드맵을 찾을 수 없습니다.",
 					content = @Content(
