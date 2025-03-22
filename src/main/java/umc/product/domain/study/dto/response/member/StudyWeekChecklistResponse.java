@@ -17,6 +17,9 @@ public class StudyWeekChecklistResponse {
     @Schema(description = "주차", example = "1")
     private int week;
 
+    @Schema(description = "체크리스트 입력 여부", example = "true")
+    private boolean postStatus;
+
     @Schema(description = "워크북 내용", example = "[\"Figma 설치\", \"Figma의 이해\"]")
     private List<String> workbookContents;
 

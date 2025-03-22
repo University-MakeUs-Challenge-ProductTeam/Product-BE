@@ -62,18 +62,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     @Override
     public List<StudyWorkbookResponse.StudyChecklistResponse> getStudyChecklists(Long studyMemberId, int week) {
 
-        // 체크리스트 입력 전 -> checkStatus가 전부 다 false -> 빈 리스트 반환 //
-        Long totalTrueCount = jpaQueryFactory
-                .select(checklistMemberAnswer.id.count())
-                .from(checklist)
-                .join(checklist.roadmapSemester, roadmapSemester)
-                .join(roadmapSemester.roadmap, roadmap)
-                .where(roadmap.week.eq(week))
-                .join(checklist.checklistContentList, checklistContent)
-                .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
-                .on(checklistMemberAnswer.studyMember.id.eq(studyMemberId)
-                        .and(checklistMemberAnswer.checkStatus.eq(true)))
-                .fetchOne();
+        // 체크리스트 입력 전 -> checkStatus가 전부 다 false -> 빈 리스트 반환
+        Long totalTrueCount = validateCheckStatus(studyMemberId, week);
         if (totalTrueCount == null || totalTrueCount == 0) {
             return Collections.emptyList();
         }
@@ -189,6 +179,28 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                                 ))
                         ))
                 );
+    }
+
+    @Override
+    public boolean getPostStatus(StudyMember studyMember, int week) {
+        Long totalTrueCount = validateCheckStatus(studyMember.getId(), week);
+        return totalTrueCount != null && totalTrueCount != 0;
+
+    }
+
+    // 체크리스트 checkStatus 검증
+    private Long validateCheckStatus(Long studyMemberId, int week) {
+        return jpaQueryFactory
+                .select(checklistMemberAnswer.id.count())
+                .from(checklist)
+                .join(checklist.roadmapSemester, roadmapSemester)
+                .join(roadmapSemester.roadmap, roadmap)
+                .where(roadmap.week.eq(week))
+                .join(checklist.checklistContentList, checklistContent)
+                .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
+                .on(checklistMemberAnswer.studyMember.id.eq(studyMemberId)
+                        .and(checklistMemberAnswer.checkStatus.eq(true)))
+                .fetchOne();
     }
 
     // 스터디 참여 멤버 닉네임 리스트 조회

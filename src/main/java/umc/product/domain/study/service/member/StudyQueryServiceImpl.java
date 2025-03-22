@@ -55,7 +55,8 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     @Override
     public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList) {
         List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList = studyRepository.getChecklistResponses(studyMember, week);
-        return studyConverter.toStudyWeekCheckListResponse(week, roadmapTitleList, checklistResponseList);
+        boolean postStatus = studyRepository.getPostStatus(studyMember, week);
+        return studyConverter.toStudyWeekCheckListResponse(week, roadmapTitleList, postStatus, checklistResponseList);
     }
 
     // (나) 붙이는 메서드

@@ -62,10 +62,11 @@ public class StudyConverter {
                 .build();
     }
 
-    public StudyWeekChecklistResponse toStudyWeekCheckListResponse(int week, List<String> roadmapTitleList,
+    public StudyWeekChecklistResponse toStudyWeekCheckListResponse(int week, List<String> roadmapTitleList, boolean postStatus,
                                                                    List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList) {
         return StudyWeekChecklistResponse.builder()
                 .week(week)
+                .postStatus(postStatus)
                 .workbookContents(roadmapTitleList)
                 .checklists(checklistResponseList)
                 .build();

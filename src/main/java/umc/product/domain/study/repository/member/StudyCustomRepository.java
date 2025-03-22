@@ -15,6 +15,7 @@ public interface StudyCustomRepository {
     List<StudyMemberResponse> getStudyMembers(Study study);
     List<StudyWorkbookResponse.StudyChecklistResponse> getStudyChecklists(Long studyMemberId, int week);
     List<StudyWeekChecklistResponse.ChecklistResponse> getChecklistResponses(StudyMember studyMember, int week);
+    boolean getPostStatus(StudyMember studyMember, int week);
     List<StudyInfoResponse> getStudyInfoList(Member loginMember);
 
 }
