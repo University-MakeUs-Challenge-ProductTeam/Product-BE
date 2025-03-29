@@ -12,7 +12,6 @@ import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.member.MemberAuthService;
 import umc.product.domain.member.strategy.context.LoginContext;
 import umc.product.domain.semester.entity.SemesterPart;
-import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.global.config.security.jwt.JwtProvider;
@@ -88,7 +87,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         // 리프레쉬 토큰 저장
         refreshTokenService.saveRefreshToken(tokenInfo.refreshToken(), member.getId());
 
-        return new MemberCreateTokenResponse(tokenInfo.accessToken(), tokenInfo.refreshToken());
+        return new MemberCreateTokenResponse(member.getId(), tokenInfo.accessToken(), tokenInfo.refreshToken());
     }
 
     // 로그아웃 함수
