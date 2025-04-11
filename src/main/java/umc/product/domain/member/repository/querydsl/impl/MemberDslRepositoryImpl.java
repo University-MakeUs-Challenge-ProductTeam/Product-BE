@@ -119,7 +119,8 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
     ) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qMember.deletedAt.isNull());    //삭제된 사용자는 검색에서 제외.
-        builder.and(qMember.loginType.ne(LoginType.INTERNAL)); //웹 계정은 제외
+        builder.and(qMember.loginType.isNull()
+                        .or(qMember.loginType.ne(LoginType.INTERNAL))); //웹 계정은 제외
         if (currentMember != null && currentMember.getRole() != null) {
             //학교 web 계정이라면 query에 university를 추가
             if(currentMember.getRole().equals(Role.SCHOOL_ADMIN)){
@@ -168,7 +169,8 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qMember.name.contains(searchString).or(qMember.nickName.contains(searchString)));
         builder.and(qMember.deletedAt.isNull());    //삭제된 사용자는 검색에서 제외.
-        builder.and(qMember.loginType.ne(LoginType.INTERNAL)); //웹 계정은 제외
+        builder.and(qMember.loginType.isNull()
+                        .or(qMember.loginType.ne(LoginType.INTERNAL))); //웹 계정은 제외
         if (member != null && member.getRole() != null) {
             //학교 web 계정이라면 query에 university 추가
             if(member.getRole().equals(Role.SCHOOL_ADMIN)){
