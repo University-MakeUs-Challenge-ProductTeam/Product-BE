@@ -27,7 +27,8 @@ public class MemberRedisRepositoryImpl implements MemberRedisRepository {
     private final RedisTemplate<String, Object> redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
 
-    private static final long CODE_EXPIRATION_TIME = 60 * 30;
+    //Todo: 임시로 24시간으로 설정
+    private static final long CODE_EXPIRATION_TIME = 60 * 60 * 24;
     private static final String CODE_KEY_PREFIX = "code:";
     private static final String CODE_MEMBER_KEY_PREFIX = "codeMember:";
     private static final long REFRESH_EXPIRATION_TIME = 60*60*24*14;
