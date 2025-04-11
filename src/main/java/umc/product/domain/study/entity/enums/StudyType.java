@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum StudyType {
 
     SCHOOL("교내"),
-    BRANCH("지부")
+    BRANCH("지부"),
+    ADMIN("운영진"),
     ;
     private final String name;
 }

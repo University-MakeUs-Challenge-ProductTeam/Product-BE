@@ -31,6 +31,10 @@ public class AdminStudyUniversityCommandServiceImpl implements AdminStudyUnivers
     public void createStudyUniversity(Study study, List<Member> memberList) {
         List<University> universityList = adminStudyUniversityMapper.toUniversity(memberList);
 
+        if (study.getStudyType() == StudyType.ADMIN) {
+            return;
+        }
+
         if (universityList.isEmpty()) {
             throw new RestApiException(StudyErrorStatus.UNIVERSITY_LIST_EMPTY);
         }
