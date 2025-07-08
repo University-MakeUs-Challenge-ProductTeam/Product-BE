@@ -1,4 +1,4 @@
-name: UMC Product service Dev Build and Deploy to AWS
+name: UMC Product service PROD Build and Deploy to AWS
 
 on:
   push:
@@ -37,22 +37,26 @@ jobs:
         shell: bash # 스크립트가 Bash 셸에서 실행
 
       # 1-2. application-dev.yml 파일 생성
-      - name: make application-dev.yml
+      - name: make application-prod.yml
         run: |
-          # create application-dev.yml
+          # create application-prod.yml
           cd ./src/main
           cd ./resources
 
           # application-dev.yml 파일 생성하기
-          touch ./application-dev.yml
+          touch ./application-prod.yml
 
           # Secrets에 저장한 값을 application-dev.yml 파일에 쓰기
-          echo "${{ secrets.DEV_YML }}" >> ./application-dev.yml
+          echo "${{ secrets.PROD_YML }}" >> ./application-prod.yml
         shell: bash # 스크립트가 Bash 셸에서 실행
 
       # 1-2-1 start.sh 파일 생성
       - name: make start.sh
         run: |
+          
+          # create scripts directory
+          mkdir -p scripts
+          
           # create start.sh
           cd ./scripts
 
@@ -60,7 +64,22 @@ jobs:
           touch ./start.sh
 
           # Secrets에 저장한 값을 start.sh 파일에 쓰기
-          echo "${{ secrets.START_SH }}" >> ./start.sh
+          echo "${{ secrets.START_SH_PROD }}" > ./start.sh
+          
+            # 1-2-1 start.sh 파일 생성
+
+      # stop.sh 파일 생성
+      - name: make stop.sh
+        run: |
+          
+          # create stop.sh
+          cd ./scripts
+
+          # stop.sh 파일 생성하기
+          touch ./stop.sh
+
+          # Secrets에 저장한 값을 start.sh 파일에 쓰기
+          echo "${{ secrets.STOP_SH_PROD }}" > ./stop.sh
 
       # 1-3. Spring Boot 애플리케이션 빌드
       - name: Build with Gradle
@@ -84,24 +103,27 @@ jobs:
       # 4. Docker 이미지 빌드
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.AWS_ECR_REPO }}:latest .
-          docker tag ${{ secrets.AWS_ECR_REPO }}:latest ${{ secrets.AWS_ECR_REPO }}:latest
+          TAG=$(git rev-parse --short HEAD)
+          docker build -t ${{ secrets.AWS_ECR_REPO }}:prod-latest .
+          docker tag ${{ secrets.AWS_ECR_REPO }}:prod-latest ${{ secrets.AWS_ECR_REPO }}:prod-${TAG}
 
       # 5. Docker 이미지 푸시
       - name: Push to Amazon ECR
         run: |
-          docker push ${{ secrets.AWS_ECR_REPO }}:latest
+          TAG=$(git rev-parse --short HEAD)
+          docker push ${{ secrets.AWS_ECR_REPO }}:prod-latest
+          docker push ${{ secrets.AWS_ECR_REPO }}:prod-${TAG}
 
       # 6-0. S3 업로드
       - name: Upload to S3
         run: |
           zip -r deploy.zip appspec.yml scripts/
-          aws s3 cp deploy.zip s3://umc-offcial-product/deploy/deploy.zip
+          aws s3 cp deploy.zip s3://umc-offcial-product/deploy/prod/deploy.zip
 
       # 6. CodeDeploy 트리거
       - name: Trigger CodeDeploy Deployment
         run: |
           aws deploy create-deployment \
             --application-name umc-offcial-product \
-            --deployment-group-name ec2-instance \
-            --revision "{\"revisionType\":\"S3\",\"s3Location\":{\"bucket\":\"umc-offcial-product\",\"key\":\"deploy/deploy.zip\",\"bundleType\":\"zip\"}}"
+            --deployment-group-name prod-instance \
+            --revision "{\"revisionType\":\"S3\",\"s3Location\":{\"bucket\":\"umc-offcial-product\",\"key\":\"deploy/prod/deploy.zip\",\"bundleType\":\"zip\"}}"
