@@ -1,0 +1,25 @@
+package umc.product.domain.notice.dto.response;
+
+import lombok.Builder;
+import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.notice.entity.enums.NoticeTarget;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Builder
+public record NoticeDetailResponse(
+    Long noticeId,
+    NoticeTarget target,
+    String title,
+    String content,
+    List<String> hashtags,
+    List<String> images,
+    Event event,
+    Integer readCount,
+    Integer unreadCount,
+    Boolean isRead,
+    LocalDateTime checkDeadline,
+    LocalDateTime noticeDate
+) {
+} 
