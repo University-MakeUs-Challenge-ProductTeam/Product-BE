@@ -47,7 +47,7 @@ public class AdminNoticeAdviser {
         return converter.toAdminNoticeDetailResponse(notice, readCount, checkCount);
     }
 
-    // [운영진용] 공지 열람 체크
+    // [운영진용] 공지 체크 상태 조회
     public Page<AdminNoticeCheckStatusListResponse> getNoticeCheckMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
