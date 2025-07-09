@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.entity.enums.NoticeTarget;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -45,6 +46,10 @@ public class Notice extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event; // 연결된 행사 정보
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 
     @Column(nullable = false)
     private LocalDateTime noticeDate; // 공지 날짜
