@@ -6,25 +6,37 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import umc.product.domain.notice.converter.response.AdminNoticeConverter;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
+import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
-import umc.product.domain.notice.service.AdminNoticeService;
-import umc.product.domain.noticeMember.service.NoticeMemberService;
+import umc.product.domain.notice.entity.Notice;
+import umc.product.domain.notice.service.AdminNoticeQueryService;
+import umc.product.domain.noticeMember.service.AdminNoticeMemberQueryService;
 
 @Component
 @RequiredArgsConstructor
 public class AdminNoticeAdviser {
 
-    private final AdminNoticeService adminNoticeService;
-    private final NoticeMemberService noticeMemberService;
+    private final AdminNoticeQueryService adminNoticeQueryService;
+    private final AdminNoticeMemberQueryService adminNoticeMemberQueryService;
+
 
     private final AdminNoticeConverter converter;
 
     // [운영진용] 공지 목록 조회
     public Page<AdminNoticeResponse> getAdminNoticeList(AdminNoticeListRequest request, Pageable pageable) {
-        return adminNoticeService.getAdminNoticeList(request, pageable)
+        return adminNoticeQueryService.getAdminNoticeList(request, pageable)
                 .map(notice -> {
-                    Long readCount = noticeMemberService.getReadMemberCount(notice);
+                    Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice);
                     return converter.toAdminNoticeResponse(notice, readCount);
                 });
+    }
+
+    public AdminNoticeDetailResponse getAdminNoticeDetail(Long noticeId) {
+        Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
+
+        Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice);
+        Long checkCount = adminNoticeMemberQueryService.getCheckMemberCount(notice); // 열람 체크 수
+
+        return converter.toAdminNoticeDetailResponse(notice, readCount, checkCount);
     }
 }

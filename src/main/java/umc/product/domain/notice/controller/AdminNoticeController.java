@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.adviser.AdminNoticeAdviser;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
+import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeListResponse;
 import umc.product.domain.notice.entity.enums.NoticeTarget;
@@ -43,5 +44,19 @@ public class AdminNoticeController {
             Pageable pageable,
             @CurrentMember Member member) {
         return BaseResponse.onSuccess(adminNoticeAdviser.getAdminNoticeList(request, pageable));
+    }
+
+    @Operation(summary = "[운영진용] 공지 상세 조회 API", description = "[운영진용] 공지 상세를 조회하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 상세 조회 성공"
+            )
+    })
+    @GetMapping("/{noticeId}")
+    public BaseResponse<AdminNoticeDetailResponse> getNoticeDetail(
+            @PathVariable Long noticeId,
+            @CurrentMember Member member) {
+        return BaseResponse.onSuccess(adminNoticeAdviser.getAdminNoticeDetail(noticeId));
     }
 }

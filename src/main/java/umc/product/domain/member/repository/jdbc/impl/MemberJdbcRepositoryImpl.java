@@ -97,7 +97,7 @@ public class MemberJdbcRepositoryImpl implements MemberJdbcRepository {
                         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
                         jdbcTemplate.update(
                                 connection -> {
-                                    PreparedStatement ps = connection.prepareStatement(memberInsertSql + memberValues.toString(), Statement.RETURN_GENERATED_KEYS);
+                                    PreparedStatement ps = connection.prepareStatement(memberInsertSql + memberValues, Statement.RETURN_GENERATED_KEYS);
                                     for (int i = 0; i < memberParams.size(); i++) {
                                         ps.setObject(i + 1, memberParams.get(i));
                                     }
