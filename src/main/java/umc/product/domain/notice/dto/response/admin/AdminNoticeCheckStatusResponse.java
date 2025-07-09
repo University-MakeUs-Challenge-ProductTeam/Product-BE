@@ -26,6 +26,6 @@ public class AdminNoticeCheckStatusResponse {
     @Schema(description = "대학교 이름")
     private String universityName;
 
-    @Schema(description = "공지사항 열람 여부", example = "true")
+    @Schema(description = "공지사항 체크 표시 여부", example = "true")
     private Boolean isChecked;
 }
