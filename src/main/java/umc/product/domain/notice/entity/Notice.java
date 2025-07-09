@@ -10,6 +10,8 @@ import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -50,6 +52,9 @@ public class Notice extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "semester_id")
     private Semester semester;
+
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoticePart> noticeParts = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime noticeDate; // 공지 날짜
