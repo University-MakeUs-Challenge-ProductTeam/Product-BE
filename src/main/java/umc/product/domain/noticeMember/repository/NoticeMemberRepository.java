@@ -22,4 +22,7 @@ public interface NoticeMemberRepository extends JpaRepository<NoticeMember, Long
     long countByNoticeAndIsReadFalse(Notice notice);
     long countByNoticeAndIsReadTrue(Notice notice);
     long countByNoticeAndIsCheckedTrue(Notice notice);
+
+    Optional<NoticeMember> findByMemberAndNotice(Member member, Notice notice);
+    List<NoticeMember> findAllByNoticeAndIsCheckedTrue(Notice notice);
 }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLRestriction;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.entity.enums.NoticeTarget;
+import umc.product.domain.noticeMember.entity.NoticeMember;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
 
@@ -56,6 +57,10 @@ public class Notice extends BaseEntity {
     // 공지에 해당하는 파트
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticePart> noticeParts = new ArrayList<>();
+
+    // 공지 멤버
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoticeMember> noticeMembers = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime noticeDate; // 공지 날짜

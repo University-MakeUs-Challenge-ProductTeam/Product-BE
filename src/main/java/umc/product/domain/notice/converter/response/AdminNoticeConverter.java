@@ -1,10 +1,15 @@
 package umc.product.domain.notice.converter.response;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.notice.dto.response.admin.AdminNoticeCheckStatusResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
+import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
 import umc.product.domain.notice.entity.Notice;
+import umc.product.domain.noticeMember.entity.NoticeMember;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,5 +64,38 @@ public class AdminNoticeConverter {
                 .map(String::trim)
                 .toList();
     }
+
+    // [운영진용] 공지 열람 체크 응답 변환
+    public Page<AdminNoticeCheckStatusListResponse> toAdminNoticeCheckStatusResponsePage(Page<Member> targetMembers, Notice notice, Long totalCheckedCount) {
+        List<NoticeMember> noticeMembers = notice.getNoticeMembers();
+
+        return targetMembers.map(member -> {
+            // 멤버에 해당하는 NoticeMember 찾기
+            NoticeMember nm = noticeMembers.stream()
+                    .filter(n -> n.getMember().getId().equals(member.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            boolean isChecked = nm != null && Boolean.TRUE.equals(nm.getIsChecked());
+
+            AdminNoticeCheckStatusResponse response = AdminNoticeCheckStatusResponse.builder()
+                    .memberId(member.getId())
+                    .profileUrl(member.getAvatarUrl())
+                    .name(member.getName())
+                    .nickName(member.getNickName())
+                    .universityName(member.getUniversity().getName())
+                    .isChecked(isChecked)
+                    .build();
+
+            return AdminNoticeCheckStatusListResponse.builder()
+                    .members(List.of(response)) // 단일 member 담기
+                    .checkedCount(totalCheckedCount)
+                    .build();
+        });
+    }
+
+
+
+
 
 }
