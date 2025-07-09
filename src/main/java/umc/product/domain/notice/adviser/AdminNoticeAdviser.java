@@ -7,14 +7,15 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.converter.response.AdminNoticeConverter;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
-import umc.product.domain.notice.dto.response.admin.AdminNoticeCheckStatusResponse;
+import umc.product.domain.notice.dto.request.admin.AdminNoticeRequest;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
+import umc.product.domain.notice.dto.response.admin.AdminNoticeIdResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
 import umc.product.domain.notice.entity.Notice;
+import umc.product.domain.notice.service.AdminNoticeCommandService;
 import umc.product.domain.notice.service.AdminNoticeQueryService;
-import umc.product.domain.noticeMember.entity.NoticeMember;
 import umc.product.domain.noticeMember.service.AdminNoticeMemberQueryService;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 public class AdminNoticeAdviser {
 
     private final AdminNoticeQueryService adminNoticeQueryService;
+    private final AdminNoticeCommandService adminNoticeCommandService;
     private final AdminNoticeMemberQueryService adminNoticeMemberQueryService;
 
 
@@ -72,5 +74,23 @@ public class AdminNoticeAdviser {
         Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 열람 체크 수
 
         return converter.toAdminNoticeReadStatusResponsePage(targetMembers, notice, readCount);
+    }
+
+    // [운영진용] 공지 생성
+    public AdminNoticeIdResponse createNotice(AdminNoticeRequest request, Member writer) {
+        Notice notice = adminNoticeCommandService.createNotice(request, writer);
+        return new AdminNoticeIdResponse(notice.getId());
+    }
+
+    // [운영진용] 공지 수정
+    public AdminNoticeIdResponse updateNotice(Long noticeId, AdminNoticeRequest request, Member writer) {
+        Notice notice = adminNoticeCommandService.updateNotice(noticeId, request, writer);
+        return new AdminNoticeIdResponse(notice.getId());
+    }
+
+    // [운영진용] 공지 삭제
+    public AdminNoticeIdResponse deleteNotice(Long noticeId) {
+        adminNoticeCommandService.deleteNotice(noticeId);
+        return new AdminNoticeIdResponse(noticeId);
     }
 }

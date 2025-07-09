@@ -67,4 +67,34 @@ public class Notice extends BaseEntity {
 
     @Column
     private LocalDateTime checkDeadline; // 열람 체크 마감 기한
+
+    public void update(String title, String content, NoticeTarget target, LocalDateTime noticeDate, LocalDateTime checkDeadline) {
+        this.title = title;
+        this.content = content;
+        this.target = target;
+        this.noticeDate = noticeDate;
+        this.checkDeadline = checkDeadline;
+    }
+
+    public void updateHashtags(String hashtags) {
+        this.hashtags = hashtags;
+    }
+
+    public void updateImages(String images) {
+        this.images = images;
+    }
+
+    public void updateNoticeSemesters(List<NoticeSemester> noticeSemesters) {
+        this.noticeSemesters.clear();
+        if (noticeSemesters != null) {
+            this.noticeSemesters.addAll(noticeSemesters);
+        }
+    }
+
+    public void updateNoticeParts(List<NoticePart> noticeParts) {
+        this.noticeParts.clear();
+        if (noticeParts != null) {
+            this.noticeParts.addAll(noticeParts);
+        }
+    }
 }

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.adviser.AdminNoticeAdviser;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
+import umc.product.domain.notice.dto.request.admin.AdminNoticeRequest;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
+import umc.product.domain.notice.dto.response.admin.AdminNoticeIdResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
@@ -98,6 +100,54 @@ public class AdminNoticeController {
             @RequestParam(required = false) Boolean isRead,
             @CurrentMember Member member) {
         return BaseResponse.onSuccess(adminNoticeAdviser.getNoticeReadMemberList(noticeId, isRead, pageable));
+    }
+
+    @Operation(summary = "[운영진용] 공지 작성 API", description = "[운영진용] 공지 작성을 위한 API입니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 작성 성공"
+            )
+    })
+    @PostMapping
+    public BaseResponse<AdminNoticeIdResponse> createNotice(
+            @RequestBody AdminNoticeRequest request,
+            @CurrentMember Member member) {
+        return BaseResponse.onSuccess(adminNoticeAdviser.createNotice(request, member));
+    }
+
+    @Operation(summary = "[운영진용] 공지 수정 API", description = "[운영진용] 공지 수정 API입니다. 공지 ID를 통해 공지를 수정합니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 수정 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "noticeId", description = "공지 ID")
+    })
+    @PutMapping("/{noticeId}")
+    public BaseResponse<AdminNoticeIdResponse> updateNotice(
+            @PathVariable Long noticeId,
+            @RequestBody AdminNoticeRequest request,
+            @CurrentMember Member member) {
+        return BaseResponse.onSuccess(adminNoticeAdviser.updateNotice(noticeId, request, member));
+    }
+
+
+    @Operation(summary = "[운영진용] 공지 삭제 API", description = "[운영진용] 공지 삭제 API입니다. 공지 ID를 통해 공지를 삭제합니다. 공지는 하드 딜리트로 삭제됩니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 삭제 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "noticeId", description = "공지 ID")
+    })
+    @DeleteMapping("/{noticeId}")
+    public BaseResponse<AdminNoticeIdResponse> deleteNotice(@PathVariable Long noticeId) {
+        return BaseResponse.onSuccess(adminNoticeAdviser.deleteNotice(noticeId));
     }
 
 }

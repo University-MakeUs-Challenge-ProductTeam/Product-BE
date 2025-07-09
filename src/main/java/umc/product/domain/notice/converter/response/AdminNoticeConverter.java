@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class AdminNoticeConverter {
 
     // [운영진용] 공지 목록 응답 변환
