@@ -16,6 +16,7 @@ import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
+import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
 
@@ -77,6 +78,26 @@ public class AdminNoticeController {
             @RequestParam(required = false) Boolean isChecked,
             @CurrentMember Member member) {
         return BaseResponse.onSuccess(adminNoticeAdviser.getNoticeCheckMemberList(noticeId, isChecked, pageable));
+    }
+
+    @Operation(summary = "[운영진용] 공지 열람 상태 조회 API", description = "[운영진용] 공지 열람 상태를 조회하는 API입니다. 공지 대상 맴버에 대해 공지 열람 여부를 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "공지 체크 열람 조회 성공"
+            )
+    })
+    @Parameters({
+            @Parameter(name = "noticeId", description = "공지 ID"),
+            @Parameter(name = "isRead", description = "공지 열람 상태 , true=공지 열람 완료, false=공지 열람 미완료, 생략 시 모든 맴버 조회")
+    })
+    @GetMapping("/{noticeId}/read-status")
+    public BaseResponse<Page<AdminNoticeReadStatusListResponse>> getNoticeReadMembers(
+            @PathVariable Long noticeId,
+            Pageable pageable, // 페이징 처리
+            @RequestParam(required = false) Boolean isRead,
+            @CurrentMember Member member) {
+        return BaseResponse.onSuccess(adminNoticeAdviser.getNoticeReadMemberList(noticeId, isRead, pageable));
     }
 
 }

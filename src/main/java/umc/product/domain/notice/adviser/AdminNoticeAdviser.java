@@ -11,6 +11,7 @@ import umc.product.domain.notice.dto.response.admin.AdminNoticeCheckStatusRespon
 import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
+import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.notice.service.AdminNoticeQueryService;
 import umc.product.domain.noticeMember.entity.NoticeMember;
@@ -58,5 +59,18 @@ public class AdminNoticeAdviser {
         Long checkCount = adminNoticeMemberQueryService.getCheckMemberCount(notice); // 열람 체크 수
 
         return converter.toAdminNoticeCheckStatusResponsePage(targetMembers, notice, checkCount);
+    }
+
+    // [운영진용] 공지 열람 상태 조회
+    public Page<AdminNoticeReadStatusListResponse> getNoticeReadMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
+        // 공지 조회
+        Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
+
+        // 대상 멤버 조회
+        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembers(notice, isChecked, pageable);
+
+        Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 열람 체크 수
+
+        return converter.toAdminNoticeReadStatusResponsePage(targetMembers, notice, readCount);
     }
 }
