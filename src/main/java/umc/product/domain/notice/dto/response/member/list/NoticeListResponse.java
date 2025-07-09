@@ -1,10 +1,9 @@
-package umc.product.domain.notice.dto.response.list;
+package umc.product.domain.notice.dto.response.member.list;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import umc.product.domain.notice.dto.response.NoticeResponse;
 
 import java.util.List;
 

@@ -10,14 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.adviser.NoticeAdviser;
-import umc.product.domain.notice.dto.response.NoticeCheckResponse;
-import umc.product.domain.notice.dto.response.NoticeDetailResponse;
-import umc.product.domain.notice.dto.response.list.NoticeListResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeCheckResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeDetailResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeListResponse;
 import umc.product.domain.notice.entity.enums.NoticeTarget;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
-
-import java.util.List;
 
 @Tag(name = "공지 API", description = "공지 관련 API")
 @RestController

@@ -1,4 +1,4 @@
-package umc.product.domain.notice.dto.response;
+package umc.product.domain.notice.dto.response.member.list;
 
 import lombok.Builder;
 import umc.product.domain.event.entity.event.Event;

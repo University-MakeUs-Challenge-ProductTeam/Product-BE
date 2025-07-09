@@ -1,10 +1,10 @@
 package umc.product.domain.notice.converter.response;
 
 import org.springframework.stereotype.Component;
-import umc.product.domain.notice.dto.response.NoticeCheckResponse;
-import umc.product.domain.notice.dto.response.NoticeDetailResponse;
-import umc.product.domain.notice.dto.response.NoticeResponse;
-import umc.product.domain.notice.dto.response.list.NoticeListResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeCheckResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeDetailResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeResponse;
+import umc.product.domain.notice.dto.response.member.list.NoticeListResponse;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.noticeMember.entity.NoticeMember;
 

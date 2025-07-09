@@ -1,4 +1,4 @@
-package umc.product.domain.notice.dto.response;
+package umc.product.domain.notice.dto.response.member.list;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
