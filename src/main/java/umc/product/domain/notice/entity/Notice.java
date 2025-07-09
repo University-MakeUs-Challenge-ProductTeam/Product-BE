@@ -49,10 +49,11 @@ public class Notice extends BaseEntity {
     @JoinColumn(name = "event_id")
     private Event event; // 연결된 행사 정보
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "semester_id")
-    private Semester semester;
+    // 공지에 해당하는 기수
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NoticeSemester> noticeSemesters = new ArrayList<>();
 
+    // 공지에 해당하는 파트
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticePart> noticeParts = new ArrayList<>();
 
