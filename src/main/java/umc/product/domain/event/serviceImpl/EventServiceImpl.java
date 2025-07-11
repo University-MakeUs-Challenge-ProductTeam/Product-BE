@@ -1,4 +1,6 @@
 package umc.product.domain.event.serviceImpl;
 
-public class EventServiceImpl {
+import umc.product.domain.event.service.EventService;
+
+public class EventServiceImpl implements EventService {
 }

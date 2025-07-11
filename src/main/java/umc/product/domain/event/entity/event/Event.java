@@ -50,10 +50,8 @@ public class Event extends BaseEntity {
     @JoinColumn(name = "writer_id", nullable = false)
     private Member writer; // 작성자
 
-    @ElementCollection
-    @CollectionTable(name = "event_images", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "image_url")
-    private List<String> imageList = new ArrayList<>();  // 이미지 경로 리스트
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<ParticipationEvent> participationEventList = new ArrayList<>(); // 이벤트를 참가한 사람들
@@ -67,7 +65,7 @@ public class Event extends BaseEntity {
     private EventRegistrationSettings registrationSettings;  // 신청 관련 설정
 
     @Builder
-    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<String> imageList, List<ParticipationEvent> participationEventList, EventForm eventForm, EventRegistrationSettings registrationSettings) {
+    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<EventImage> images, List<ParticipationEvent> participationEventList, EventForm eventForm, EventRegistrationSettings registrationSettings) {
         this.title = title;
         this.content = content;
         this.eventType = eventType;
@@ -81,9 +79,17 @@ public class Event extends BaseEntity {
         this.registrationSettings = registrationSettings;
 
         // 널 방지
-        this.imageList = (imageList != null) ? imageList : new ArrayList<>();
+        this.images = (images != null) ? images : new ArrayList<>();
         this.participationEventList = (participationEventList != null) ? participationEventList : new ArrayList<>();
 
+    }
+
+    public void changeImages(List<EventImage> eventImages) {
+        this.images.clear(); // 기존 이미지 제거
+        this.images.addAll(eventImages);
+        for (EventImage image : eventImages) {
+            image.setEvent(this); // 연관관계 주입
+        }
     }
 
 }
