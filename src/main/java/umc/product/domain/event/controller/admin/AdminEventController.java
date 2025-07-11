@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.adviser.admin.AdminEventAdviser;
-import umc.product.domain.event.dto.request.EventRequest;
+import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.response.EventIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;

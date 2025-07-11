@@ -1,7 +1,7 @@
 package umc.product.domain.event.service.admin;
 
 import org.springframework.web.multipart.MultipartFile;
-import umc.product.domain.event.dto.request.EventRequest;
+import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.member.entity.Member;
 
