@@ -23,7 +23,6 @@ public class NoticePart extends BaseEntity {
     // 공지사항과 연결된 파트 정보를 저장
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notice_id")
-    @Column(nullable = false)
     private Notice notice;
 
     @Enumerated(EnumType.STRING)
