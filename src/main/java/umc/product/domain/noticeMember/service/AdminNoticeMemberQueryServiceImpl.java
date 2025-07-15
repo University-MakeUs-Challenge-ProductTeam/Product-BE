@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.noticeMember.entity.NoticeMember;
@@ -13,6 +14,7 @@ import umc.product.domain.noticeMember.repository.querydsl.NoticeMemberDslReposi
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @AllArgsConstructor
 public class AdminNoticeMemberQueryServiceImpl implements AdminNoticeMemberQueryService{
 
