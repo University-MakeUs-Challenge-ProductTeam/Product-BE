@@ -51,14 +51,17 @@ public class Notice extends BaseEntity {
     private Event event; // 연결된 행사 정보
 
     // 공지에 해당하는 기수
+    @Builder.Default
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticeSemester> noticeSemesters = new ArrayList<>();
 
     // 공지에 해당하는 파트
+    @Builder.Default
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticePart> noticeParts = new ArrayList<>();
 
     // 공지 멤버
+    @Builder.Default
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticeMember> noticeMembers = new ArrayList<>();
 
