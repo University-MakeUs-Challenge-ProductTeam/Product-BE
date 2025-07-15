@@ -58,4 +58,13 @@ public class SemesterServiceImpl implements SemesterService {
         return semesterJpaRepository.findById(semesterId)
                 .orElseThrow(() -> new RestApiException(EMPTY_SEMESTER));
     }
+
+    @Override
+    public List<Semester> getSemestersByIdsOrEmpty(List<Long> semesterIdList) {
+        List<Semester> semesters = semesterJpaRepository.findAllById(semesterIdList);
+        if (semesters.isEmpty()) {
+            return List.of(); // 빈 리스트 반환
+        }
+        return semesters;
+    }
 }
