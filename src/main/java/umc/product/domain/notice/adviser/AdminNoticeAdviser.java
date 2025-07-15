@@ -54,7 +54,7 @@ public class AdminNoticeAdviser {
         return converter.toAdminNoticeDetailResponse(notice, readCount, checkCount);
     }
 
-    // [운영진용] 공지 체크 상태 조회
+    // [운영진용] 공지 체크 상태 조회 todo 에러 수정 필요
     public Page<AdminNoticeCheckStatusListResponse> getNoticeCheckMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
@@ -67,7 +67,7 @@ public class AdminNoticeAdviser {
         return converter.toAdminNoticeCheckStatusResponsePage(targetMembers, notice, checkCount);
     }
 
-    // [운영진용] 공지 열람 상태 조회
+    // [운영진용] 공지 열람 상태 조회 todo 에러 수정 필요
     public Page<AdminNoticeReadStatusListResponse> getNoticeReadMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
