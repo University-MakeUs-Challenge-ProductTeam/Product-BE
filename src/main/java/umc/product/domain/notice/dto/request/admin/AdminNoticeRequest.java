@@ -1,5 +1,6 @@
 package umc.product.domain.notice.dto.request.admin;
 
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.notice.entity.NoticePart;
 import umc.product.domain.notice.entity.NoticeSemester;
 import umc.product.domain.notice.entity.enums.NoticeTarget;
@@ -12,8 +13,8 @@ public record AdminNoticeRequest(
         String content,
         NoticeTarget target,
         List<String> hashtags,
-        List<NoticeSemester> noticeSemesters,
-        List<NoticePart> noticeParts,
+        List<Long> semesterIds,
+        List<Part> noticeParts,
         LocalDateTime noticeDate,
         LocalDateTime checkDeadline
         ) {

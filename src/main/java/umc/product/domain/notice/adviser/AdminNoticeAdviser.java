@@ -14,9 +14,12 @@ import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
 import umc.product.domain.notice.entity.Notice;
+import umc.product.domain.notice.entity.NoticeSemester;
 import umc.product.domain.notice.service.AdminNoticeCommandService;
 import umc.product.domain.notice.service.AdminNoticeQueryService;
 import umc.product.domain.noticeMember.service.AdminNoticeMemberQueryService;
+import umc.product.domain.semester.entity.Semester;
+import umc.product.domain.semester.service.SemesterService;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class AdminNoticeAdviser {
     private final AdminNoticeQueryService adminNoticeQueryService;
     private final AdminNoticeCommandService adminNoticeCommandService;
     private final AdminNoticeMemberQueryService adminNoticeMemberQueryService;
+    private final SemesterService semesterService;
 
 
     private final AdminNoticeConverter converter;
@@ -78,13 +82,17 @@ public class AdminNoticeAdviser {
 
     // [운영진용] 공지 생성
     public AdminNoticeIdResponse createNotice(AdminNoticeRequest request, Member writer) {
-        Notice notice = adminNoticeCommandService.createNotice(request, writer);
+        List<Semester> semesters = semesterService.getSemestersByIdsOrEmpty(request.semesterIds());
+
+        Notice notice = adminNoticeCommandService.createNotice(request, writer, semesters);
         return new AdminNoticeIdResponse(notice.getId());
     }
 
     // [운영진용] 공지 수정
     public AdminNoticeIdResponse updateNotice(Long noticeId, AdminNoticeRequest request, Member writer) {
-        Notice notice = adminNoticeCommandService.updateNotice(noticeId, request, writer);
+        List<Semester> semesters = semesterService.getSemestersByIdsOrEmpty(request.semesterIds());
+
+        Notice notice = adminNoticeCommandService.updateNotice(noticeId, request, writer, semesters);
         return new AdminNoticeIdResponse(notice.getId());
     }
 
