@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 import umc.product.domain.event.entity.event.QEvent;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
 import umc.product.domain.notice.entity.Notice;
@@ -16,6 +17,7 @@ import umc.product.domain.notice.entity.QNoticeSemester;
 
 import java.util.List;
 
+@Repository
 @RequiredArgsConstructor
 public class NoticeDslRepositoryImpl implements NoticeDslRepository {
 

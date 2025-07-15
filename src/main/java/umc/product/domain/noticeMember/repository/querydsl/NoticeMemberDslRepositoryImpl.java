@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Repository;
 import umc.product.domain.branch.entity.QBranch;
 import umc.product.domain.branchUniversity.entity.BranchUniversity;
 import umc.product.domain.branchUniversity.entity.QBranchUniversity;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static umc.product.domain.notice.entity.enums.NoticeTarget.*;
 
+@Repository
 @RequiredArgsConstructor
 public class NoticeMemberDslRepositoryImpl implements NoticeMemberDslRepository {
 
