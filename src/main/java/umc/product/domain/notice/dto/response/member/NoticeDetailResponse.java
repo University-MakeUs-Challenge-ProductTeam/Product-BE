@@ -16,8 +16,8 @@ public record NoticeDetailResponse(
     List<String> hashtags,
     List<String> images,
     Event event,
-    Integer readCount,
-    Integer unreadCount,
+    Long readCount,
+    Long unreadCount,
     Boolean isRead,
     LocalDateTime checkDeadline,
     LocalDateTime noticeDate

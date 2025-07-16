@@ -35,7 +35,7 @@ public class NoticeConverter {
                 .build();
     }
     
-    public NoticeDetailResponse toNoticeDetailResponse(Notice notice, NoticeMember noticeMember, Integer readCount, Integer unreadCount) {
+    public NoticeDetailResponse toNoticeDetailResponse(Notice notice, NoticeMember noticeMember, Long readCount, Long unreadCount) {
         return NoticeDetailResponse.builder()
                 .noticeId(notice.getId())
                 .title(notice.getTitle())

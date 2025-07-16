@@ -15,6 +15,14 @@ import umc.product.domain.noticeMember.entity.NoticeMember;
 import umc.product.domain.noticeMember.service.NoticeMemberService;
 import umc.product.domain.notice.status.NoticeErrorStatus;
 import umc.product.global.common.exception.RestApiException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import umc.product.domain.member.service.admin.AdminMemberService;
+import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.entity.enums.Part;
+import umc.product.domain.semester.service.SemesterCurrentService;
+import umc.product.domain.semester.entity.Semester;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +35,8 @@ public class NoticeAdviser {
     private final NoticeService noticeService;
     private final NoticeMemberService noticeMemberService;
     private final NoticeConverter noticeConverter;
+    private final AdminMemberService adminMemberService;
+    private final SemesterCurrentService semesterCurrentService;
 
     public NoticeListResponse getNoticeList(Member member, NoticeTarget target) {
         // 공지 목록 조회 (target이 null이면 모든 공지, 아니면 해당 대상의 공지)
@@ -62,12 +72,28 @@ public class NoticeAdviser {
         
         // 사용자의 열람 정보 조회
         NoticeMember noticeMember = noticeMemberService.getNoticeMemberByNoticeAndMember(notice, member);
-        
+
+        // 공지 타겟
+        NoticeTarget target = notice.getTarget();
+        // 현재 기수 조회
+        Semester currentSemester = semesterCurrentService.getCurrentSemester();
+        Long semesterId = currentSemester.getId();
+        Role role = null;
+        if (target.equals(NoticeTarget.CENTRAL)) {
+            role = Role.CENTRAL_ADMIN;
+        } else if (target.equals(NoticeTarget.BRANCH)) {
+            role = Role.BRANCH_STAFF;
+        } else if (target.equals(NoticeTarget.UNIVERSITY)) {
+            role = Role.UNIVERSITY_STAFF;
+        } else {
+            throw new RestApiException(NoticeErrorStatus.WRONG_NOTICE_TARGET);
+        }
+        // 전체 대상자 수 조회 (unpaged)
+        long totalCount = adminMemberService.countMemberByFilter(null, semesterId, role, null);
         // 열람/미열람 인원 수 계산
         long readCount = noticeMemberService.getReadMemberCount(notice);
-        long unreadCount = noticeMemberService.getUnreadMemberCount(notice);
-        
-        return noticeConverter.toNoticeDetailResponse(notice, noticeMember, (int) readCount, (int) unreadCount);
+        long unreadCount = totalCount - readCount;
+        return noticeConverter.toNoticeDetailResponse(notice, noticeMember, readCount, unreadCount);
     }
 
     public NoticeCheckResponse checkNotice(Member member, Long noticeId) {
