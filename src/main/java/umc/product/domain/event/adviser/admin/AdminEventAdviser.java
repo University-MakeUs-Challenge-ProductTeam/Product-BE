@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.request.event.EventRequest;
+import umc.product.domain.event.dto.request.event.EventUpdateRequest;
 import umc.product.domain.event.dto.response.EventIdResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.service.admin.AdminEventFormService;
@@ -24,6 +25,13 @@ public class AdminEventAdviser {
     public EventIdResponse createEvent(Member writer, List<MultipartFile> eventImages, EventRequest request) {
 
         Event event = adminEventService.createEvent(writer, eventImages, request);
+
+        return eventConverter.toEventIdResponse(event);
+    }
+
+    public EventIdResponse updateEvent(Member writer, Long eventId, List<MultipartFile> eventImages, EventUpdateRequest request){
+
+        Event event = adminEventService.updateEvent(writer, eventId, request, eventImages);
 
         return eventConverter.toEventIdResponse(event);
     }

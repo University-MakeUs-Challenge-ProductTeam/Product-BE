@@ -7,13 +7,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.adviser.admin.AdminEventAdviser;
 import umc.product.domain.event.dto.request.event.EventRequest;
+import umc.product.domain.event.dto.request.event.EventUpdateRequest;
 import umc.product.domain.event.dto.response.EventIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -37,5 +35,16 @@ public class AdminEventController {
             @Parameter(description = "행사 등록 요청 json") @Valid @RequestPart EventRequest request
     ) {
         return BaseResponse.onSuccess(adminEventAdviser.createEvent(member,eventImages, request));
+    }
+
+    @Operation(summary = "행사 수정 API", description = "작성자만 수정 가능")
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<EventIdResponse> updateEvent(
+            @CurrentMember Member member,
+            @Parameter(description = "수정할 행사 id") @PathVariable Long eventId,
+            @Parameter(description = "행사 이미지 파일들(없을 시 사용 x)") @RequestPart List<MultipartFile> eventImages,
+            @Parameter(description = "행사 등록 요청 json") @Valid @RequestPart EventUpdateRequest request
+    ) {
+        return BaseResponse.onSuccess(adminEventAdviser.updateEvent(member, eventId, eventImages, request));
     }
 }

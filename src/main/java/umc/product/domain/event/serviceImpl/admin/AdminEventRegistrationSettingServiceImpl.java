@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.event.dto.request.event.EventRegistrationSettingsRequest;
+import umc.product.domain.event.dto.request.event.EventRegistrationSettingsUpdateRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventRegistrationSettings;
 import umc.product.domain.event.mapper.EventRegistrationSettingsMapper;
@@ -33,9 +34,23 @@ public class AdminEventRegistrationSettingServiceImpl implements AdminEventRegis
         return createAndSaveEventRegistrationSettings(request, event, allowedSemesters);
     }
 
+    /*
+     * 행사 폼 설정 수정
+     */
+    @Override
+    @Transactional
+    public  EventRegistrationSettings updateeEventRegistrationSettings(EventRegistrationSettingsUpdateRequest request, Event event){
+        EventRegistrationSettings eventRegistrationSettings = event.getRegistrationSettings();
+        List<Semester> allowedSemesters = semesterService.getSemesters(request.getAllowedSemesterIds());
+        eventRegistrationSettings.updateInfo(request, allowedSemesters);
+
+        return eventRegistrationSettings;
+    }
+
     private EventRegistrationSettings createAndSaveEventRegistrationSettings(EventRegistrationSettingsRequest request, Event event, List<Semester> allowedSemesters){
         EventRegistrationSettings eventRegistrationSettings = eventRegistrationSettingsMapper.toEventRegistrationSettings(request, event, allowedSemesters);
         return eventRegistrationSettingsRepository.save(eventRegistrationSettings);
     }
+
 
 }

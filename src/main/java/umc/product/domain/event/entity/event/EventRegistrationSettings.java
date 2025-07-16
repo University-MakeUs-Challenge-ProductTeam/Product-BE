@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.event.dto.request.event.EventRegistrationSettingsUpdateRequest;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.semester.entity.Semester;
@@ -57,4 +58,18 @@ public class EventRegistrationSettings extends BaseEntity {
         this.allowedPartList = (allowedPartList != null) ? allowedPartList : new ArrayList<>();
         this.allowedRoleList = (allowedRoleList != null) ? allowedRoleList : new ArrayList<>();
     }
+
+    public void updateInfo(EventRegistrationSettingsUpdateRequest request, List<Semester> allowedSemesters) {
+        this.registrationStartDate = request.getRegistrationStartDate();
+        this.registrationEndDate = request.getRegistrationEndDate();
+        this.cancellationDeadline = request.getCancellationDeadline();
+        this.allowedPartList.addAll(request.getAllowedPartList());
+        this.allowedSemesterList.clear();
+        this.allowedSemesterList.addAll(allowedSemesters);
+        this.allowedPartList.clear();
+        this.allowedPartList.addAll(request.getAllowedPartList());
+        this.allowedRoleList.clear();
+        this.allowedRoleList.addAll(request.getAllowedRoleList());
+    }
+
 }

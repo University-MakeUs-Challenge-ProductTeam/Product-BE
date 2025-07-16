@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.event.dto.request.form.EventFormQuestionRequest;
 import umc.product.domain.event.dto.request.form.EventFormRequest;
+import umc.product.domain.event.dto.request.form.EventFormUpdateRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
@@ -36,6 +37,21 @@ public class AdminEventFormServiceImpl implements AdminEventFormService {
         return newEventForm;
     }
 
+    /*
+     * 행사 신청 폼 수정
+     */
+    @Override
+    @Transactional
+    public EventForm updateForm(Event event, EventFormUpdateRequest request){
+        EventForm eventForm = event.getEventForm();
+        eventForm.updateEventFormInfo(request.getFormTitle(), request.getDescription());
+        eventForm.getQuestionList().clear();
+        createAndSaveEventFormQuestions(request.getQuestionList(), eventForm);
+
+        return eventForm;
+    }
+
+
     private EventForm createAndSaveEventForm(EventFormRequest request, Event event) {
         EventForm form = eventFormMapper.toEventForm(request, event);
         return eventFormRepository.save(form);
@@ -45,6 +61,8 @@ public class AdminEventFormServiceImpl implements AdminEventFormService {
         List<EventFormQuestion> questions = questionRequests.stream()
                 .map(q -> eventFormMapper.toEventFormQuestion(q, form))
                 .toList();
+
+        form.updateQuestionList(questions);
 
         eventFormQuestionRepository.saveAll(questions);
     }

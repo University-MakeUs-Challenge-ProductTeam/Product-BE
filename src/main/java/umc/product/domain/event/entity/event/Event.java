@@ -100,4 +100,15 @@ public class Event extends BaseEntity {
         this.registrationSettings = eventRegistrationSettings;
     }
 
+    public void updateInfo(String title, String content, EventType eventType, Semester semester,
+                           LocalDateTime startDate, LocalDateTime endDate, String location, Integer maxParticipants) {
+        this.title = title;
+        this.content = content;
+        this.eventType = eventType;
+        this.semester = semester;
+        this.eventStartDate = startDate;
+        this.eventEndDate = endDate;
+        this.location = location;
+        this.maxParticipants = maxParticipants;
+    }
 }

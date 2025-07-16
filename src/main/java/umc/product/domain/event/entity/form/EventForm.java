@@ -27,7 +27,7 @@ public class EventForm extends BaseEntity {
     // todo : 글자수 제한
     private String description;  // 폼 설명
 
-    @OneToMany(mappedBy = "eventForm")
+    @OneToMany(mappedBy = "eventForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventFormQuestion> questionList = new ArrayList<>();  // 폼에 포함된 문항들
 
     @OneToMany(mappedBy = "eventForm")
@@ -47,5 +47,15 @@ public class EventForm extends BaseEntity {
         // `null` 방지: null이면 빈 리스트로 초기화
         this.questionList = (questionList != null) ? questionList : new ArrayList<>();
         this.participationEventList = (participationEventList != null) ? participationEventList : new ArrayList<>();
+    }
+
+    public void updateEventFormInfo(String title, String description) {
+        this.formTitle = title;
+        this.description = description;
+    }
+
+    public void updateQuestionList(List<EventFormQuestion> questions) {
+        this.questionList.clear();
+        this.questionList.addAll(questions);
     }
 }
