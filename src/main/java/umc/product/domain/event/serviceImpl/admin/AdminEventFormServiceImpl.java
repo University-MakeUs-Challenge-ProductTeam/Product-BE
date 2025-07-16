@@ -30,9 +30,7 @@ public class AdminEventFormServiceImpl implements AdminEventFormService {
     @Override
     @Transactional
     public EventForm createForm(Event event, EventFormRequest request){
-
         EventForm newEventForm = createAndSaveEventForm(request, event);
-
         createAndSaveEventFormQuestions(request.getQuestionList(), newEventForm);
 
         return newEventForm;

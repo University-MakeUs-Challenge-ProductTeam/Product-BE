@@ -92,4 +92,12 @@ public class Event extends BaseEntity {
         }
     }
 
+    public void setEventForm(EventForm eventForm) {
+        this.eventForm = eventForm;
+    }
+
+    public void setEventRegistrationSettings(EventRegistrationSettings eventRegistrationSettings) {
+        this.registrationSettings = eventRegistrationSettings;
+    }
+
 }

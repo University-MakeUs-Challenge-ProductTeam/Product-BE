@@ -7,9 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
+import umc.product.domain.event.entity.event.EventRegistrationSettings;
+import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.mapper.EventMapper;
 import umc.product.domain.event.repository.EventRepository;
+import umc.product.domain.event.service.admin.AdminEventFormService;
 import umc.product.domain.event.service.admin.AdminEventImageService;
+import umc.product.domain.event.service.admin.AdminEventRegistrationSettingService;
 import umc.product.domain.event.service.admin.AdminEventService;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
@@ -23,6 +27,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final AdminEventImageService adminEventImageService;
+    private final AdminEventFormService adminEventFormService;
+    private final AdminEventRegistrationSettingService adminEventRegistrationSettingService;
     private final SemesterService semesterService;
 
     /*
@@ -36,6 +42,12 @@ public class AdminEventServiceImpl implements AdminEventService {
         Semester semester = semesterService.getSemester(request.getSemesterId());
 
         Event newEvent = createAndSaveEvent(request, semester, writer, eventImages);
+
+        EventForm newEventForm = adminEventFormService.createForm(newEvent, request.getForm());
+        newEvent.setEventForm(newEventForm);
+
+        EventRegistrationSettings newEventRegistrationSettings = adminEventRegistrationSettingService.createEventRegistrationSettings(request.getRegistrationSettings(), newEvent);
+        newEvent.setEventRegistrationSettings(newEventRegistrationSettings);
 
         if(eventImages !=null && !eventImages.isEmpty()){
             List<EventImage> newEventImages = adminEventImageService.createAndSaveEventImage(newEvent, eventImages);

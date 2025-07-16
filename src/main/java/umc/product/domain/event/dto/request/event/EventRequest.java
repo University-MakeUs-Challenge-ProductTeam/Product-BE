@@ -47,4 +47,7 @@ public class EventRequest {
 
     @Schema(description = "행사 신청 폼")
     private EventFormRequest form;
+
+    @Schema(description = "행사 신청 설정 정보")
+    private EventRegistrationSettingsRequest registrationSettings;
 }

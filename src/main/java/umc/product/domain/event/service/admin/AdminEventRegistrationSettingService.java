@@ -1,0 +1,9 @@
+package umc.product.domain.event.service.admin;
+
+import umc.product.domain.event.dto.request.event.EventRegistrationSettingsRequest;
+import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventRegistrationSettings;
+
+public interface AdminEventRegistrationSettingService {
+    EventRegistrationSettings createEventRegistrationSettings(EventRegistrationSettingsRequest request, Event event);
+}

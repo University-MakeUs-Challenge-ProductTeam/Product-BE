@@ -22,9 +22,8 @@ public class AdminEventAdviser {
     private final EventConverter eventConverter;
 
     public EventIdResponse createEvent(Member writer, List<MultipartFile> eventImages, EventRequest request) {
-        Event event = adminEventService.createEvent(writer, eventImages, request);
 
-        adminEventFormService.createForm(event, request.getForm());
+        Event event = adminEventService.createEvent(writer, eventImages, request);
 
         return eventConverter.toEventIdResponse(event);
     }
