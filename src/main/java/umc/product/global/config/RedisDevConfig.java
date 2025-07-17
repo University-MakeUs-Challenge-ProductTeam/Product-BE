@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,11 +26,17 @@ public class RedisDevConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.password:}")
+    private String password;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration()
-                .clusterNode(host, port);
-        return new LettuceConnectionFactory(clusterConfig);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setHostName(host);
+        config.setPort(port);
+        config.setPassword(password);
+
+        return new LettuceConnectionFactory(config);
     }
 
     @Bean
