@@ -12,6 +12,7 @@ import umc.product.domain.event.entity.event.EventImage;
 import umc.product.domain.event.entity.event.EventRegistrationSettings;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.mapper.EventMapper;
+import umc.product.domain.event.repository.EventImageRepository;
 import umc.product.domain.event.repository.EventRepository;
 import umc.product.domain.event.service.EventService;
 import umc.product.domain.event.service.admin.AdminEventFormService;
@@ -35,6 +36,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final AdminEventRegistrationSettingService adminEventRegistrationSettingService;
     private final SemesterService semesterService;
     private final EventService eventService;
+    private final EventImageRepository eventImageRepository;
 
     /*
      * 행사 등록
@@ -48,12 +50,15 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         Event newEvent = createAndSaveEvent(request, semester, writer, eventImages);
 
+        //행사 신청 폼 생성
         EventForm newEventForm = adminEventFormService.createForm(newEvent, request.getForm());
         newEvent.setEventForm(newEventForm);
 
+        //행사 신청 조건 생성
         EventRegistrationSettings newEventRegistrationSettings = adminEventRegistrationSettingService.createEventRegistrationSettings(request.getRegistrationSettings(), newEvent);
         newEvent.setEventRegistrationSettings(newEventRegistrationSettings);
 
+        //이미지 S3 저장
         if(eventImages !=null && !eventImages.isEmpty()){
             List<EventImage> newEventImages = adminEventImageService.createAndSaveEventImage(newEvent, eventImages);
             newEvent.changeImages(newEventImages);
@@ -74,7 +79,6 @@ public class AdminEventServiceImpl implements AdminEventService {
         // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         EventParamValidator.validModify(event.getWriter().getId(), writer.getId());
 
-
         updateEventInfo(event, request, semester);
         adminEventFormService.updateForm(event, request.getForm());
         adminEventRegistrationSettingService.updateeEventRegistrationSettings(request.getRegistrationSettings(), event);
@@ -83,8 +87,25 @@ public class AdminEventServiceImpl implements AdminEventService {
         return event;
     }
 
+    /*
+     * 행사 삭제
+     */
+    @Override
+    @Transactional
+    public Event deleteEvent(Member writer, Long eventId){
+        Event event = eventRepository.getEvent(eventId);
 
+        // 수정 권한 유효성 검사(본인이 아닌 경우 삭제 불가)
+        EventParamValidator.validModify(event.getWriter().getId(), writer.getId());
 
+        //S3 이미지 삭제
+        List<EventImage> images = eventImageRepository.findAllByEvent(event);
+        adminEventImageService.deleteExistingImages(images);
+        eventRepository.delete(event);
+
+        return event;
+    }
+    
     private Event createAndSaveEvent(EventRequest request, Semester semester, Member writer, List<MultipartFile> eventImages) {
         Event newEvent = eventMapper.toEvent(request,semester,writer);
         return eventRepository.save(newEvent);

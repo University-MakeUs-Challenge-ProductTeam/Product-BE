@@ -35,4 +35,12 @@ public class AdminEventAdviser {
 
         return eventConverter.toEventIdResponse(event);
     }
+
+    public EventIdResponse deleteEvent(Member writer, Long eventId){
+
+        Event event = adminEventService.deleteEvent(writer, eventId);
+
+        return eventConverter.toEventIdResponse(event);
+    }
+
 }

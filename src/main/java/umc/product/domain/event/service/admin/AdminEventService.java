@@ -11,5 +11,5 @@ import java.util.List;
 public interface AdminEventService {
     Event createEvent(Member writer, List<MultipartFile> eventImages, EventRequest eventRequest);
     Event updateEvent(Member writer, Long eventId, EventUpdateRequest request, List<MultipartFile> newImages);
-
+    Event deleteEvent(Member writer, Long eventId);
 }
