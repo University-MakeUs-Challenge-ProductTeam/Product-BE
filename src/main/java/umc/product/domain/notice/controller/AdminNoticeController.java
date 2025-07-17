@@ -73,7 +73,7 @@ public class AdminNoticeController {
             @Parameter(name = "isChecked", description = "공지 체크 표시 여부, true=공지 체크 표시 완료, false=공지 체크 표시 미완료, 생략 시 모든 맴버 조회")
     })
     @GetMapping("/{noticeId}/check-status")
-    public BaseResponse<Page<AdminNoticeCheckStatusListResponse>> getNoticeCheckMembers(
+    public BaseResponse<AdminNoticeCheckStatusListResponse> getNoticeCheckMembers(
             @PathVariable Long noticeId,
             Pageable pageable, // 페이징 처리
             @RequestParam(required = false) Boolean isChecked,
@@ -93,7 +93,7 @@ public class AdminNoticeController {
             @Parameter(name = "isRead", description = "공지 열람 상태 , true=공지 열람 완료, false=공지 열람 미완료, 생략 시 모든 맴버 조회")
     })
     @GetMapping("/{noticeId}/read-status")
-    public BaseResponse<Page<AdminNoticeReadStatusListResponse>> getNoticeReadMembers(
+    public BaseResponse<AdminNoticeReadStatusListResponse> getNoticeReadMembers(
             @PathVariable Long noticeId,
             Pageable pageable, // 페이징 처리
             @RequestParam(required = false) Boolean isRead,
