@@ -48,4 +48,5 @@ public interface AdminMemberService {
     void addSemesterPartList(Member targetMember,
                              List<SemesterPart> semesterPartList);
   List<Member> getMemberList(List<AdminStudyMemberRequest> members);
+  long countMemberByFilter(Member member, Long semesterId, Role role, Part part);
 }

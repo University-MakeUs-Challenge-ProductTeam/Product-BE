@@ -15,7 +15,7 @@ public interface MemberRedisRepository {
                        String code);
 
     String verifyWebAdminCode(String code);
-    public Long verifyAppCode(String code);
+    Long verifyAppCode(String code);
 
     void saveAppCodeList(Map<String, Member> codeMap);
 }

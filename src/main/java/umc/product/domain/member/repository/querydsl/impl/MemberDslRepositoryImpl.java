@@ -217,4 +217,40 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
                 .where(qMember.memberLoginInfo.memberLoginId.eq(clientId))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public long countMemberByFilter(
+        Member currentMember, 
+        Long semesterId, 
+        Role role, 
+        Part part
+        ) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qMember.deletedAt.isNull());
+        builder.and(qMember.loginType.isNull()
+                .or(qMember.loginType.ne(LoginType.INTERNAL)));
+        if (currentMember != null && currentMember.getRole() != null) {
+            if(currentMember.getRole().equals(Role.SCHOOL_ADMIN)){
+                builder.and(qMember.university.name.eq(currentMember.getUniversity().getName()));
+            }
+            builder.and(qMember.role.gt(currentMember.getRole()));
+        }
+        if (role != null) {
+            builder.and(qMember.role.eq(role));
+        }
+        if (semesterId != null) {
+            builder.and(qMember.memberSemesterPart.any().semester.id.eq(semesterId)
+                    .or(qMember.memberSemesterPosition.any().semester.id.eq(semesterId))
+            );
+        }
+        if (part != null) {
+            builder.and(qMember.memberSemesterPart.any().part.eq(part));
+        }
+        builder.and(qMember.deletedAt.isNull());
+        return jpaQueryFactory
+                .select(qMember.count())
+                .from(qMember)
+                .where(builder)
+                .fetchOne();
+    }
 }
