@@ -1,6 +1,7 @@
 package umc.product.domain.notice.adviser;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -60,10 +61,12 @@ public class AdminNoticeAdviser {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
-        // 대상 멤버 조회
-        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembers(notice, isChecked, pageable);
+        // 대상 멤버 조회 (열람 체크 여부 필터링, true=체크함, false=체크하지 않음, null=모두 조회)
+        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByCheckStatus(notice, isChecked, pageable);
 
         Long checkCount = adminNoticeMemberQueryService.getCheckMemberCount(notice); // 열람 체크 수
+
+        // todo 필터 조건 처리
 
         return converter.toAdminNoticeCheckStatusResponsePage(targetMembers, notice, checkCount);
     }
@@ -73,10 +76,13 @@ public class AdminNoticeAdviser {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
-        // 대상 멤버 조회
-        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembers(notice, isChecked, pageable);
+        // 대상 멤버 조회 (열람 여부 필터링, true=읽음, false=읽지 않음, null=모두 조회)
+        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByReadStatus(notice, isChecked, pageable);
 
-        Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 열람 체크 수
+        Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 읽은 멤버 수
+
+        // todo 필터 조건 처리, true=읽음, false=읽지 않음, null=모두 조회
+        //todo 이 부분은 NoticeMember 엔티티 생성되지 않은 경우도 생각
 
         return converter.toAdminNoticeReadStatusResponsePage(targetMembers, notice, readCount);
     }

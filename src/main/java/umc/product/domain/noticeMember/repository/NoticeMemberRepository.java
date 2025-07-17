@@ -24,5 +24,10 @@ public interface NoticeMemberRepository extends JpaRepository<NoticeMember, Long
     long countByNoticeAndIsCheckedTrue(Notice notice);
 
     Optional<NoticeMember> findByMemberAndNotice(Member member, Notice notice);
+
+    // 공지 체크한 멤버 ID 목록 조회
     List<NoticeMember> findAllByNoticeAndIsCheckedTrue(Notice notice);
+
+    // 공지 열람한 멤버 ID 목록 조회
+    List<NoticeMember> findAllByNoticeAndIsReadTrue(Notice notice);
 }

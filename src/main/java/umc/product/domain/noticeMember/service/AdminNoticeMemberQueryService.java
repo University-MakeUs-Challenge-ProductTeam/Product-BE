@@ -12,8 +12,10 @@ public interface AdminNoticeMemberQueryService {
 
     Long getReadMemberCount(Notice notice);
     Long getCheckMemberCount(Notice notice);
-    Page<Member> getNoticeTargetMembers(Notice notice, Boolean checked, Pageable pageable);
+    Page<Member> getNoticeTargetMembersByReadStatus(Notice notice, Boolean isReadFilter, Pageable pageable);
+    Page<Member> getNoticeTargetMembersByCheckStatus(Notice notice, Boolean isReadFilter, Pageable pageable);
     NoticeMember getNullableNoticeMemberByMemberAndNotice(Member member, Notice notice);
     List<Long> getCheckedMemberIds(Notice notice);
+    List<Long> getReadMemberIds(Notice notice);
 
 }

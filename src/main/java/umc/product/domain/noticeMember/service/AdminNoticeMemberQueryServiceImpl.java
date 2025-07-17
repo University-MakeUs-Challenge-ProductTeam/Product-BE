@@ -33,10 +33,16 @@ public class AdminNoticeMemberQueryServiceImpl implements AdminNoticeMemberQuery
         return noticeMemberRepository.countByNoticeAndIsCheckedTrue(notice);
     }
 
-    // 공지 대상 멤버 목록 조회
+    // 공지 대상 멤버 목록 조회 (열람 여부 필터링)
     @Override
-    public Page<Member> getNoticeTargetMembers(Notice notice, Boolean checked, Pageable pageable) {
-        return noticeMemberDslRepository.findNoticeTargetMembers(notice, checked, pageable);
+    public Page<Member> getNoticeTargetMembersByReadStatus(Notice notice, Boolean isReadFilter, Pageable pageable) {
+        return noticeMemberDslRepository.findTargetMembersByReadStatus(notice, isReadFilter, pageable);
+    }
+
+    // 공지 대상 멤버 목록 조회 (체크 여부 필터링)
+    @Override
+    public Page<Member> getNoticeTargetMembersByCheckStatus(Notice notice, Boolean isCheckedFilter, Pageable pageable) {
+        return noticeMemberDslRepository.findTargetMembersByCheckStatus(notice, isCheckedFilter, pageable);
     }
 
     // 멤버, 공지에 맞는 NoticeMember 조회 (Nullable)
@@ -50,6 +56,14 @@ public class AdminNoticeMemberQueryServiceImpl implements AdminNoticeMemberQuery
     @Override
     public List<Long> getCheckedMemberIds(Notice notice) {
         return noticeMemberRepository.findAllByNoticeAndIsCheckedTrue(notice).stream()
+                .map(nm -> nm.getMember().getId())
+                .toList();
+    }
+
+    // 공지 열람한 멤버 ID 목록 조회
+    @Override
+    public List<Long> getReadMemberIds(Notice notice) {
+        return noticeMemberRepository.findAllByNoticeAndIsReadTrue(notice).stream()
                 .map(nm -> nm.getMember().getId())
                 .toList();
     }
