@@ -172,4 +172,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         return memberList;
     }
 
+    @Override
+    public long countMemberByFilter(Member member, Long semesterId, Role role, Part part) {
+        return memberDslRepository.countMemberByFilter(member, semesterId, role, part);
+    }
 }
