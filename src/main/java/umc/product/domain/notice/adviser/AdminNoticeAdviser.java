@@ -12,6 +12,7 @@ import umc.product.domain.notice.dto.response.admin.AdminNoticeDetailResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeIdResponse;
 import umc.product.domain.notice.dto.response.admin.AdminNoticeResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeCheckStatusListResponse;
+import umc.product.domain.notice.dto.response.admin.list.AdminNoticeListResponse;
 import umc.product.domain.notice.dto.response.admin.list.AdminNoticeReadStatusListResponse;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.notice.entity.NoticeSemester;
@@ -36,12 +37,12 @@ public class AdminNoticeAdviser {
     private final AdminNoticeConverter converter;
 
     // [운영진용] 공지 목록 조회
-    public Page<AdminNoticeResponse> getAdminNoticeList(AdminNoticeListRequest request, Pageable pageable) {
-        return adminNoticeQueryService.getAdminNoticeList(request, pageable)
-                .map(notice -> {
-                    Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice);
-                    return converter.toAdminNoticeResponse(notice, readCount);
-                });
+    public AdminNoticeListResponse getAdminNoticeList(AdminNoticeListRequest request, Pageable pageable) {
+        // 공지 목록 조회
+        Page<Notice> noticePage = adminNoticeQueryService.getAdminNoticeList(request, pageable);
+
+        // 공지 목록을 AdminNoticeResponse로 변환
+        return converter.toAdminNoticeListResponse(noticePage);
     }
 
     // [운영진용] 공지 상세 조회
@@ -55,7 +56,7 @@ public class AdminNoticeAdviser {
     }
 
     // [운영진용] 공지 체크 상태 조회 todo 에러 수정 필요
-    public Page<AdminNoticeCheckStatusListResponse> getNoticeCheckMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
+    public AdminNoticeCheckStatusListResponse getNoticeCheckMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
@@ -68,7 +69,7 @@ public class AdminNoticeAdviser {
     }
 
     // [운영진용] 공지 열람 상태 조회 todo 에러 수정 필요
-    public Page<AdminNoticeReadStatusListResponse> getNoticeReadMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
+    public AdminNoticeReadStatusListResponse getNoticeReadMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
