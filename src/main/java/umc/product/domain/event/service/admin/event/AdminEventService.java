@@ -1,4 +1,4 @@
-package umc.product.domain.event.service.admin;
+package umc.product.domain.event.service.admin.event;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,5 +15,6 @@ public interface AdminEventService {
     Event createEvent(Member writer, List<MultipartFile> eventImages, EventRequest eventRequest);
     Event updateEvent(Member writer, Long eventId, EventUpdateRequest request, List<MultipartFile> newImages);
     Event deleteEvent(Member writer, Long eventId);
+    Event inquiryEventDetail(Long eventId);
     Page<AdminEventSummaryResponse> inquiryEventsByFilter(Integer month, String semester, EventType eventType, int page, int size);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.adviser.admin.AdminEventAdviser;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
+import umc.product.domain.event.dto.response.AdminEventDetailResponse;
 import umc.product.domain.event.dto.response.AdminEventSummaryResponse;
 import umc.product.domain.event.dto.response.EventIdResponse;
 import umc.product.domain.event.dto.response.EventPagingResponse;
@@ -81,4 +82,13 @@ public class AdminEventController {
                 month, semester, eventType, page, size
     ));
     }
+
+    @Operation(summary = "행사 상세 조회 API")
+    @GetMapping("/{eventId}/detail")
+    public BaseResponse<AdminEventDetailResponse> inquiryEventDetail(
+            @Parameter(description = "조회할 이벤트 id") @PathVariable("eventId") Long eventId
+    ) {
+        return BaseResponse.onSuccess(adminEventAdviser.inquiryEventDetail(eventId));
+    }
+
 }

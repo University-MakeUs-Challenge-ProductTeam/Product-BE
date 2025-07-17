@@ -1,4 +1,4 @@
-package umc.product.domain.event.serviceImpl.admin;
+package umc.product.domain.event.serviceImpl.admin.form;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import umc.product.domain.event.entity.form.EventFormQuestion;
 import umc.product.domain.event.mapper.EventFormMapper;
 import umc.product.domain.event.repository.jpa.form.EventFormQuestionRepository;
 import umc.product.domain.event.repository.jpa.form.EventFormRepository;
-import umc.product.domain.event.service.admin.AdminEventFormService;
+import umc.product.domain.event.service.admin.form.AdminEventFormService;
 
 import java.util.List;
 

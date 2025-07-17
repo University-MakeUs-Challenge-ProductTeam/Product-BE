@@ -7,13 +7,14 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
+import umc.product.domain.event.dto.response.AdminEventDetailResponse;
 import umc.product.domain.event.dto.response.AdminEventSummaryResponse;
 import umc.product.domain.event.dto.response.EventIdResponse;
 import umc.product.domain.event.dto.response.EventPagingResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventType;
-import umc.product.domain.event.service.admin.AdminEventFormService;
-import umc.product.domain.event.service.admin.AdminEventService;
+import umc.product.domain.event.service.admin.event.AdminEventService;
+import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
 import umc.product.domain.member.entity.Member;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AdminEventAdviser {
 
     private final AdminEventService adminEventService;
     private final EventConverter eventConverter;
+    private final AdminParticipationEventService adminParticipationEventService;
 
     public EventIdResponse createEvent(Member writer, List<MultipartFile> eventImages, EventRequest request) {
 
@@ -56,5 +58,12 @@ public class AdminEventAdviser {
         return eventConverter.toEventPagingResponse(eventPage);
     }
 
+    public AdminEventDetailResponse inquiryEventDetail(Long eventId){
+
+        Event event = adminEventService.inquiryEventDetail(eventId);
+        int participantCount = adminParticipationEventService.countByEvent(event);
+
+        return eventConverter.toAdminEventDetailResponse(event, participantCount);
+    }
 
 }

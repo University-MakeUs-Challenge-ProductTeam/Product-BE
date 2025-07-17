@@ -1,4 +1,4 @@
-package umc.product.domain.event.service.admin;
+package umc.product.domain.event.service.admin.event;
 
 import umc.product.domain.event.dto.request.event.EventRegistrationSettingsRequest;
 import umc.product.domain.event.dto.request.event.EventRegistrationSettingsUpdateRequest;

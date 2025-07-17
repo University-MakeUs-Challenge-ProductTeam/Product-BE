@@ -1,4 +1,4 @@
-package umc.product.domain.event.service.admin;
+package umc.product.domain.event.service.admin.event;
 
 import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.entity.event.Event;

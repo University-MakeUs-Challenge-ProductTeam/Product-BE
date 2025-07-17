@@ -1,4 +1,4 @@
-package umc.product.domain.event.serviceImpl.admin;
+package umc.product.domain.event.serviceImpl.admin.event;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ import umc.product.domain.event.repository.jpa.event.EventRepository;
 import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
 import umc.product.domain.event.repository.querydsl.EventDslRepository;
 import umc.product.domain.event.service.EventService;
-import umc.product.domain.event.service.admin.AdminEventFormService;
-import umc.product.domain.event.service.admin.AdminEventImageService;
-import umc.product.domain.event.service.admin.AdminEventRegistrationSettingService;
-import umc.product.domain.event.service.admin.AdminEventService;
+import umc.product.domain.event.service.admin.form.AdminEventFormService;
+import umc.product.domain.event.service.admin.event.AdminEventImageService;
+import umc.product.domain.event.service.admin.event.AdminEventRegistrationSettingService;
+import umc.product.domain.event.service.admin.event.AdminEventService;
 import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
@@ -116,6 +116,9 @@ public class AdminEventServiceImpl implements AdminEventService {
         return event;
     }
 
+    /*
+     * 운영진 행사 목록 조회
+     */
     @Override
     @Transactional
     public Page<AdminEventSummaryResponse> inquiryEventsByFilter(
@@ -129,6 +132,17 @@ public class AdminEventServiceImpl implements AdminEventService {
             //int noticeCount = eventNoticeRepository.countByEvent(event);
             return eventConverter.toAdminEventSummaryResponse(event, count, 1); // 내부에서 DTO 변환용
         });
+    }
+
+    /*
+     * 운영진 행사 상세 조회
+     */
+    @Override
+    @Transactional
+    public Event inquiryEventDetail(Long eventId){
+        eventRepository.getEvent(eventId);
+
+        return eventRepository.getEvent(eventId);
     }
 
 

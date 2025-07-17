@@ -1,4 +1,4 @@
-package umc.product.domain.event.serviceImpl.admin;
+package umc.product.domain.event.serviceImpl.admin.event;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
 import umc.product.domain.event.mapper.EventImageMapper;
 import umc.product.domain.event.repository.jpa.event.EventImageRepository;
-import umc.product.domain.event.service.admin.AdminEventImageService;
+import umc.product.domain.event.service.admin.event.AdminEventImageService;
 import umc.product.global.util.S3FileUtil;
 
 import java.util.List;
