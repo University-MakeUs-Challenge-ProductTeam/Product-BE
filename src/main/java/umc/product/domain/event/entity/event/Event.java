@@ -111,4 +111,11 @@ public class Event extends BaseEntity {
         this.location = location;
         this.maxParticipants = maxParticipants;
     }
+
+    public String getThumbnail() {
+        return this.images.stream()
+                .findFirst()
+                .map(EventImage::getUrl)
+                .orElse(null);
+    }
 }

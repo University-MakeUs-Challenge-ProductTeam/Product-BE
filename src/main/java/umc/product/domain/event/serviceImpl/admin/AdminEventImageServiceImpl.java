@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
 import umc.product.domain.event.mapper.EventImageMapper;
-import umc.product.domain.event.repository.EventImageRepository;
+import umc.product.domain.event.repository.jpa.event.EventImageRepository;
 import umc.product.domain.event.service.admin.AdminEventImageService;
 import umc.product.global.util.S3FileUtil;
 

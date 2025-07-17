@@ -8,7 +8,7 @@ import umc.product.domain.event.dto.request.event.EventRegistrationSettingsUpdat
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventRegistrationSettings;
 import umc.product.domain.event.mapper.EventRegistrationSettingsMapper;
-import umc.product.domain.event.repository.EventRegistrationSettingsRepository;
+import umc.product.domain.event.repository.jpa.event.EventRegistrationSettingsRepository;
 import umc.product.domain.event.service.admin.AdminEventRegistrationSettingService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterService;

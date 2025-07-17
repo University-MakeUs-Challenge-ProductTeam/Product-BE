@@ -2,18 +2,25 @@ package umc.product.domain.event.serviceImpl.admin;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import umc.product.domain.event.dto.request.event.EventRegistrationSettingsRequest;
+import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
+import umc.product.domain.event.dto.response.AdminEventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
 import umc.product.domain.event.entity.event.EventRegistrationSettings;
+import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.mapper.EventMapper;
-import umc.product.domain.event.repository.EventImageRepository;
-import umc.product.domain.event.repository.EventRepository;
+import umc.product.domain.event.repository.jpa.event.EventImageRepository;
+import umc.product.domain.event.repository.jpa.event.EventRepository;
+import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
+import umc.product.domain.event.repository.querydsl.EventDslRepository;
 import umc.product.domain.event.service.EventService;
 import umc.product.domain.event.service.admin.AdminEventFormService;
 import umc.product.domain.event.service.admin.AdminEventImageService;
@@ -37,6 +44,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final SemesterService semesterService;
     private final EventService eventService;
     private final EventImageRepository eventImageRepository;
+    private final EventDslRepository eventDslRepository;
+    private final EventConverter eventConverter;
+    private final ParticipationEventRepository participationEventRepository;
 
     /*
      * 행사 등록
@@ -105,7 +115,23 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         return event;
     }
-    
+
+    @Override
+    @Transactional
+    public Page<AdminEventSummaryResponse> inquiryEventsByFilter(
+            Integer month, String semester, EventType eventType, int page, int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> events = eventDslRepository.findByFilter(pageable, month, semester, eventType);
+        return events.map(event -> {
+            int count = participationEventRepository.countByEvent(event);
+            //todo 연관 공지 추가 하기.
+            //int noticeCount = eventNoticeRepository.countByEvent(event);
+            return eventConverter.toAdminEventSummaryResponse(event, count, 1); // 내부에서 DTO 변환용
+        });
+    }
+
+
     private Event createAndSaveEvent(EventRequest request, Semester semester, Member writer, List<MultipartFile> eventImages) {
         Event newEvent = eventMapper.toEvent(request,semester,writer);
         return eventRepository.save(newEvent);

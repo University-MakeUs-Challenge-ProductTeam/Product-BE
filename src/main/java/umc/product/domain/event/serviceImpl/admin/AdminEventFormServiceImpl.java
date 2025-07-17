@@ -10,8 +10,8 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
 import umc.product.domain.event.mapper.EventFormMapper;
-import umc.product.domain.event.repository.EventFormQuestionRepository;
-import umc.product.domain.event.repository.EventFormRepository;
+import umc.product.domain.event.repository.jpa.form.EventFormQuestionRepository;
+import umc.product.domain.event.repository.jpa.form.EventFormRepository;
 import umc.product.domain.event.service.admin.AdminEventFormService;
 
 import java.util.List;
