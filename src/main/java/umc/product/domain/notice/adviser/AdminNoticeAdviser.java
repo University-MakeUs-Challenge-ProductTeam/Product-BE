@@ -56,7 +56,7 @@ public class AdminNoticeAdviser {
         return converter.toAdminNoticeDetailResponse(notice, readCount, checkCount);
     }
 
-    // [운영진용] 공지 체크 상태 조회 todo 에러 수정 필요
+    // [운영진용] 공지 체크 상태 조회 todo true, false 반대로 되는 에러 수정 필요
     public AdminNoticeCheckStatusListResponse getNoticeCheckMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
@@ -66,12 +66,10 @@ public class AdminNoticeAdviser {
 
         Long checkCount = adminNoticeMemberQueryService.getCheckMemberCount(notice); // 열람 체크 수
 
-        // todo 필터 조건 처리
-
         return converter.toAdminNoticeCheckStatusResponsePage(targetMembers, notice, checkCount);
     }
 
-    // [운영진용] 공지 열람 상태 조회 todo 에러 수정 필요
+    // [운영진용] 공지 열람 상태 조회 todo true, false 반대로 되는 에러 수정 필요
     public AdminNoticeReadStatusListResponse getNoticeReadMemberList(Long noticeId, Boolean isChecked, Pageable pageable) {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
@@ -80,9 +78,6 @@ public class AdminNoticeAdviser {
         Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByReadStatus(notice, isChecked, pageable);
 
         Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 읽은 멤버 수
-
-        // todo 필터 조건 처리, true=읽음, false=읽지 않음, null=모두 조회
-        //todo 이 부분은 NoticeMember 엔티티 생성되지 않은 경우도 생각
 
         return converter.toAdminNoticeReadStatusResponsePage(targetMembers, notice, readCount);
     }
