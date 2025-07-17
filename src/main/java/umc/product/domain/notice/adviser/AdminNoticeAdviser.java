@@ -61,8 +61,8 @@ public class AdminNoticeAdviser {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
-        // 대상 멤버 조회 (열람 체크 여부 필터링, true=체크함, false=체크하지 않음, null=모두 조회)
-        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByCheckStatus(notice, isChecked, pageable);
+        // 대상 멤버 조회 (열람 체크 여부 필터링, true=체크함, false=체크하지 않음, null=모두 조회)      todo 임시로 반대로 isChecked 사용
+        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByCheckStatus(notice, !isChecked, pageable);
 
         Long checkCount = adminNoticeMemberQueryService.getCheckMemberCount(notice); // 열람 체크 수
 
@@ -74,8 +74,8 @@ public class AdminNoticeAdviser {
         // 공지 조회
         Notice notice = adminNoticeQueryService.getNoticeById(noticeId);
 
-        // 대상 멤버 조회 (열람 여부 필터링, true=읽음, false=읽지 않음, null=모두 조회)
-        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByReadStatus(notice, isChecked, pageable);
+        // 대상 멤버 조회 (열람 여부 필터링, true=읽음, false=읽지 않음, null=모두 조회)      todo 임시로 반대로 isChecked 사용
+        Page<Member> targetMembers = adminNoticeMemberQueryService.getNoticeTargetMembersByReadStatus(notice, !isChecked, pageable);
 
         Long readCount = adminNoticeMemberQueryService.getReadMemberCount(notice); // 읽은 멤버 수
 
