@@ -72,11 +72,11 @@ public class AdminEventController {
     })
     @GetMapping("/list")
     public BaseResponse<EventPagingResponse<AdminEventSummaryResponse>> inquiryEventsByFilter(
-            @RequestParam Integer month,
-            @RequestParam String semester,
-            @RequestParam EventType eventType,
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam(name = "month") Integer month,
+            @RequestParam(name = "semester") String semester,
+            @RequestParam(name = "eventType") EventType eventType,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
     ) {
         return BaseResponse.onSuccess(adminEventAdviser.inquiryEventsByFilter(
                 month, semester, eventType, page, size
