@@ -22,6 +22,8 @@ public class ParticipationEvent extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private ParticipationStatus participationStatus = ParticipationStatus.ABSENT; // 참석 현황(불참 기본값)
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_form_id", nullable = false)
     private EventForm eventForm;  // 해당 참가가 속한 신청 폼
@@ -38,8 +40,9 @@ public class ParticipationEvent extends BaseEntity {
     private Member participationMember;
 
     @Builder
-    public ParticipationEvent(Event event, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
+    public ParticipationEvent(Event event, ParticipationStatus participationStatus, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
         this.event = event;
+        this.participationStatus = participationStatus;
         this.participationMember = participationMember;
         this.eventForm = eventForm;
 

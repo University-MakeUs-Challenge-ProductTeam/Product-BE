@@ -1,6 +1,5 @@
-package umc.product.domain.event.dto.response;
+package umc.product.domain.event.dto.response.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

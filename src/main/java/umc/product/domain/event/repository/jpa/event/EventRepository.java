@@ -1,5 +1,6 @@
 package umc.product.domain.event.repository.jpa.event;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.status.EventErrorStatus;
@@ -11,4 +12,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         return findById(eventId)
                 .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_NOT_FOUND));
     }
+
 }

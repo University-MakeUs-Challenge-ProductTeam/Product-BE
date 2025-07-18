@@ -3,10 +3,10 @@ package umc.product.domain.event.converter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import umc.product.domain.event.dto.response.AdminEventDetailResponse;
-import umc.product.domain.event.dto.response.AdminEventSummaryResponse;
-import umc.product.domain.event.dto.response.EventIdResponse;
-import umc.product.domain.event.dto.response.EventPagingResponse;
+import umc.product.domain.event.dto.response.event.AdminEventDetailResponse;
+import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
+import umc.product.domain.event.dto.response.event.EventIdResponse;
+import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.entity.event.Event;
 
 @Component

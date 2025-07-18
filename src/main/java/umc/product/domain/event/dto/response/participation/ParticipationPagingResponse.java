@@ -1,4 +1,4 @@
-package umc.product.domain.event.dto.response;
+package umc.product.domain.event.dto.response.participation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventPagingResponse<T> {
-    private List<T> events;
+public class ParticipationPagingResponse<T> {
+    private List<T> participations;
     private int page;
     private int totalPages;
     private int totalElements;

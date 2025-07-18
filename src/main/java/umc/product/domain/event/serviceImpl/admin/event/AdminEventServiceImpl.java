@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
-import umc.product.domain.event.dto.response.AdminEventSummaryResponse;
+import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
 import umc.product.domain.event.entity.event.EventRegistrationSettings;
