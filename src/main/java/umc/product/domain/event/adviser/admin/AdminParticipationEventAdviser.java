@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.ParticipationEventConverter;
 import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
+import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
@@ -22,5 +23,11 @@ public class AdminParticipationEventAdviser {
         Page<AdminParticipationMemberResponse> participationMemberResponsePage
                 = participationEvents.map(participationEventConverter::toAdminParticipationEventResponse);
         return participationEventConverter.toParticipationPagingResponse(participationMemberResponsePage);
+    }
+
+    public ParticipationIdResponse deleteParticipationEvent(Long participationId) {
+        ParticipationEvent participationEvent = adminParticipationEventService.deleteParticipationEvent(participationId);
+
+        return participationEventConverter.toParticipationId(participationEvent);
     }
 }

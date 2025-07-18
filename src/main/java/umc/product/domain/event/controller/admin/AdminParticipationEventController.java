@@ -14,19 +14,18 @@ import umc.product.global.common.base.BaseResponse;
 @Tag(name = "운영진 용 행사 참석 API", description = "행사 참석 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/events/{eventId}/participations")
+@RequestMapping("/events/participations")
 public class AdminParticipationEventController {
     private final AdminParticipationEventAdviser adminParticipationEventAdviser;
+
     @Operation(summary = "행사 참여 인원 조회 API", description = "운영만 조회 가능")
     @Parameters(value = {
-            @Parameter(name = "eventId", description = "조회할 행사 아이디"),
             @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
             @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
     })
-    @GetMapping
-
+    @GetMapping("/{eventId}")
     public BaseResponse<ParticipationPagingResponse<AdminParticipationMemberResponse>> inquiryParticipationMembers(
-            @RequestParam(name = "eventId") Long eventId,
+            @PathVariable Long eventId,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size
     ) {
