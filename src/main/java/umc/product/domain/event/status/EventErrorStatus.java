@@ -10,7 +10,13 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 @AllArgsConstructor
 public enum EventErrorStatus implements BaseCodeInterface {
     UNAUTHORIZED_MODIFY(HttpStatus.BAD_REQUEST, "COMMON401", "수정, 삭제 권한이 없습니다."),
-    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "행사를 찾을 수 없습니다.");
+
+    //EVENT
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "행사를 찾을 수 없습니다."),
+
+    //PARTICIPATION_EVENT
+    PARTICIPATION_EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTICIPATION-EVENT401", "행사 참여를 찾을 수 없습니다.");
+
 
 
     private final HttpStatus httpStatus;

@@ -17,7 +17,7 @@ public class EventFormAnswer extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "participation_event_id", nullable = false)
+    @JoinColumn(name = "participation_event_id", nullable = true)
     private ParticipationEvent participationEvent;  // 해당 답변이 속한 응답
 
     @ManyToOne(fetch = FetchType.LAZY)

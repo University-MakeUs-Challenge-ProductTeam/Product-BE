@@ -6,5 +6,6 @@ import umc.product.domain.event.entity.participation.ParticipationEvent;
 
 public interface AdminParticipationEventService {
     int countByEvent(Event event);
+    ParticipationEvent deleteParticipationEvent(Long participationId);
     Page<ParticipationEvent> getParticipationEventsByEvent(Long eventId, int page, int size);
 }

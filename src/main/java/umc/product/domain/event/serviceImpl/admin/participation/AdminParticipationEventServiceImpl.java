@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
-import umc.product.domain.event.repository.jpa.event.EventRepository;
+import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;
 import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
 import umc.product.domain.event.service.EventService;
 import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
@@ -18,6 +18,7 @@ public class AdminParticipationEventServiceImpl implements AdminParticipationEve
 
     private final ParticipationEventRepository participationEventRepository;
     private final EventService eventService;
+    private final EventFormAnswerRepository eventFormAnswerRepository;
 
     @Override
     public int countByEvent(Event event) {
@@ -34,6 +35,20 @@ public class AdminParticipationEventServiceImpl implements AdminParticipationEve
         Event event = eventService.getEvent(eventId);
 
         return getParticipationEventsByEvent(event, pageable);
+    }
+
+    /*
+     * 행사 참여 인원 제거
+     */
+    @Override
+    public ParticipationEvent deleteParticipationEvent(Long participationId){
+
+        ParticipationEvent participationEvent = participationEventRepository.getParticipationEvent(participationId);
+
+        eventFormAnswerRepository.disconnectAnswersFromParticipation(participationId);
+        participationEventRepository.delete(participationEvent);
+
+        return participationEvent;
     }
 
     public ParticipationEvent getParticipationEventByEvent(Event event){
