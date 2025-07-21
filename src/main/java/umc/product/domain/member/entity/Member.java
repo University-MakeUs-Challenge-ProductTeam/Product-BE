@@ -40,6 +40,8 @@ public class Member extends BaseEntity {
 
     private String email;
 
+    private String clientId;
+
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
