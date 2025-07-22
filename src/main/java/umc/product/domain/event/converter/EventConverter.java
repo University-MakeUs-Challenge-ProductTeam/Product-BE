@@ -63,6 +63,7 @@ public class EventConverter {
                 .eventId(event.getId())
                 .title(event.getTitle())
                 .createdAt(event.getCreatedAt())
+                .thumbnail(event.getThumbnail())
                 .build();
     }
 }
