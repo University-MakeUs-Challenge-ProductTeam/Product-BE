@@ -7,4 +7,5 @@ import umc.product.domain.event.entity.event.Event;
 public interface EventService {
     Event getEvent(Long eventId);
     Page<Event> inquiryEvents(int page, int size);
+    Page<Event> inquiryEventsByKeyword(String keyword, int page, int size);
 }

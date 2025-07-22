@@ -21,4 +21,11 @@ public class EventAdviser {
 
         return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
     }
+
+    public EventPagingResponse<EventSummaryResponse> inquiryEventsByKeyword(String keyword, int page, int size){
+
+        Page<Event> eventPage = eventService.inquiryEventsByKeyword(keyword, page, size);
+
+        return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
+    }
 }

@@ -3,6 +3,8 @@ package umc.product.domain.event.repository.jpa.event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.status.EventErrorStatus;
 import umc.product.global.common.exception.RestApiException;
@@ -15,4 +17,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     }
 
     Page<Event> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("""
+        SELECT e FROM Event e
+        WHERE LOWER(e.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(e.content) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
+    Page<Event> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

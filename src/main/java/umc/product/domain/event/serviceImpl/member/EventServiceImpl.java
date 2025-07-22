@@ -27,4 +27,12 @@ public class EventServiceImpl implements EventService {
 
         return eventRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
+
+    @Override
+    public Page<Event> inquiryEventsByKeyword(String keyword, int page, int size){
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return eventRepository.searchByKeyword(keyword, pageable);
+    }
 }

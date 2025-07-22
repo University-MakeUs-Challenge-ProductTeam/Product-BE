@@ -35,5 +35,21 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.inquiryEvents(page, size));
     }
 
+    @Operation(summary = "행사 검색 API", description = "제목, 내용 내의 키워드 검색")
+    @Parameters(value = {
+            @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/search")
+    public BaseResponse<EventPagingResponse<EventSummaryResponse>> inquiryEventsByKeyword(
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ){
+        return BaseResponse.onSuccess(eventAdviser.inquiryEventsByKeyword(keyword, page, size));
+    }
+
+
 
 }
