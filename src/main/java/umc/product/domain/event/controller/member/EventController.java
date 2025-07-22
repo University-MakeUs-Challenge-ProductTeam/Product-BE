@@ -14,7 +14,7 @@ import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.global.common.base.BaseResponse;
 
-@Tag(name = "이벤트 API", description = "이벤트 관련 API")
+@Tag(name = "행사 API", description = "행사 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
