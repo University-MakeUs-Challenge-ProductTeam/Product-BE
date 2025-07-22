@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.admin.AdminParticipationEventAdviser;
+import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
@@ -40,6 +42,15 @@ public class AdminParticipationEventController {
     ) {
         return BaseResponse.onSuccess(adminParticipationEventAdviser.deleteParticipationEvent(participationId));
     }
+
+    @Operation(summary = "행사 출석 상태 수정 API", description = "운영진만 변경 가능")
+    @PatchMapping("/status")
+    public BaseResponse<ParticipationIdResponse> updateParticipationStatus(
+            @Valid @RequestBody ParticipationUpdateRequest request
+    ){
+        return BaseResponse.onSuccess(adminParticipationEventAdviser.updateParticipationStatus(request));
+    }
+
 
 
 }

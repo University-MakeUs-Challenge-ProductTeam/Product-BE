@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.ParticipationEventConverter;
+import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
@@ -27,6 +28,13 @@ public class AdminParticipationEventAdviser {
 
     public ParticipationIdResponse deleteParticipationEvent(Long participationId) {
         ParticipationEvent participationEvent = adminParticipationEventService.deleteParticipationEvent(participationId);
+
+        return participationEventConverter.toParticipationId(participationEvent);
+    }
+
+    public ParticipationIdResponse updateParticipationStatus(ParticipationUpdateRequest request){
+
+        ParticipationEvent participationEvent = adminParticipationEventService.updateParticipationStatus(request);
 
         return participationEventConverter.toParticipationId(participationEvent);
     }

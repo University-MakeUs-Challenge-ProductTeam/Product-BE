@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;
@@ -50,6 +51,20 @@ public class AdminParticipationEventServiceImpl implements AdminParticipationEve
 
         return participationEvent;
     }
+
+    /*
+     * 출석 상태 변경
+     */
+    @Override
+    public ParticipationEvent updateParticipationStatus(ParticipationUpdateRequest request){
+
+        ParticipationEvent participationEvent = participationEventRepository.getParticipationEvent(request.getParticipationId());
+
+        participationEvent.updateParticipationStatus(request.getStatus());
+
+        return participationEvent;
+    }
+
 
     public ParticipationEvent getParticipationEventByEvent(Event event){
         return participationEventRepository.findByEvent(event);

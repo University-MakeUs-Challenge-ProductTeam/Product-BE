@@ -49,4 +49,8 @@ public class ParticipationEvent extends BaseEntity {
         //널 방지
         this.answerList = (answerList != null) ? answerList : new ArrayList<>();
     }
+
+    public void updateParticipationStatus(ParticipationStatus participationStatus) {
+        this.participationStatus = participationStatus;
+    }
 }
