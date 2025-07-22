@@ -10,7 +10,7 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;
 import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
-import umc.product.domain.event.service.EventService;
+import umc.product.domain.event.service.member.EventService;
 import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
 
 @Service

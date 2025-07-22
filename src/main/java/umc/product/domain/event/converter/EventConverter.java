@@ -3,10 +3,7 @@ package umc.product.domain.event.converter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import umc.product.domain.event.dto.response.event.AdminEventDetailResponse;
-import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
-import umc.product.domain.event.dto.response.event.EventIdResponse;
-import umc.product.domain.event.dto.response.event.EventPagingResponse;
+import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
 
 @Component
@@ -58,6 +55,14 @@ public class EventConverter {
                 .registrationEndDate(event.getRegistrationSettings().getRegistrationEndDate())
                 .cancellationDeadline(event.getRegistrationSettings().getCancellationDeadline())
                 .maxParticipants(event.getMaxParticipants())
+                .build();
+    }
+
+    public EventSummaryResponse toEventSummaryResponse(Event event){
+        return EventSummaryResponse.builder()
+                .eventId(event.getId())
+                .title(event.getTitle())
+                .createdAt(event.getCreatedAt())
                 .build();
     }
 }

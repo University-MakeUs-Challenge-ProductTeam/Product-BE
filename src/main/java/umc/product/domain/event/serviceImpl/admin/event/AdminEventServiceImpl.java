@@ -21,7 +21,7 @@ import umc.product.domain.event.repository.jpa.event.EventImageRepository;
 import umc.product.domain.event.repository.jpa.event.EventRepository;
 import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
 import umc.product.domain.event.repository.querydsl.EventDslRepository;
-import umc.product.domain.event.service.EventService;
+import umc.product.domain.event.service.member.EventService;
 import umc.product.domain.event.service.admin.form.AdminEventFormService;
 import umc.product.domain.event.service.admin.event.AdminEventImageService;
 import umc.product.domain.event.service.admin.event.AdminEventRegistrationSettingService;
