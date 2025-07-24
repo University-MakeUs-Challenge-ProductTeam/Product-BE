@@ -7,7 +7,7 @@ import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
-import umc.product.domain.event.service.member.EventService;
+import umc.product.domain.event.service.member.event.EventService;
 
 @Component
 @RequiredArgsConstructor

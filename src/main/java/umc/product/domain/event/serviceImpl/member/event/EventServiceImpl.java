@@ -1,4 +1,4 @@
-package umc.product.domain.event.serviceImpl.member;
+package umc.product.domain.event.serviceImpl.member.event;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.repository.jpa.event.EventRepository;
-import umc.product.domain.event.service.member.EventService;
+import umc.product.domain.event.service.member.event.EventService;
 
 @Service
 @RequiredArgsConstructor

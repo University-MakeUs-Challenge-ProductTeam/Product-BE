@@ -12,7 +12,7 @@ public interface ParticipationEventRepository extends JpaRepository<Participatio
 
     default ParticipationEvent getParticipationEvent(Long participationId) {
         return findById(participationId)
-                .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_FORM_NOT_FOUND));
     }
 
 

@@ -1,7 +1,6 @@
-package umc.product.domain.event.service.member;
+package umc.product.domain.event.service.member.event;
 
 import org.springframework.data.domain.Page;
-import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
 
 public interface EventService {
