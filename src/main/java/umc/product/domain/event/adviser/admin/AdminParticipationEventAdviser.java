@@ -11,6 +11,8 @@ import umc.product.domain.event.dto.response.participation.ParticipationPagingRe
 import umc.product.domain.event.entity.participation.ParticipationEvent;
 import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class AdminParticipationEventAdviser {
