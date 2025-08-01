@@ -37,12 +37,17 @@ public class ChatMessage extends BaseEntity {
     @Column(name = "is_read")
     private Boolean isRead = false;
     
+    public Boolean getIsRead() {
+        return isRead != null ? isRead : false;
+    }
+    
     @Builder
     public ChatMessage(ChatRoom chatRoom, Long senderId, String content, MessageType messageType) {
         this.chatRoom = chatRoom;
         this.senderId = senderId;
         this.content = content;
         this.messageType = messageType;
+        this.isRead = false; // 명시적으로 초기화
     }
     
     public void markAsRead() {

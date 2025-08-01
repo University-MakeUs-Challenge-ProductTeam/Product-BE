@@ -38,7 +38,7 @@ public record ChatMessageResponse(
                 .senderId(message.getSenderId())
                 .content(message.getContent())
                 .messageType(message.getMessageType())
-                .isRead(message.getIsRead())
+                .isRead(message.getIsRead() != null ? message.getIsRead() : false)
                 .createdAt(message.getCreatedAt())
                 .build();
     }
