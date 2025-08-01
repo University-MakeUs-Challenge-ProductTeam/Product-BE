@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,18 @@ public class AdminRoadmapController {
   })
   public BaseResponse<RoadmapCommonResponse> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
     return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
+  }
+
+  @PatchMapping("/{roadmapId}")
+  @Operation(summary = "기수별 파트 로드맵 수정 API", description = "특정 로드맵의 week, titles를 수정하는 API입니다. 중앙 관리자만 사용 가능합니다.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "로드맵 수정 성공")
+  })
+  public BaseResponse<RoadmapCommonResponse> updateRoadmap(
+      @PathVariable Long roadmapId,
+      @Valid @RequestBody AdminRoadmapRequest request
+  ) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(roadmapId, request));
   }
 
 }

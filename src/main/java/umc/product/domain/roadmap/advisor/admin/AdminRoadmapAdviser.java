@@ -28,4 +28,13 @@ public class AdminRoadmapAdviser {
     return RoadmapCommonResponse.from(roadmap.getId());
   }
 
+  @Transactional
+  public RoadmapCommonResponse updateRoadmap(Long roadmapId, AdminRoadmapRequest request) {
+    Roadmap roadmap = adminRoadmapCommandService.updateRoadmap(roadmapId, request);
+
+    adminRoadmapCommandService.deleteRoadmapTitles(roadmap); // 기존 타이틀 삭제
+    adminRoadmapCommandService.createRoadmapTitles(roadmap, request.getTitles()); // 새 타이틀 등록
+
+    return RoadmapCommonResponse.from(roadmap.getId());
+  }
 }

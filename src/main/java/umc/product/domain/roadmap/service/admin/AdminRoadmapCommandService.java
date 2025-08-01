@@ -11,4 +11,6 @@ public interface AdminRoadmapCommandService {
   void createRoadmapSemester(Roadmap roadmap, Semester semester);
   void createRoadmapTitles(Roadmap roadmap, List<String> titles);
 
+  Roadmap updateRoadmap(Long roadmapId, AdminRoadmapRequest request);
+  void deleteRoadmapTitles(Roadmap roadmap);
 }

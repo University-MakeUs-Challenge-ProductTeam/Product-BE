@@ -11,8 +11,10 @@ import umc.product.domain.roadmap.mapper.AdminRoadmapMapper;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
 import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
 import umc.product.domain.roadmap.repository.RoadmapTitleRepository;
+import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.repository.SemesterRepository;
+import umc.product.global.common.exception.RestApiException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,20 @@ public class AdminRoadmapCommandServiceImpl implements AdminRoadmapCommandServic
         .toList();
 
     roadmapTitleRepository.saveAll(roadmapTitles);
+  }
+
+  @Override
+  public Roadmap updateRoadmap(Long roadmapId, AdminRoadmapRequest request) {
+    Roadmap roadmap = roadmapRepository.findById(roadmapId)
+        .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+    roadmap.update(request.getWeek(), request.getPart());
+    return roadmap;
+  }
+
+  @Override
+  public void deleteRoadmapTitles(Roadmap roadmap) {
+    roadmapTitleRepository.deleteAllByRoadmap(roadmap);
   }
 
 }
