@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.member.EventParticipationAdviser;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
+import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -23,11 +24,20 @@ public class EventParticipationController {
     private final EventParticipationAdviser eventParticipationAdviser;
 
     @Operation(summary = "행사 신청 API", description = "챌린저용 행사 신청 API")
-    @PostMapping
-    public BaseResponse<ParticipationIdResponse> inquiryEventForm(
+    @PostMapping("/apply")
+    public BaseResponse<ParticipationIdResponse> applyEvent(
             @CurrentMember Member member,
             @Parameter(description = "질문 답변 json") @RequestPart List<EventFormAnswerRequest> answerList
     ){
         return BaseResponse.onSuccess(eventParticipationAdviser.applyEvent(member, answerList));
+    }
+
+    @Operation(summary = "행사 취소 API", description = "챌린저용 행사 취소 API")
+    @PostMapping("/cancel")
+    public BaseResponse<ParticipationIdResponse> cancelParticipation(
+            @CurrentMember Member member,
+            @RequestBody ParticipationCancelRequest request
+            ){
+        return BaseResponse.onSuccess(eventParticipationAdviser.cancelParticipation(member, request));
     }
 }

@@ -10,7 +10,7 @@ import umc.product.global.common.exception.RestApiException;
 
 public interface EventParticipationRepository extends JpaRepository<EventParticipation, Long> {
 
-    default EventParticipation getParticipationEvent(Long participationId) {
+    default EventParticipation getEventParticipation(Long participationId) {
         return findById(participationId)
                 .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_FORM_NOT_FOUND));
     }

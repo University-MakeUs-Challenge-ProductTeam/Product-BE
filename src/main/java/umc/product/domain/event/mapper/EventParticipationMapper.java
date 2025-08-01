@@ -2,9 +2,11 @@ package umc.product.domain.event.mapper;
 
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
+import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
+import umc.product.domain.event.entity.participation.CancelReason;
 import umc.product.domain.event.entity.participation.EventFormAnswer;
 import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.member.entity.Member;
@@ -26,6 +28,12 @@ public class EventParticipationMapper {
                 .question(question)
                 .answerText(request.getAnswerText())
                 .filePath(filePath)
+                .build();
+    }
+
+    public CancelReason toCancelReason(ParticipationCancelRequest request){
+        return CancelReason.builder()
+                .content(request.getReason())
                 .build();
     }
 }

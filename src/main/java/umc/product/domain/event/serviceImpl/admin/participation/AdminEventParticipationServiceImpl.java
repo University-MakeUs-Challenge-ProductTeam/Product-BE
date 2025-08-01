@@ -44,7 +44,7 @@ public class AdminEventParticipationServiceImpl implements AdminEventParticipati
     @Override
     public EventParticipation deleteParticipationEvent(Long participationId){
 
-        EventParticipation eventParticipation = eventParticipationRepository.getParticipationEvent(participationId);
+        EventParticipation eventParticipation = eventParticipationRepository.getEventParticipation(participationId);
 
         eventFormAnswerRepository.disconnectAnswersFromParticipation(participationId);
         eventParticipationRepository.delete(eventParticipation);
@@ -58,7 +58,7 @@ public class AdminEventParticipationServiceImpl implements AdminEventParticipati
     @Override
     public EventParticipation updateParticipationStatus(ParticipationUpdateRequest request){
 
-        EventParticipation eventParticipation = eventParticipationRepository.getParticipationEvent(request.getParticipationId());
+        EventParticipation eventParticipation = eventParticipationRepository.getEventParticipation(request.getParticipationId());
 
         eventParticipation.updateParticipationStatus(request.getStatus());
 

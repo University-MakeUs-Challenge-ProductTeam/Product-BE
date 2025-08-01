@@ -4,10 +4,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
+import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
 import umc.product.domain.event.entity.form.ResponseType;
+import umc.product.domain.event.entity.participation.CancelReason;
 import umc.product.domain.event.entity.participation.EventFormAnswer;
 import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.event.mapper.EventParticipationMapper;
@@ -16,6 +18,7 @@ import umc.product.domain.event.repository.jpa.form.EventFormQuestionRepository;
 import umc.product.domain.event.repository.jpa.participation.EventParticipationRepository;
 import umc.product.domain.event.service.member.participation.EventParticipationService;
 import umc.product.domain.event.status.EventErrorStatus;
+import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.exception.RestApiException;
 import umc.product.global.util.S3FileUtil;
@@ -69,4 +72,23 @@ public class EventParticipationServiceImpl implements EventParticipationService 
 
         return eventParticipation;
     }
+
+    /*
+     * 행사 취소
+     */
+    @Override
+    @Transactional
+    public EventParticipation cancelParticipation(Member member, ParticipationCancelRequest request){
+        EventParticipation participation = eventParticipationRepository.getEventParticipation(request.getParticipationId());
+
+        //행사 신청 본인 확인 유효성 검사
+        EventParamValidator.validModify(member.getId(), participation.getParticipationMember().getId());
+
+        CancelReason cancelReason = eventParticipationMapper.toCancelReason(request);
+
+        participation.cancel(cancelReason);
+
+        return participation;
+    }
+
 }

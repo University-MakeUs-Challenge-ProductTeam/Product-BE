@@ -22,7 +22,12 @@ public class EventParticipation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private ParticipationStatus participationStatus = ParticipationStatus.ABSENT; // 참석 현황(불참 기본값)
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "cancel_reason_id")
+    private CancelReason cancelReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_form_id", nullable = false)
@@ -53,4 +58,10 @@ public class EventParticipation extends BaseEntity {
     public void updateParticipationStatus(ParticipationStatus participationStatus) {
         this.participationStatus = participationStatus;
     }
+
+    public void cancel(CancelReason reason) {
+        this.participationStatus = ParticipationStatus.CANCELED;
+        this.cancelReason = reason;
+    }
+
 }
