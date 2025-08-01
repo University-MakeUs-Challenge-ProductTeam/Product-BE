@@ -18,7 +18,7 @@ public class EventFormAnswer extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participation_event_id", nullable = true)
-    private ParticipationEvent participationEvent;  // 해당 답변이 속한 응답
+    private EventParticipation eventParticipation;  // 해당 답변이 속한 응답
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
@@ -33,8 +33,8 @@ public class EventFormAnswer extends BaseEntity {
     private String filePath;  // 파일 업로드 답변 경로
 
     @Builder
-    public EventFormAnswer(ParticipationEvent participationEvent, EventFormQuestion question, String answerText, String filePath) {
-        this.participationEvent = participationEvent;
+    public EventFormAnswer(EventParticipation eventParticipation, EventFormQuestion question, String answerText, String filePath) {
+        this.eventParticipation = eventParticipation;
         this.question = question;
         this.answerText = answerText;
         this.filePath = filePath;

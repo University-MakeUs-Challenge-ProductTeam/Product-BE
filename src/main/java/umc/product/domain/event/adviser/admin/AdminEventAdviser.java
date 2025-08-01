@@ -14,7 +14,7 @@ import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.service.admin.event.AdminEventService;
-import umc.product.domain.event.service.admin.participation.AdminParticipationEventService;
+import umc.product.domain.event.service.admin.participation.AdminEventParticipationService;
 import umc.product.domain.member.entity.Member;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class AdminEventAdviser {
 
     private final AdminEventService adminEventService;
     private final EventConverter eventConverter;
-    private final AdminParticipationEventService adminParticipationEventService;
+    private final AdminEventParticipationService adminEventParticipationService;
 
     public EventIdResponse createEvent(Member writer, List<MultipartFile> eventImages, EventRequest request) {
 
@@ -61,7 +61,7 @@ public class AdminEventAdviser {
     public AdminEventDetailResponse inquiryEventDetail(Long eventId){
 
         Event event = adminEventService.inquiryEventDetail(eventId);
-        int participantCount = adminParticipationEventService.countByEvent(event);
+        int participantCount = adminEventParticipationService.countByEvent(event);
 
         return eventConverter.toAdminEventDetailResponse(event, participantCount);
     }

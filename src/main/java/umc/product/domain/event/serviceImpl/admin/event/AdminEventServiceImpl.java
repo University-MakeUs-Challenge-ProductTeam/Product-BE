@@ -19,7 +19,7 @@ import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.mapper.EventMapper;
 import umc.product.domain.event.repository.jpa.event.EventImageRepository;
 import umc.product.domain.event.repository.jpa.event.EventRepository;
-import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
+import umc.product.domain.event.repository.jpa.participation.EventParticipationRepository;
 import umc.product.domain.event.repository.querydsl.EventDslRepository;
 import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.event.service.admin.form.AdminEventFormService;
@@ -46,7 +46,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventImageRepository eventImageRepository;
     private final EventDslRepository eventDslRepository;
     private final EventConverter eventConverter;
-    private final ParticipationEventRepository participationEventRepository;
+    private final EventParticipationRepository eventParticipationRepository;
 
     /*
      * 행사 등록
@@ -127,7 +127,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> events = eventDslRepository.findByFilter(pageable, month, semester, eventType);
         return events.map(event -> {
-            int count = participationEventRepository.countByEvent(event);
+            int count = eventParticipationRepository.countByEvent(event);
             //todo 연관 공지 추가 하기.
             //int noticeCount = eventNoticeRepository.countByEvent(event);
             return eventConverter.toAdminEventSummaryResponse(event, count, 1); // 내부에서 DTO 변환용

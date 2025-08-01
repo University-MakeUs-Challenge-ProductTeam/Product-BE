@@ -21,8 +21,8 @@ public enum EventErrorStatus implements BaseCodeInterface {
     //EVENT_FORM_ANSWER
     EMPTY_ANSWER(HttpStatus.BAD_REQUEST, "EVENT_FORM_ANSWER401", "답변이 비어 있습니다."),
 
-    //PARTICIPATION_EVENT
-    PARTICIPATION_EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PARTICIPATION-EVENT401", "행사 참여를 찾을 수 없습니다.");
+    //EVENT_PARTICIPATION
+    EVENT_PARTICIPATION_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT_PARTICIPATION401", "행사 참여를 찾을 수 없습니다.");
 
 
 

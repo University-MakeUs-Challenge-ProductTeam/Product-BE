@@ -3,30 +3,29 @@ package umc.product.domain.event.converter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.event.entity.participation.EventParticipation;
 
 @Component
 @RequiredArgsConstructor
-public class ParticipationEventConverter {
+public class EventParticipationConverter {
 
-    public ParticipationIdResponse toParticipationId(ParticipationEvent participationEvent) {
+    public ParticipationIdResponse toParticipationId(EventParticipation eventParticipation) {
         return ParticipationIdResponse.builder()
-                .participationId(participationEvent.getId())
+                .participationId(eventParticipation.getId())
                 .build();
     }
 
-    public AdminParticipationMemberResponse toAdminParticipationEventResponse(ParticipationEvent participationEvent) {
+    public AdminParticipationMemberResponse toAdminParticipationEventResponse(EventParticipation eventParticipation) {
         return AdminParticipationMemberResponse.builder()
-                .participationEventId(participationEvent.getId())
-                .nickName(participationEvent.getParticipationMember().getNickName())
-                .name(participationEvent.getParticipationMember().getName())
-                .profileImage(participationEvent.getParticipationMember().getAvatarUrl())
-                .university(participationEvent.getParticipationMember().getUniversity().getName())
-                .participationStatus(participationEvent.getParticipationStatus())
+                .participationEventId(eventParticipation.getId())
+                .nickName(eventParticipation.getParticipationMember().getNickName())
+                .name(eventParticipation.getParticipationMember().getName())
+                .profileImage(eventParticipation.getParticipationMember().getAvatarUrl())
+                .university(eventParticipation.getParticipationMember().getUniversity().getName())
+                .participationStatus(eventParticipation.getParticipationStatus())
                 .build();
     }
 

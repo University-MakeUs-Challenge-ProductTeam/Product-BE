@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ParticipationEvent extends BaseEntity {
+public class EventParticipation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class ParticipationEvent extends BaseEntity {
     @JoinColumn(name = "event_form_id", nullable = false)
     private EventForm eventForm;  // 해당 참가가 속한 신청 폼
 
-    @OneToMany(mappedBy = "participationEvent")
+    @OneToMany(mappedBy = "eventParticipation")
     private List<EventFormAnswer> answerList = new ArrayList<>();   // 응답에 포함된 답변들
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,7 +40,7 @@ public class ParticipationEvent extends BaseEntity {
     private Member participationMember;
 
     @Builder
-    public ParticipationEvent(Event event, ParticipationStatus participationStatus, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
+    public EventParticipation(Event event, ParticipationStatus participationStatus, Member participationMember, EventForm eventForm, List<EventFormAnswer> answerList) {
         this.event = event;
         this.participationStatus = participationStatus;
         this.participationMember = participationMember;

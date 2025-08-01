@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.event.entity.form.EventForm;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.global.common.base.BaseEntity;
@@ -54,7 +54,7 @@ public class Event extends BaseEntity {
     private List<EventImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<ParticipationEvent> participationEventList = new ArrayList<>(); // 이벤트를 참가한 사람들
+    private List<EventParticipation> participationEventList = new ArrayList<>(); // 이벤트를 참가한 사람들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.ALL)
@@ -65,7 +65,7 @@ public class Event extends BaseEntity {
     private EventRegistrationSettings registrationSettings;  // 신청 관련 설정
 
     @Builder
-    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<EventImage> images, List<ParticipationEvent> participationEventList, EventForm eventForm, EventRegistrationSettings registrationSettings) {
+    public Event(String title, String content, EventType eventType, Semester semester, LocalDateTime eventStartDate, LocalDateTime eventEndDate, String location, Integer maxParticipants, Member writer, List<EventImage> images, List<EventParticipation> participationEventList, EventForm eventForm, EventRegistrationSettings registrationSettings) {
         this.title = title;
         this.content = content;
         this.eventType = eventType;

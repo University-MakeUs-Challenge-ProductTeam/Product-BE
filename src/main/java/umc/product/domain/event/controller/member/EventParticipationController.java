@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import umc.product.domain.event.adviser.member.ParticipationEventAdviser;
+import umc.product.domain.event.adviser.member.EventParticipationAdviser;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.member.entity.Member;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/events/participations")
 public class EventParticipationController {
 
-    private final ParticipationEventAdviser participationEventAdviser;
+    private final EventParticipationAdviser eventParticipationAdviser;
 
     @Operation(summary = "행사 신청 API", description = "챌린저용 행사 신청 API")
     @PostMapping
@@ -28,6 +28,6 @@ public class EventParticipationController {
             @CurrentMember Member member,
             @Parameter(description = "질문 답변 json") @RequestPart List<EventFormAnswerRequest> answerList
     ){
-        return BaseResponse.onSuccess(participationEventAdviser.applyEvent(member, answerList));
+        return BaseResponse.onSuccess(eventParticipationAdviser.applyEvent(member, answerList));
     }
 }

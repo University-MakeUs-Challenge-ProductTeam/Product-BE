@@ -3,18 +3,17 @@ package umc.product.domain.event.serviceImpl.member.participation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
 import umc.product.domain.event.entity.form.ResponseType;
 import umc.product.domain.event.entity.participation.EventFormAnswer;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
-import umc.product.domain.event.mapper.ParticipationEventMapper;
+import umc.product.domain.event.entity.participation.EventParticipation;
+import umc.product.domain.event.mapper.EventParticipationMapper;
 import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;
 import umc.product.domain.event.repository.jpa.form.EventFormQuestionRepository;
-import umc.product.domain.event.repository.jpa.participation.ParticipationEventRepository;
+import umc.product.domain.event.repository.jpa.participation.EventParticipationRepository;
 import umc.product.domain.event.service.member.participation.EventParticipationService;
 import umc.product.domain.event.status.EventErrorStatus;
 import umc.product.domain.member.entity.Member;
@@ -27,9 +26,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventParticipationServiceImpl implements EventParticipationService {
 
-    private final ParticipationEventMapper participationEventMapper;
+    private final EventParticipationMapper eventParticipationMapper;
     private final EventFormQuestionRepository eventFormQuestionRepository;
-    private final ParticipationEventRepository participationEventRepository;
+    private final EventParticipationRepository eventParticipationRepository;
     private final EventFormAnswerRepository eventFormAnswerRepository;
     private final S3FileUtil s3FileUtil;
 
@@ -38,7 +37,7 @@ public class EventParticipationServiceImpl implements EventParticipationService 
      */
     @Override
     @Transactional
-    public ParticipationEvent applyEvent(Member member, List<EventFormAnswerRequest> requestList){
+    public EventParticipation applyEvent(Member member, List<EventFormAnswerRequest> requestList){
 
         if (requestList == null || requestList.isEmpty()) {
             throw new RestApiException(EventErrorStatus.EMPTY_ANSWER);
@@ -48,8 +47,8 @@ public class EventParticipationServiceImpl implements EventParticipationService 
         EventForm eventForm = firstQuestion.getEventForm();
         Event event = eventForm.getEvent();
 
-        ParticipationEvent participationEvent = participationEventMapper.toParticipationEvent(member, event, eventForm);
-        participationEventRepository.save(participationEvent);
+        EventParticipation eventParticipation = eventParticipationMapper.toParticipationEvent(member, event, eventForm);
+        eventParticipationRepository.save(eventParticipation);
 
         for (EventFormAnswerRequest request : requestList) {
             EventFormQuestion question = eventFormQuestionRepository.getEventFormQuestion(request.getQuestionId());
@@ -59,8 +58,8 @@ public class EventParticipationServiceImpl implements EventParticipationService 
                 uploadedFilePath = s3FileUtil.uploadFile("answer", request.getAnswerFile());
             }
 
-            EventFormAnswer answer = participationEventMapper.toEventFormAnswer(
-                    participationEvent,
+            EventFormAnswer answer = eventParticipationMapper.toEventFormAnswer(
+                    eventParticipation,
                     question,
                     request,
                     uploadedFilePath
@@ -68,6 +67,6 @@ public class EventParticipationServiceImpl implements EventParticipationService 
             eventFormAnswerRepository.save(answer);
         }
 
-        return participationEvent;
+        return eventParticipation;
     }
 }

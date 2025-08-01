@@ -1,7 +1,7 @@
 package umc.product.domain.event.service.member.form;
 
 import umc.product.domain.event.entity.form.EventFormQuestion;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.event.entity.participation.EventParticipation;
 
 import java.util.List;
 

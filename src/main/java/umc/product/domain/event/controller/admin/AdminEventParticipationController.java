@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import umc.product.domain.event.adviser.admin.AdminParticipationEventAdviser;
+import umc.product.domain.event.adviser.admin.AdminEventParticipationAdviser;
 import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
@@ -18,8 +18,8 @@ import umc.product.global.common.base.BaseResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events/participations")
-public class AdminParticipationEventController {
-    private final AdminParticipationEventAdviser adminParticipationEventAdviser;
+public class AdminEventParticipationController {
+    private final AdminEventParticipationAdviser adminEventParticipationAdviser;
 
     @Operation(summary = "행사 참여 인원 조회 API", description = "운영진만 조회 가능")
     @Parameters(value = {
@@ -32,7 +32,7 @@ public class AdminParticipationEventController {
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size
     ) {
-        return BaseResponse.onSuccess(adminParticipationEventAdviser.inquiryParticipationMembers(eventId, page, size));
+        return BaseResponse.onSuccess(adminEventParticipationAdviser.inquiryParticipationMembers(eventId, page, size));
     }
 
     @Operation(summary = "행사 참여 인원 제거 API", description = "운영진만 제거 가능")
@@ -40,7 +40,7 @@ public class AdminParticipationEventController {
     public BaseResponse<ParticipationIdResponse> deleteParticipationEvent(
             @Parameter(description = "삭제할 행사 참여 id") @PathVariable Long participationId
     ) {
-        return BaseResponse.onSuccess(adminParticipationEventAdviser.deleteParticipationEvent(participationId));
+        return BaseResponse.onSuccess(adminEventParticipationAdviser.deleteParticipationEvent(participationId));
     }
 
     @Operation(summary = "행사 출석 상태 수정 API", description = "운영진만 변경 가능")
@@ -48,7 +48,7 @@ public class AdminParticipationEventController {
     public BaseResponse<ParticipationIdResponse> updateParticipationStatus(
             @Valid @RequestBody ParticipationUpdateRequest request
     ){
-        return BaseResponse.onSuccess(adminParticipationEventAdviser.updateParticipationStatus(request));
+        return BaseResponse.onSuccess(adminEventParticipationAdviser.updateParticipationStatus(request));
     }
 
 
