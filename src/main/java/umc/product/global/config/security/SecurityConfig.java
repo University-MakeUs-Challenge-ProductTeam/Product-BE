@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                         .requestMatchers("/s3/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // WebSocket 엔드포인트 허용
                         .requestMatchers("/members/signup", "/members/auth/login").permitAll()
                         .requestMatchers("/members/login").permitAll()
                         //회원가입, 로그인

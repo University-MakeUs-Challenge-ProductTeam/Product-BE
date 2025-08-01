@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 연결 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .connecting { background-color: #fff3cd; color: #856404; }
+        .connected { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket 연결 테스트</h1>
+    
+    <div id="status" class="status connecting">연결 중...</div>
+    
+    <div>
+        <button onclick="connect()">연결</button>
+        <button onclick="disconnect()">연결 해제</button>
+        <button onclick="clearLog()">로그 지우기</button>
+    </div>
+    
+    <h3>연결 로그:</h3>
+    <div id="log" class="log"></div>
+
+    <script>
+        let stompClient = null;
+        let connected = false;
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function updateStatus(message, className) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${className}`;
+        }
+
+        function connect() {
+            log('WebSocket 연결 시도 중...');
+            updateStatus('연결 중...', 'connecting');
+
+            const socket = new SockJS('http://localhost:8080/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, 
+                function (frame) {
+                    log('WebSocket 연결 성공!');
+                    log('Frame: ' + frame);
+                    updateStatus('연결됨', 'connected');
+                    connected = true;
+
+                    // 채팅 토픽 구독
+                    stompClient.subscribe('/topic/chat/1', function (message) {
+                        log('메시지 수신: ' + message.body);
+                    });
+
+                    stompClient.subscribe('/topic/chat/2', function (message) {
+                        log('메시지 수신: ' + message.body);
+                    });
+
+                    log('채팅 토픽 구독 완료');
+                },
+                function (error) {
+                    log('WebSocket 연결 실패: ' + error);
+                    updateStatus('연결 실패', 'error');
+                    connected = false;
+                }
+            );
+        }
+
+        function disconnect() {
+            if (stompClient) {
+                stompClient.disconnect();
+                log('WebSocket 연결 해제');
+                updateStatus('연결 해제됨', 'connecting');
+                connected = false;
+            }
+        }
+
+        // 페이지 로드 시 자동 연결
+        window.onload = function() {
+            log('페이지 로드됨');
+            connect();
+        };
+    </script>
+</body>
+</html> 
