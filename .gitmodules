@@ -2,3 +2,6 @@
 	path = config
 	url = https://github.com/University-MakeUs-Challenge-ProductTeam/product-config.git
 	branch = main
+[submodule "src/main/resources/db/migration/src/main/resources/db/migration/private"]
+	path = src/main/resources/db/migration/src/main/resources/db/migration/private
+	url = https://github.com/University-MakeUs-Challenge-ProductTeam/umc-private-db-seed.git
