@@ -47,17 +47,13 @@ public class AdminRoadmapCommandServiceImpl implements AdminRoadmapCommandServic
   }
 
   @Override
-  public Roadmap updateRoadmap(Long roadmapId, AdminRoadmapRequest request) {
-    Roadmap roadmap = roadmapRepository.findById(roadmapId)
-        .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
-
-    roadmap.update(request.getWeek(), request.getPart());
-    return roadmap;
-  }
-
-  @Override
-  public void deleteRoadmapTitles(Roadmap roadmap) {
-    roadmapTitleRepository.deleteAllByRoadmap(roadmap);
+  public void deleteRoadmapsBySemesterAndPart(Semester semester, Part part) {
+    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterAndPart(semester, part);
+    for (Roadmap roadmap : roadmaps) {
+      roadmapTitleRepository.deleteAllByRoadmap(roadmap);
+      roadmapSemesterRepository.deleteAllByRoadmap(roadmap);
+      roadmapRepository.delete(roadmap);
+    }
   }
 
 }

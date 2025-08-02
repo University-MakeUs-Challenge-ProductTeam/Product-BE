@@ -38,11 +38,8 @@ public class AdminRoadmapController {
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "로드맵 수정 성공")
   })
-  public BaseResponse<RoadmapCommonResponse> updateRoadmap(
-      @PathVariable Long roadmapId,
-      @Valid @RequestBody AdminRoadmapRequest request
-  ) {
-    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(roadmapId, request));
+  public BaseResponse<List<RoadmapCommonResponse>> updateRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(request));
   }
 
 }

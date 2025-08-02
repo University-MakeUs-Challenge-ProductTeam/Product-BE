@@ -43,12 +43,26 @@ public class AdminRoadmapAdviser {
   }
 
   @Transactional
-  public RoadmapCommonResponse updateRoadmap(Long roadmapId, AdminRoadmapRequest request) {
-    Roadmap roadmap = adminRoadmapCommandService.updateRoadmap(roadmapId, request);
+  public List<RoadmapCommonResponse> updateRoadmap(AdminRoadmapRequest request) {
+    Semester semester = semesterService.getSemester(request.getSemesterId());
 
-    adminRoadmapCommandService.deleteRoadmapTitles(roadmap); // 기존 타이틀 삭제
-    adminRoadmapCommandService.createRoadmapTitles(roadmap, request.getTitles()); // 새 타이틀 등록
+    adminRoadmapCommandService.deleteRoadmapsBySemesterAndPart(semester, request.getPart());
 
-    return RoadmapCommonResponse.from(roadmap.getId());
+    List<RoadmapCommonResponse> responses = new ArrayList<>();
+    for (Map.Entry<Integer, List<String>> entry : request.getTitlesPerWeek().entrySet()) {
+      int week = entry.getKey();
+      List<String> titles = entry.getValue();
+
+      Roadmap roadmap = adminRoadmapCommandService.createRoadmap(
+          request.getSemesterId(), request.getPart(), week
+      );
+
+      adminRoadmapCommandService.createRoadmapSemester(roadmap, semester);
+      adminRoadmapCommandService.createRoadmapTitles(roadmap, titles);
+
+      responses.add(RoadmapCommonResponse.from(roadmap.getId()));
+    }
+
+    return responses;
   }
 }

@@ -7,6 +7,7 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
 
 import java.util.List;
+import umc.product.domain.semester.entity.Semester;
 
 public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
 
@@ -19,5 +20,7 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
 
     @Query("SELECT rt.title FROM Roadmap r JOIN r.roadmapTitleList rt WHERE r.part = :part AND r.week = :week")
     List<String> findRoadmapTitleListByPartAndWeek(@Param("part") Part part, @Param("week") int week);
+
+    List<Roadmap> findAllBySemesterAndPart(Semester semester, Part part);
 }
 
