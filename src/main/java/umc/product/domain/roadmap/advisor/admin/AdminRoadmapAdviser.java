@@ -46,7 +46,7 @@ public class AdminRoadmapAdviser {
   public List<RoadmapCommonResponse> updateRoadmap(AdminRoadmapRequest request) {
     Semester semester = semesterService.getSemester(request.getSemesterId());
 
-    adminRoadmapCommandService.deleteRoadmapsBySemesterAndPart(semester, request.getPart());
+    adminRoadmapCommandService.deleteRoadmapsBySemesterAndPart(request.getSemesterId(), request.getPart());
 
     List<RoadmapCommonResponse> responses = new ArrayList<>();
     for (Map.Entry<Integer, List<String>> entry : request.getTitlesPerWeek().entrySet()) {

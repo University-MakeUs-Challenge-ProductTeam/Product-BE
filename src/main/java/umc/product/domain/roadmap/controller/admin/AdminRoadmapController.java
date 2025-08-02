@@ -19,7 +19,7 @@ import umc.product.global.common.base.BaseResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/web/central-admin/roadmaps")
+@RequestMapping("/web/admin/roadmaps")
 public class AdminRoadmapController {
 
   private final AdminRoadmapAdviser adminRoadmapAdviser;
@@ -33,7 +33,7 @@ public class AdminRoadmapController {
     return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
   }
 
-  @PatchMapping("/{roadmapId}")
+  @PatchMapping
   @Operation(summary = "기수별 파트 로드맵 수정 API", description = "특정 로드맵의 week, titles를 수정하는 API입니다. 중앙 관리자만 사용 가능합니다.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "로드맵 수정 성공")

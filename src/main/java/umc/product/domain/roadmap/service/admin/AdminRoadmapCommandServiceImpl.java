@@ -47,8 +47,8 @@ public class AdminRoadmapCommandServiceImpl implements AdminRoadmapCommandServic
   }
 
   @Override
-  public void deleteRoadmapsBySemesterAndPart(Semester semester, Part part) {
-    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterAndPart(semester, part);
+  public void deleteRoadmapsBySemesterAndPart(Long semesterId, Part part) {
+    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterIdAndPart(semesterId, part);
     for (Roadmap roadmap : roadmaps) {
       roadmapTitleRepository.deleteAllByRoadmap(roadmap);
       roadmapSemesterRepository.deleteAllByRoadmap(roadmap);
