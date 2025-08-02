@@ -45,6 +45,9 @@ out/
 # appspec.yml 무시하지 않음
 !appspec.yml
 
+# env 파일
+*.env
+
 ### MAC OS ###
 .DS_Store
 .AppleDouble
