@@ -8,4 +8,6 @@ import umc.product.domain.roadmap.entity.Roadmap;
 
 public interface AdminChecklistCommandService {
   List<ChecklistCommonResponse> createChecklist(List<AdminChecklistRequest.ChecklistInfo> checklistList, Roadmap roadmap, Long semesterId);
+
+  ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request);
 }

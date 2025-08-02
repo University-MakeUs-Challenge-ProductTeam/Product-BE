@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,14 @@ public class AdminChecklistController {
   @ApiResponse(responseCode = "200", description = "체크리스트 생성 성공")
   public BaseResponse<List<ChecklistCommonResponse>> createChecklist(@Valid @RequestBody AdminChecklistRequest request) {
     return BaseResponse.onSuccess(adminChecklistAdviser.createChecklist(request));
+  }
+
+  @PatchMapping("/{checklistId}")
+  public BaseResponse<ChecklistCommonResponse> updateChecklist(
+      @PathVariable Long checklistId,
+      @Valid @RequestBody AdminChecklistRequest.ChecklistInfo request
+  ) {
+    return BaseResponse.onSuccess(adminChecklistAdviser.updateChecklist(checklistId, request));
   }
 
 }

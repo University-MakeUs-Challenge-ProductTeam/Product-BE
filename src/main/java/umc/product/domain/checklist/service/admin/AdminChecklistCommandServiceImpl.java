@@ -12,6 +12,7 @@ import umc.product.domain.checklist.entity.ChecklistContent;
 import umc.product.domain.checklist.mapper.AdminChecklistMapper;
 import umc.product.domain.checklist.repository.ChecklistContentRepository;
 import umc.product.domain.checklist.repository.ChecklistRepository;
+import umc.product.domain.checklist.status.ChecklistErrorStatus;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
@@ -46,6 +47,26 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
     }
 
     return responses;
+  }
+
+  @Override
+  public ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request) {
+    Checklist checklist = checklistRepository.findById(checklistId)
+        .orElseThrow(() -> new RestApiException(ChecklistErrorStatus.CHECKLIST_NOT_FOUND));
+
+    // 기존 content 삭제
+    checklistContentRepository.deleteAllByChecklist(checklist);
+
+    // 체크리스트 자체 업데이트
+    checklist.update(request.getTitle(), request.getType(), request.getCategory());
+
+    // 새로운 content 저장
+    List<ChecklistContent> contentList = request.getContents().stream()
+        .map(content -> adminChecklistMapper.toChecklistContentEntity(content, checklist))
+        .toList();
+    checklistContentRepository.saveAll(contentList);
+
+    return ChecklistCommonResponse.from(checklist.getId());
   }
 
 }
