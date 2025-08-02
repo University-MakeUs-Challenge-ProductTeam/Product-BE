@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ public class AdminRoadmapController {
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "로드맵 생성 성공")
   })
-  public BaseResponse<RoadmapCommonResponse> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
+  public BaseResponse<List<RoadmapCommonResponse>> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
     return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
   }
 

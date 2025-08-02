@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,9 @@ public class AdminRoadmapRequest {
   @NotNull
   private Part part;
 
-  @Schema(description = "주차", example = "1")
+  @Schema(description = "주차별 워크북 제목 리스트", example = "{\"1\": [\"Figma 설치\"], \"2\": [\"기초 레이아웃\"]}")
   @NotNull
-  private int week;
+  private Map<Integer, List<String>> titlesPerWeek;
 
-  @Schema(description = "워크북 제목 리스트", example = "[\"Figma 설치\", \"Figma의 이해\"]")
-  @NotNull
-  private List<String> titles;
 
 }

@@ -1,5 +1,8 @@
 package umc.product.domain.roadmap.advisor.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +21,25 @@ public class AdminRoadmapAdviser {
   private final SemesterService semesterService;
 
   @Transactional
-  public RoadmapCommonResponse createRoadmap(AdminRoadmapRequest request) {
+  public List<RoadmapCommonResponse> createRoadmap(AdminRoadmapRequest request) {
     Semester semester = semesterService.getSemester(request.getSemesterId());
-    Roadmap roadmap = adminRoadmapCommandService.createRoadmap(request);
+    List<RoadmapCommonResponse> responses = new ArrayList<>();
 
-    adminRoadmapCommandService.createRoadmapSemester(roadmap, semester);
-    adminRoadmapCommandService.createRoadmapTitles(roadmap, request.getTitles());
+    for (Map.Entry<Integer, List<String>> entry : request.getTitlesPerWeek().entrySet()) {
+      int week = entry.getKey();
+      List<String> titles = entry.getValue();
 
-    return RoadmapCommonResponse.from(roadmap.getId());
+      Roadmap roadmap = adminRoadmapCommandService.createRoadmap(
+          request.getSemesterId(), request.getPart(), week
+      );
+
+      adminRoadmapCommandService.createRoadmapSemester(roadmap, semester);
+      adminRoadmapCommandService.createRoadmapTitles(roadmap, titles);
+
+      responses.add(RoadmapCommonResponse.from(roadmap.getId()));
+    }
+
+    return responses;
   }
 
   @Transactional

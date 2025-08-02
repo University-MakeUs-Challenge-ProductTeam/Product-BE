@@ -3,6 +3,7 @@ package umc.product.domain.roadmap.service.admin;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.dto.request.admin.AdminRoadmapRequest;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
@@ -25,8 +26,8 @@ public class AdminRoadmapCommandServiceImpl implements AdminRoadmapCommandServic
   private final AdminRoadmapMapper adminRoadmapMapper;
 
   @Override
-  public Roadmap createRoadmap(AdminRoadmapRequest request) {
-    Roadmap roadmap = adminRoadmapMapper.toRoadmap(request);
+  public Roadmap createRoadmap(Long semesterId, Part part, int week) {
+    Roadmap roadmap = adminRoadmapMapper.toRoadmap(week, part);
     return roadmapRepository.save(roadmap);
   }
 

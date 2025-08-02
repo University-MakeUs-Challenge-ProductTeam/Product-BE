@@ -1,6 +1,7 @@
 package umc.product.domain.roadmap.mapper;
 
 import org.springframework.stereotype.Component;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.dto.request.admin.AdminRoadmapRequest;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
@@ -9,10 +10,10 @@ import umc.product.domain.semester.entity.Semester;
 
 @Component
 public class AdminRoadmapMapper {
-  public Roadmap toRoadmap(AdminRoadmapRequest request) {
+  public Roadmap toRoadmap(int week, Part part) {
     return Roadmap.builder()
-        .week(request.getWeek())
-        .part(request.getPart())
+        .week(week)
+        .part(part)
         .build();
   }
 
