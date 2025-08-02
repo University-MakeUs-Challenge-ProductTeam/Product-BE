@@ -1,6 +1,7 @@
 package umc.product.domain.roadmap.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.product.domain.member.entity.enums.Part;
@@ -21,5 +22,10 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
     @Query("SELECT rt.title FROM Roadmap r JOIN r.roadmapTitleList rt WHERE r.part = :part AND r.week = :week")
     List<String> findRoadmapTitleListByPartAndWeek(@Param("part") Part part, @Param("week") int week);
 
+  @Query("SELECT r FROM Roadmap r JOIN r.roadmapSemesterList rs " +
+      "WHERE r.part = :part AND r.week = :week AND rs.semester.id = :semesterId")
+  Optional<Roadmap> findByPartAndWeekAndSemesterId(@Param("part") Part part,
+      @Param("week") int week,
+      @Param("semesterId") Long semesterId);
 }
 
