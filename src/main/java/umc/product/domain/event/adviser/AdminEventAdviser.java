@@ -8,7 +8,6 @@ import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.converter.EventParticipationConverter;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
-import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.event.AdminEventDetailResponse;
 import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
 import umc.product.domain.event.dto.response.event.EventIdResponse;
@@ -19,6 +18,7 @@ import umc.product.domain.event.dto.response.participation.ParticipationPagingRe
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.entity.participation.EventParticipation;
+import umc.product.domain.event.entity.participation.ParticipationStatus;
 import umc.product.domain.event.service.admin.event.AdminEventService;
 import umc.product.domain.event.service.admin.participation.AdminEventParticipationService;
 import umc.product.domain.member.entity.Member;
@@ -87,9 +87,9 @@ public class AdminEventAdviser {
         return eventParticipationConverter.toParticipationId(eventParticipation);
     }
 
-    public ParticipationIdResponse updateParticipationStatus(ParticipationUpdateRequest request){
+    public ParticipationIdResponse updateParticipationStatus(Long participationId, ParticipationStatus status){
 
-        EventParticipation eventParticipation = adminEventParticipationService.updateParticipationStatus(request);
+        EventParticipation eventParticipation = adminEventParticipationService.updateParticipationStatus(participationId, status);
 
         return eventParticipationConverter.toParticipationId(eventParticipation);
     }

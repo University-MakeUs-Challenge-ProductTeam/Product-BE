@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.product.domain.event.adviser.AdminEventAdviser;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
-import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.event.AdminEventDetailResponse;
 import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
 import umc.product.domain.event.dto.response.event.EventIdResponse;
@@ -22,6 +21,7 @@ import umc.product.domain.event.dto.response.participation.AdminParticipationMem
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
 import umc.product.domain.event.entity.event.EventType;
+import umc.product.domain.event.entity.participation.ParticipationStatus;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -118,10 +118,16 @@ public class AdminEventController {
     }
 
     @Operation(summary = "행사 출석 상태 수정 API", description = "운영진만 변경 가능")
-    @PatchMapping("/status")
+    @Parameters(value = {
+            @Parameter(name = "participationId", description = "수정할 행사 참여 아이디"),
+            @Parameter(name = "status", description = "수정될 출석 상태"),
+    })
+    @PatchMapping("/{participationId}/status")
     public BaseResponse<ParticipationIdResponse> updateParticipationStatus(
-            @Valid @RequestBody ParticipationUpdateRequest request
+            @RequestParam(name = "participationId") @PathVariable Long participationId,
+            @RequestParam(name = "status") ParticipationStatus status
+
     ){
-        return BaseResponse.onSuccess(adminEventAdviser.updateParticipationStatus(request));
+        return BaseResponse.onSuccess(adminEventAdviser.updateParticipationStatus(participationId, status));
     }
 }
