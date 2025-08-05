@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.product.domain.checklist.entity.Checklist;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 
 
 public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
 
-  List<Checklist> findAllByRoadmap(Roadmap roadmap);
+  List<Checklist> findAllByRoadmapSemester(RoadmapSemester roadmapSemester);
 }
