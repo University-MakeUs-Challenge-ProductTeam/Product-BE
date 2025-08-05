@@ -27,7 +27,7 @@ import java.util.List;
 @Tag(name = "운영진 용 행사 API", description = "행사 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/events")
+@RequestMapping("/admin/events")
 public class AdminEventController {
 
     private final AdminEventAdviser adminEventAdviser;
