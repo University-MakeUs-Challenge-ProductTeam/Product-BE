@@ -32,4 +32,5 @@ public interface MemberDslRepository {
                                            String searchString);
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
     boolean existsMemberByClientId(String clientId);
+    long countMemberByFilter(Member member, Long semesterId, Role role, Part part);
 }

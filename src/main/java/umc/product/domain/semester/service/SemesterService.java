@@ -13,4 +13,5 @@ public interface SemesterService {
     Semester findRecentSemester();
     Semester getSemester(Long semesterId);
     List<Semester> getSemesters(List<Long> semesterIds);
+    List<Semester> getSemestersByIdsOrEmpty(List<Long> semesterIdList);
 }

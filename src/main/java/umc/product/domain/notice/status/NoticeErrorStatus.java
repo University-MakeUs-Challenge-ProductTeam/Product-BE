@@ -9,9 +9,9 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 @Getter
 @AllArgsConstructor
 public enum NoticeErrorStatus implements BaseCodeInterface {
-
-    EMPTY_NOTICE(HttpStatus.NOT_FOUND, "NOTICE404", "공지를 찾을 수 없습니다.")
-    ;
+    NOTICE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTICE404", "공지사항을 찾을 수 없습니다."),
+    CHECK_DEADLINE_EXPIRED(HttpStatus.BAD_REQUEST, "NOTICE400", "열람 체크 마감 기한이 지났습니다."),
+    WRONG_NOTICE_TARGET(HttpStatus.BAD_REQUEST, "NOTICE400", "잘못된 대상입니다.");
 
     private final HttpStatus httpStatus;
     private final boolean isSuccess = false;

@@ -1,0 +1,61 @@
+package umc.product.domain.roadmap.controller.admin;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import umc.product.domain.member.entity.enums.Part;
+import umc.product.domain.roadmap.advisor.admin.AdminRoadmapAdviser;
+import umc.product.domain.roadmap.dto.request.admin.AdminRoadmapRequest;
+import umc.product.domain.roadmap.dto.response.admin.AdminRoadmapResponse;
+import umc.product.domain.roadmap.dto.response.admin.RoadmapCommonResponse;
+import umc.product.global.common.base.BaseResponse;
+
+@Tag(name = "관리자용(웹) ROADMAP API", description = "관리자용(웹) 로드맵 관련 API")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/web/admin/roadmaps")
+public class AdminRoadmapController {
+
+  private final AdminRoadmapAdviser adminRoadmapAdviser;
+
+  @PostMapping
+  @Operation(summary = "기수별 파트 로드맵 생성 API", description = "특정 기수의 파트별 로드맵을 생성하는 API입니다. 중앙 관리자만 사용 가능합니다.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "로드맵 생성 성공")
+  })
+  public BaseResponse<List<RoadmapCommonResponse>> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
+  }
+
+  @PatchMapping
+  @Operation(summary = "기수별 파트 로드맵 수정 API", description = "특정 로드맵의 week, titles를 수정하는 API입니다. 중앙 관리자만 사용 가능합니다.")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "로드맵 수정 성공")
+  })
+  public BaseResponse<List<RoadmapCommonResponse>> updateRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(request));
+  }
+
+  @GetMapping
+  @Operation(summary = "로드맵 조회 API", description = "기수와 파트로 로드맵을 조회합니다.")
+  @ApiResponse(responseCode = "200", description = "조회 성공")
+  public BaseResponse<List<AdminRoadmapResponse>> getRoadmaps(
+      @RequestParam Long semesterId,
+      @RequestParam Part part
+  ) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.getRoadmaps(semesterId, part));
+  }
+
+}

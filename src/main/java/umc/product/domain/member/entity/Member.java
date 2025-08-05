@@ -40,6 +40,8 @@ public class Member extends BaseEntity {
 
     private String email;
 
+    private String clientId;
+
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
@@ -77,7 +79,7 @@ public class Member extends BaseEntity {
     private List<MemberOut> memberOutList = new ArrayList<>();
 
     @Setter
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id")
     private University university;
 

@@ -3,6 +3,8 @@ package umc.product.domain.university.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
+import umc.product.domain.branchUniversity.entity.BranchUniversity;
+import umc.product.domain.member.entity.Member;
 import umc.product.domain.project.entity.ProjectUniversity;
 import umc.product.domain.study.entity.StudyUniversity;
 import umc.product.global.common.base.BaseEntity;
@@ -34,4 +36,11 @@ public class University extends BaseEntity {
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyUniversity> studyUniversityList = new ArrayList<>();
+
+    // branchUniversity 연관관계
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BranchUniversity> branchUniversityList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Member> memberList = new ArrayList<>();
 }

@@ -39,4 +39,10 @@ public class Checklist extends BaseEntity {
 
     @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
     private List<ChecklistContent> checklistContentList;
+
+    public void update(String title, ChecklistType type, ChecklistCategory category) {
+        this.title = title;
+        this.checklistType = type;
+        this.checklistCategory = category;
+    }
 }

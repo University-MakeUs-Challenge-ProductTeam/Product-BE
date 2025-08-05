@@ -33,4 +33,9 @@ public class Roadmap extends BaseEntity {
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapSemester> roadmapSemesterList;
+
+    public void update(int week, Part part) {
+        this.week = week;
+        this.part = part;
+    }
 }

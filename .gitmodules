@@ -1,0 +1,4 @@
+[submodule "config"]
+	path = config
+	url = https://github.com/University-MakeUs-Challenge-ProductTeam/product-config.git
+	branch = main
