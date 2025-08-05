@@ -1,0 +1,21 @@
+package umc.product.domain.event.dto.response.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventPagingResponse<T> {
+    private List<T> events;
+    private int page;
+    private int totalPages;
+    private int totalElements;
+    private Boolean isFirst;
+    private Boolean isLast;
+}

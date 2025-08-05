@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.product.domain.event.entity.event.Event;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.global.common.base.BaseEntity;
 
 import java.util.ArrayList;
@@ -27,11 +27,11 @@ public class EventForm extends BaseEntity {
     // todo : 글자수 제한
     private String description;  // 폼 설명
 
-    @OneToMany(mappedBy = "eventForm")
+    @OneToMany(mappedBy = "eventForm", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventFormQuestion> questionList = new ArrayList<>();  // 폼에 포함된 문항들
 
     @OneToMany(mappedBy = "eventForm")
-    private List<ParticipationEvent> participationEventList = new ArrayList<>();  // 폼에 대한 응답들
+    private List<EventParticipation> participationEventList = new ArrayList<>();  // 폼에 대한 응답들
 
     // 역할 책임 분리를 위해 EventForm을 Event에서 분리해서 일대일 관계로 설정
     @OneToOne(fetch = FetchType.LAZY)
@@ -39,7 +39,7 @@ public class EventForm extends BaseEntity {
     private Event event;  // 해당 폼이 속한 행사
 
     @Builder
-    public EventForm(String formTitle, String description, List<EventFormQuestion> questionList, List<ParticipationEvent> participationEventList, Event event) {
+    public EventForm(String formTitle, String description, List<EventFormQuestion> questionList, List<EventParticipation> participationEventList, Event event) {
         this.formTitle = formTitle;
         this.description = description;
         this.event = event;
@@ -47,5 +47,15 @@ public class EventForm extends BaseEntity {
         // `null` 방지: null이면 빈 리스트로 초기화
         this.questionList = (questionList != null) ? questionList : new ArrayList<>();
         this.participationEventList = (participationEventList != null) ? participationEventList : new ArrayList<>();
+    }
+
+    public void updateEventFormInfo(String title, String description) {
+        this.formTitle = title;
+        this.description = description;
+    }
+
+    public void updateQuestionList(List<EventFormQuestion> questions) {
+        this.questionList.clear();
+        this.questionList.addAll(questions);
     }
 }

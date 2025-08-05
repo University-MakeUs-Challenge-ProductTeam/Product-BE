@@ -1,7 +1,7 @@
 package umc.product.domain.member.entity;
 
 import org.hibernate.annotations.Where;
-import umc.product.domain.event.entity.participation.ParticipationEvent;
+import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.member.converter.RoleConverter;
 import umc.product.domain.member.dto.request.admin.member.AdminUpdateMemberProfileRequest;
 import umc.product.domain.member.dto.request.member.auth.MemberSignUpRequest;
@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
     private MemberLoginInfo memberLoginInfo;
 
     @OneToMany(mappedBy = "participationMember", cascade = CascadeType.ALL)
-    private List<ParticipationEvent> participationEventList = new ArrayList<>();
+    private List<EventParticipation> participationEventList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberProject> memberProjects = new ArrayList<>();
