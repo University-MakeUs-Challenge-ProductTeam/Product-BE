@@ -1,4 +1,4 @@
-package umc.product.domain.event.controller.admin;
+package umc.product.domain.event.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +10,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import umc.product.domain.event.adviser.admin.AdminEventAdviser;
+import umc.product.domain.event.adviser.AdminEventAdviser;
 import umc.product.domain.event.dto.request.event.EventRequest;
 import umc.product.domain.event.dto.request.event.EventUpdateRequest;
+import umc.product.domain.event.dto.request.participation.ParticipationUpdateRequest;
 import umc.product.domain.event.dto.response.event.AdminEventDetailResponse;
 import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
 import umc.product.domain.event.dto.response.event.EventIdResponse;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
+import umc.product.domain.event.dto.response.participation.AdminParticipationMemberResponse;
+import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
+import umc.product.domain.event.dto.response.participation.ParticipationPagingResponse;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -24,10 +28,10 @@ import umc.product.global.config.security.auth.CurrentMember;
 
 import java.util.List;
 
-@Tag(name = "운영진 용 행사 API", description = "행사 관련 API")
+@Tag(name = "운영진용 행사 API", description = "운영진용 행사 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/events")
+@RequestMapping("/web/admin/events")
 public class AdminEventController {
 
     private final AdminEventAdviser adminEventAdviser;
@@ -91,4 +95,33 @@ public class AdminEventController {
         return BaseResponse.onSuccess(adminEventAdviser.inquiryEventDetail(eventId));
     }
 
+    @Operation(summary = "행사 참여 인원 조회 API", description = "운영진만 조회 가능")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/{eventId}")
+    public BaseResponse<ParticipationPagingResponse<AdminParticipationMemberResponse>> inquiryParticipationMembers(
+            @Parameter(description = "조회할 행사 id") @PathVariable Long eventId,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(adminEventAdviser.inquiryParticipationMembers(eventId, page, size));
+    }
+
+    @Operation(summary = "행사 참여 인원 제거 API", description = "운영진만 제거 가능")
+    @PatchMapping("/{participationId}")
+    public BaseResponse<ParticipationIdResponse> deleteParticipationEvent(
+            @Parameter(description = "삭제할 행사 참여 id") @PathVariable Long participationId
+    ) {
+        return BaseResponse.onSuccess(adminEventAdviser.deleteParticipationEvent(participationId));
+    }
+
+    @Operation(summary = "행사 출석 상태 수정 API", description = "운영진만 변경 가능")
+    @PatchMapping("/status")
+    public BaseResponse<ParticipationIdResponse> updateParticipationStatus(
+            @Valid @RequestBody ParticipationUpdateRequest request
+    ){
+        return BaseResponse.onSuccess(adminEventAdviser.updateParticipationStatus(request));
+    }
 }
