@@ -10,18 +10,4 @@ import umc.product.domain.checklist.entity.ChecklistContent;
 @RequiredArgsConstructor
 public class ChecklistConverter {
 
-  public AdminChecklistResponse toChecklistDetailResponse(Checklist checklist) {
-    return AdminChecklistResponse.builder()
-        .id(checklist.getId())
-        .title(checklist.getTitle())
-        .type(checklist.getChecklistType())
-        .category(checklist.getChecklistCategory())
-        .contents(
-            checklist.getChecklistContentList().stream()
-                .map(ChecklistContent::getContent)
-                .toList()
-        )
-        .build();
-  }
-
 }

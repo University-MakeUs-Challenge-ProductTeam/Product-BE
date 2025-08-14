@@ -46,14 +46,4 @@ public class AdminChecklistController {
     return BaseResponse.onSuccess(adminChecklistAdviser.updateChecklists(roadmapId, week, request));
   }
 
-  @GetMapping
-  @Operation(summary = "체크리스트 조회 API", description = "기수와 파트로 체크리스트를 조회합니다.")
-  @ApiResponse(responseCode = "200", description = "조회 성공")
-  public BaseResponse<List<AdminChecklistResponse>> getChecklists(
-      @RequestParam Long semesterId,
-      @RequestParam Part part
-  ) {
-    return BaseResponse.onSuccess(adminChecklistAdviser.getChecklists(semesterId, part));
-  }
-
 }

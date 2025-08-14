@@ -87,17 +87,4 @@ public class AdminChecklistAdviser {
     }
   }
 
-  @Transactional(readOnly = true)
-  public List<AdminChecklistResponse> getChecklists(Long semesterId, Part part) {
-    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterIdAndPart(semesterId, part);
-
-    return roadmaps.stream()
-        .flatMap(roadmap ->
-            roadmap.getRoadmapSemesterList().stream() // 로드맵에 연결된 로드맵기수 리스트
-                .filter(rs -> rs.getSemester().getId().equals(semesterId)) // 해당 기수만 필터링
-                .flatMap(rs -> checklistRepository.findAllByRoadmapSemester(rs).stream())
-        )
-        .map(checklistConverter::toChecklistDetailResponse)
-        .toList();
-  }
 }
