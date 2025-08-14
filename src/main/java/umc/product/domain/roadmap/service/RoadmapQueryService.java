@@ -10,10 +10,6 @@ public interface RoadmapQueryService {
 
     Roadmap getRoadmap(StudyMember studyMember);
 
-    List<Roadmap> getRoadmapList(StudyMember studyMember);
-
-    List<String> getRoadmapTitleList(StudyMember studyMember, int week);
-
     List<RoadmapWeek> getRoadmapWeeksForWeek(StudyMember studyMember, int week);
 
     Roadmap getRoadmapById(Long roadmapId);

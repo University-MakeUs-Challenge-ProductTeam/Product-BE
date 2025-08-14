@@ -23,11 +23,4 @@ public class AdminRoadmapMapper {
         .build();
   }
 
-  public RoadmapWeek toRoadmapTitle(String title, Roadmap roadmap) {
-    return RoadmapWeek.builder()
-        .title(title)
-        .roadmap(roadmap)
-        .build();
-  }
-
 }

@@ -40,30 +40,6 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
         return roadmap;
     }
 
-    @Override
-    public List<Roadmap> getRoadmapList(StudyMember studyMember) {
-
-        SemesterPart semesterPart = studyMember.getSemesterPart();
-        Long semesterId = semesterPart.getSemester().getId();
-        Part part = semesterPart.getPart();
-
-        List<Roadmap> roadmapList = roadmapRepository.findAllBySemesterIdAndPart(semesterId, part);
-        if (roadmapList.isEmpty()) {
-            throw new RestApiException(StudyErrorStatus.STUDY_ROADMAP_NOT_FOUND);
-        }
-        return roadmapList;
-    }
-
-    // TODO : 이 메소드 없앨 것
-    @Override
-    public List<String> getRoadmapTitleList(StudyMember studyMember, int week) {
-        List<String> titleList = roadmapRepository.findRoadmapTitleListByPartAndWeek(studyMember.getSemesterPart().getPart(), week);
-        if (titleList == null || titleList.isEmpty()) {
-            throw new RestApiException(StudyErrorStatus.STUDY_ROADMAP_NOT_FOUND);
-        }
-        return titleList;
-    }
-
     public List<RoadmapWeek> getRoadmapWeeksForWeek(StudyMember studyMember, int week) {
         // 1. 우선 studyMember에게 해당하는 전체 Roadmap이 무엇인지 찾기
         Roadmap roadmap = getRoadmap(studyMember);
