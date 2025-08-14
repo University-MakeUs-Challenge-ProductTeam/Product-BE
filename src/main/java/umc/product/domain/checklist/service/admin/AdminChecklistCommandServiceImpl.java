@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest.ChecklistInfo;
+import umc.product.domain.checklist.dto.request.admin.AdminChecklistUpdateRequest;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.checklist.entity.Checklist;
 import umc.product.domain.checklist.entity.ChecklistContent;
@@ -48,7 +49,7 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
   }
 
   @Override
-  public ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request) {
+  public ChecklistCommonResponse updateChecklist(Long checklistId, AdminChecklistUpdateRequest.ChecklistUpdateInfo request, int week) {
     Checklist checklist = checklistRepository.findById(checklistId)
         .orElseThrow(() -> new RestApiException(ChecklistErrorStatus.CHECKLIST_NOT_FOUND));
 
@@ -56,7 +57,7 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
     checklistContentRepository.deleteAllByChecklist(checklist);
 
     // 체크리스트 자체 업데이트
-    checklist.update(request.getTitle(), request.getType(), request.getCategory());
+    checklist.update(request.getTitle(), week, request.getType(), request.getCategory());
 
     // 새로운 content 저장
     List<ChecklistContent> contentList = request.getContents().stream()

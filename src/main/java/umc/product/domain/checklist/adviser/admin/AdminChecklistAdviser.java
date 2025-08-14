@@ -1,12 +1,16 @@
 package umc.product.domain.checklist.adviser.admin;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.checklist.converter.admin.ChecklistConverter;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest.ChecklistInfo;
+import umc.product.domain.checklist.dto.request.admin.AdminChecklistUpdateRequest;
 import umc.product.domain.checklist.dto.response.admin.AdminChecklistResponse;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.checklist.entity.Checklist;
@@ -53,8 +57,34 @@ public class AdminChecklistAdviser {
   }
 
   @Transactional
-  public ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request) {
-    return adminChecklistCommandService.updateChecklist(checklistId, request);
+  public List<ChecklistCommonResponse> updateChecklists(Long roadmapId, int week, AdminChecklistUpdateRequest request) {
+    validateChecklistOwnership(roadmapId, week, request.getChecklistsToUpdate());
+
+    List<ChecklistCommonResponse> responses = new ArrayList<>();
+
+    for (AdminChecklistUpdateRequest.ChecklistUpdateInfo updateInfo : request.getChecklistsToUpdate()) {
+      ChecklistCommonResponse response = adminChecklistCommandService.updateChecklist(
+          updateInfo.getChecklistId(),
+          updateInfo,
+          week
+      );
+      responses.add(response);
+    }
+
+    return responses;
+  }
+
+  private void validateChecklistOwnership(Long roadmapId, int week, List<AdminChecklistUpdateRequest.ChecklistUpdateInfo> updateInfos) {
+
+    Set<Long> requestedChecklistIds = updateInfos.stream()
+        .map(AdminChecklistUpdateRequest.ChecklistUpdateInfo::getChecklistId)
+        .collect(Collectors.toSet());
+
+    Set<Long> validChecklistIds = checklistRepository.findAllIdsByRoadmapIdAndWeek(roadmapId, week);
+
+    if (!validChecklistIds.containsAll(requestedChecklistIds)) {
+      throw new RestApiException(ChecklistErrorStatus.CHECKLIST_OWNERSHIP_MISMATCH);
+    }
   }
 
   @Transactional(readOnly = true)

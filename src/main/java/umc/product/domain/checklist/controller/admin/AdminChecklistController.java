@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import umc.product.domain.checklist.adviser.admin.AdminChecklistAdviser;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
+import umc.product.domain.checklist.dto.request.admin.AdminChecklistUpdateRequest;
 import umc.product.domain.checklist.dto.response.admin.AdminChecklistResponse;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.member.entity.enums.Part;
@@ -35,13 +36,14 @@ public class AdminChecklistController {
     return BaseResponse.onSuccess(adminChecklistAdviser.createChecklist(request));
   }
 
-  @PatchMapping("/{checklistId}")
-  @Operation(summary = "체크리스트 수정 API", description = "체크리스트를 수정합니다.")
-  public BaseResponse<ChecklistCommonResponse> updateChecklist(
-      @PathVariable Long checklistId,
-      @Valid @RequestBody AdminChecklistRequest.ChecklistInfo request
+  @PatchMapping("/roadmaps/{roadmapId}/weeks/{week}")
+  @Operation(summary = "체크리스트 수정 API", description = "특정 주차의 체크리스트를 일괄 수정합니다.")
+  public BaseResponse<List<ChecklistCommonResponse>> updateChecklists(
+      @PathVariable Long roadmapId,
+      @PathVariable int week,
+      @Valid @RequestBody AdminChecklistUpdateRequest request
   ) {
-    return BaseResponse.onSuccess(adminChecklistAdviser.updateChecklist(checklistId, request));
+    return BaseResponse.onSuccess(adminChecklistAdviser.updateChecklists(roadmapId, week, request));
   }
 
   @GetMapping
