@@ -23,19 +23,20 @@ public class Roadmap extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private int week;
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private Part part;
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
-    private List<RoadmapTitle> roadmapTitleList;
+    private List<RoadmapWeek> roadmapWeekList;
 
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapSemester> roadmapSemesterList;
 
-    public void update(int week, Part part) {
-        this.week = week;
+    public void update(String title, Part part) {
+        this.title = title;
         this.part = part;
     }
+
 }

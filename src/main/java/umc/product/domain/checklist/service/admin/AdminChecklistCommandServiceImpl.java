@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest.ChecklistInfo;
+import umc.product.domain.checklist.dto.request.admin.AdminChecklistUpdateRequest;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.checklist.entity.Checklist;
 import umc.product.domain.checklist.entity.ChecklistContent;
@@ -28,14 +29,12 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
   private final RoadmapSemesterRepository roadmapSemesterRepository;
 
   @Override
-  public List<ChecklistCommonResponse> createChecklist(List<ChecklistInfo> checklistList, Roadmap roadmap, Long semesterId) {
-    RoadmapSemester roadmapSemester = roadmapSemesterRepository.findByRoadmapAndSemesterId(roadmap, semesterId)
-        .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
-
+  public List<ChecklistCommonResponse> createChecklists(RoadmapSemester roadmapSemester, int week, List<ChecklistInfo> checklistInfos) {
     List<ChecklistCommonResponse> responses = new ArrayList<>();
 
-    for (ChecklistInfo dto : checklistList) {
-      Checklist checklist = adminChecklistMapper.toChecklistEntity(dto, roadmapSemester);
+    for (ChecklistInfo dto : checklistInfos) {
+      // Mapper를 호출할 때, week 도 함께 넘겨주어 Checklist 엔티티에 저장하도록
+      Checklist checklist = adminChecklistMapper.toChecklistEntity(dto, roadmapSemester, week);
       checklistRepository.save(checklist);
 
       List<ChecklistContent> contents = dto.getContents().stream()
@@ -50,7 +49,7 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
   }
 
   @Override
-  public ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request) {
+  public ChecklistCommonResponse updateChecklist(Long checklistId, AdminChecklistUpdateRequest.ChecklistUpdateInfo request, int week) {
     Checklist checklist = checklistRepository.findById(checklistId)
         .orElseThrow(() -> new RestApiException(ChecklistErrorStatus.CHECKLIST_NOT_FOUND));
 
@@ -58,7 +57,7 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
     checklistContentRepository.deleteAllByChecklist(checklist);
 
     // 체크리스트 자체 업데이트
-    checklist.update(request.getTitle(), request.getType(), request.getCategory());
+    checklist.update(request.getTitle(), week, request.getType(), request.getCategory());
 
     // 새로운 content 저장
     List<ChecklistContent> contentList = request.getContents().stream()

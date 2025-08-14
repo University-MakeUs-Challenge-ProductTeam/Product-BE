@@ -1,11 +1,13 @@
 package umc.product.domain.study.adviser.member;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.checklist.service.member.ChecklistCommandService;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapWeek;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterCurrentService;
@@ -60,10 +62,10 @@ public class StudyAdviser {
         // 페치 조인을 사용하여 Semesterpart와 Member 미리 가져오기
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(member, studyId);
 
-        // 특정 주차, 파트의 로드맵 가져오기
-        List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);
+        // 스터디에 해당하는 로드맵 가져오기
+        Roadmap roadmap = roadmapQueryService.getRoadmap(studyMember);
 
-        return studyQueryService.getStudyResponse(studyMember, roadmapList);
+        return studyQueryService.getStudyResponse(studyMember, roadmap);
     }
 
     // 주차별 워크북 정보 조회
@@ -80,9 +82,15 @@ public class StudyAdviser {
         // 해당 사용자와 week로 정보 조회
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(targetMember, studyId);
 
-        List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
+        // 특정 주차의 RoadmapWeek 객체 목록을 조회
+        List<RoadmapWeek> roadmapWeeksForWeek = roadmapQueryService.getRoadmapWeeksForWeek(studyMember, week);
 
-        return studyQueryService.getStudyWorkbookResponse(studyMember, week, roadmapTitleList, loginMember.getId());
+        // DTO의 workbookContents를 채우기 위해 조회된 RoadmapWeek 목록에서 subject만 추출
+        List<String> workbookContents = roadmapWeeksForWeek.stream()
+            .map(RoadmapWeek::getSubject)
+            .collect(Collectors.toList());
+
+        return studyQueryService.getStudyWorkbookResponse(studyMember, week, workbookContents, loginMember.getId());
     }
 
     // 워크북 체크리스트 조회
@@ -94,10 +102,14 @@ public class StudyAdviser {
 
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(targetMember, studyId);
 
-        List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
+        List<RoadmapWeek> roadmapWeeksForWeek = roadmapQueryService.getRoadmapWeeksForWeek(studyMember, week);
+
+        List<String> workbookContents = roadmapWeeksForWeek.stream()
+            .map(RoadmapWeek::getSubject)
+            .collect(Collectors.toList());
 
         // StudyMember를 통해 Checklist를 가져오고, week에 맞게 응답값 반환 - querydsl을 통해 N + 1 문제 해결
-        return studyQueryService.getStudyChecklist(studyMember, week, roadmapTitleList);
+        return studyQueryService.getStudyChecklist(studyMember, week, workbookContents);
     }
 
     // 체크리스트 입력
@@ -135,8 +147,8 @@ public class StudyAdviser {
         }
 
         // 특정 주차, 파트의 로드맵 가져오기
-        List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);
+        Roadmap roadmap = roadmapQueryService.getRoadmap(studyMember);
 
-        return studyQueryService.getStudyResponse(studyMember, roadmapList);
+        return studyQueryService.getStudyResponse(studyMember, roadmap);
     }
 }

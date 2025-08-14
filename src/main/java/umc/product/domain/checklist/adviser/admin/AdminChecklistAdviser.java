@@ -1,12 +1,16 @@
 package umc.product.domain.checklist.adviser.admin;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.checklist.converter.admin.ChecklistConverter;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest.ChecklistInfo;
+import umc.product.domain.checklist.dto.request.admin.AdminChecklistUpdateRequest;
 import umc.product.domain.checklist.dto.response.admin.AdminChecklistResponse;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.checklist.entity.Checklist;
@@ -18,7 +22,9 @@ import umc.product.domain.checklist.service.admin.AdminChecklistCommandService;
 import umc.product.domain.checklist.status.ChecklistErrorStatus;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterService;
@@ -35,32 +41,50 @@ public class AdminChecklistAdviser {
   private final AdminChecklistMapper adminChecklistMapper;
   private final SemesterService semesterService;
   private final ChecklistConverter checklistConverter;
+  private final RoadmapQueryService roadmapQueryService;
 
   @Transactional
   public List<ChecklistCommonResponse> createChecklist(AdminChecklistRequest request) {
-    Roadmap roadmap = roadmapRepository.findByPartAndWeekAndSemesterId(
-        request.getPart(), request.getWeek(), request.getSemesterId()
-    ).orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+    RoadmapSemester roadmapSemester = roadmapQueryService.getRoadmapSemester(
+        request.getSemesterId(), request.getPart()
+    );
 
-    return adminChecklistCommandService.createChecklist(request.getChecklist(), roadmap, request.getSemesterId());
+    return adminChecklistCommandService.createChecklists(
+        roadmapSemester,
+        request.getWeek(),
+        request.getChecklist()
+    );
   }
 
   @Transactional
-  public ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request) {
-    return adminChecklistCommandService.updateChecklist(checklistId, request);
+  public List<ChecklistCommonResponse> updateChecklists(Long roadmapId, int week, AdminChecklistUpdateRequest request) {
+    validateChecklistOwnership(roadmapId, week, request.getChecklistsToUpdate());
+
+    List<ChecklistCommonResponse> responses = new ArrayList<>();
+
+    for (AdminChecklistUpdateRequest.ChecklistUpdateInfo updateInfo : request.getChecklistsToUpdate()) {
+      ChecklistCommonResponse response = adminChecklistCommandService.updateChecklist(
+          updateInfo.getChecklistId(),
+          updateInfo,
+          week
+      );
+      responses.add(response);
+    }
+
+    return responses;
   }
 
-  @Transactional(readOnly = true)
-  public List<AdminChecklistResponse> getChecklists(Long semesterId, Part part) {
-    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterIdAndPart(semesterId, part);
+  private void validateChecklistOwnership(Long roadmapId, int week, List<AdminChecklistUpdateRequest.ChecklistUpdateInfo> updateInfos) {
 
-    return roadmaps.stream()
-        .flatMap(roadmap ->
-            roadmap.getRoadmapSemesterList().stream() // 로드맵에 연결된 로드맵기수 리스트
-                .filter(rs -> rs.getSemester().getId().equals(semesterId)) // 해당 기수만 필터링
-                .flatMap(rs -> checklistRepository.findAllByRoadmapSemester(rs).stream())
-        )
-        .map(checklistConverter::toChecklistDetailResponse)
-        .toList();
+    Set<Long> requestedChecklistIds = updateInfos.stream()
+        .map(AdminChecklistUpdateRequest.ChecklistUpdateInfo::getChecklistId)
+        .collect(Collectors.toSet());
+
+    Set<Long> validChecklistIds = checklistRepository.findAllIdsByRoadmapIdAndWeek(roadmapId, week);
+
+    if (!validChecklistIds.containsAll(requestedChecklistIds)) {
+      throw new RestApiException(ChecklistErrorStatus.CHECKLIST_OWNERSHIP_MISMATCH);
+    }
   }
+
 }

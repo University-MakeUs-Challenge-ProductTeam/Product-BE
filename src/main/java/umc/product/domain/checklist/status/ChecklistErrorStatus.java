@@ -11,7 +11,8 @@ import umc.product.global.common.exception.code.BaseCodeInterface;
 public enum ChecklistErrorStatus implements BaseCodeInterface {
 
   CHECKLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "CHECKLIST404","해당 체크리스트를 찾을 수 없습니다."),
-  INVALID_CHECKLIST_TYPE(HttpStatus.BAD_REQUEST, "CHECKLIST_TYPE400","잘못된 체크리스트 타입입니다.");
+  INVALID_CHECKLIST_TYPE(HttpStatus.BAD_REQUEST, "CHECKLIST_TYPE400","잘못된 체크리스트 타입입니다."),
+  CHECKLIST_OWNERSHIP_MISMATCH(HttpStatus.FORBIDDEN, "CHECKLIST403", "해당 로드맵에 속하지 않는 체크리스트 ID가 포함되어 있습니다.");
 
   private final HttpStatus httpStatus;
   private final boolean isSuccess = false;

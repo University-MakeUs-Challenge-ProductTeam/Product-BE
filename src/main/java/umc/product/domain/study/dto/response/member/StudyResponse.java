@@ -28,15 +28,34 @@ public class StudyResponse {
     @Schema(description = "스터디 이름", example = "피그말리온")
     private String studyName;
 
-    @Schema(description = "로드맵 타이틀 목록", example = "[\"Figma 설치\", \"Figma의 이해\"]")
-    private List<String> roadmapTitles;
+//    @Schema(description = "현재 주차의 로드맵 타이틀 목록", example = "[\"Figma 설치\", \"Figma의 이해\"]")
+//    private List<String> roadmapTitles;
+
+    @Schema(description = "현재 주차의 주제 목록", example = "[\"Figma 기본기\", \"Prototyping의 이해\"]")
+    private List<String> currentWeekSubjects;
 
     @Schema(description = "스터디 멤버 목록")
     private List<StudyMemberResponse> members;
 
-    @Schema(description = "주차별 로드맵 정보")
-    private List<StudyRoadmapResponse> roadmaps;
+//    @Schema(description = "주차별 로드맵 정보")
+//    private List<StudyRoadmapResponse> roadmaps;
 
+    @Schema(description = "스터디 전체 목차")
+    private List<WeeklyRoadmapResponse> weeklyRoadmaps;
+
+
+    @Schema(description = "주차별 로드맵 상세 정보")
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class WeeklyRoadmapResponse {
+
+        @Schema(description = "주차", example = "1")
+        private int week;
+
+        @Schema(description = "해당 주차의 주제 목록", example = "[\"Figma 기본기\", \"Prototyping의 이해\"]")
+        private List<String> subjects;
+    }
 
     @Schema(description = "주차별 로드맵 정보")
     @Getter

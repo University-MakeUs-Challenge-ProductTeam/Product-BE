@@ -25,6 +25,9 @@ public class Checklist extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private int week;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChecklistType checklistType;
@@ -40,8 +43,9 @@ public class Checklist extends BaseEntity {
     @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
     private List<ChecklistContent> checklistContentList;
 
-    public void update(String title, ChecklistType type, ChecklistCategory category) {
+    public void update(String title, int week, ChecklistType type, ChecklistCategory category) {
         this.title = title;
+        this.week = week;
         this.checklistType = type;
         this.checklistCategory = category;
     }

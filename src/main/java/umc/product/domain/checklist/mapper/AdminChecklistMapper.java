@@ -9,9 +9,10 @@ import umc.product.domain.roadmap.entity.RoadmapSemester;
 @Component
 public class AdminChecklistMapper {
 
-  public Checklist toChecklistEntity(AdminChecklistRequest.ChecklistInfo dto, RoadmapSemester roadmapSemester) {
+  public Checklist toChecklistEntity(AdminChecklistRequest.ChecklistInfo dto, RoadmapSemester roadmapSemester, int week) {
     return Checklist.builder()
         .title(dto.getTitle())
+        .week(week)
         .checklistType(dto.getType())
         .checklistCategory(dto.getCategory())
         .roadmapSemester(roadmapSemester)
