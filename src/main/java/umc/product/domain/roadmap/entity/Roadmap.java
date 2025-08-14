@@ -22,9 +22,6 @@ public class Roadmap extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private int week;
-
     @Enumerated(EnumType.STRING)
     private Part part;
 
@@ -34,8 +31,4 @@ public class Roadmap extends BaseEntity {
     @OneToMany(mappedBy = "roadmap", cascade = CascadeType.ALL)
     private List<RoadmapSemester> roadmapSemesterList;
 
-    public void update(int week, Part part) {
-        this.week = week;
-        this.part = part;
-    }
 }
