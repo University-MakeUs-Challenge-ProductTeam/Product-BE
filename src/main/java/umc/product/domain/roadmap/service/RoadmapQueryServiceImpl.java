@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.entity.RoadmapWeek;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
 import umc.product.domain.roadmap.repository.RoadmapWeekRepository;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.SemesterPart;
@@ -25,6 +27,7 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
 
     private final RoadmapRepository roadmapRepository;
     private final RoadmapWeekRepository roadmapWeekRepository;
+    private final RoadmapSemesterRepository roadmapSemesterRepository;
 
     @Override
     public Roadmap getRoadmap(StudyMember studyMember) {
@@ -54,5 +57,16 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
             .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
 
         return roadmap;
+    }
+
+    @Override
+    public RoadmapSemester getRoadmapSemester(Long semesterId, Part part) {
+        // semesterId와 part로 Roadmap 조회
+        Roadmap roadmap = roadmapRepository.findBySemesterIdAndPart(semesterId, part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+        // 찾은 Roadmap과 semesterId로 RoadmapSemester 조회
+        return roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semesterId)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
     }
 }

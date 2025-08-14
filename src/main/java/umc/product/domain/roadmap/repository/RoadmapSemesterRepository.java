@@ -11,10 +11,5 @@ public interface RoadmapSemesterRepository extends JpaRepository<RoadmapSemester
 
   void deleteAllByRoadmap(Roadmap roadmap);
 
-  @Query("SELECT rs FROM RoadmapSemester rs " +
-      "WHERE rs.roadmap = :roadmap AND rs.semester.id = :semesterId")
-  Optional<RoadmapSemester> findByRoadmapAndSemesterId(
-      @Param("roadmap") Roadmap roadmap,
-      @Param("semesterId") Long semesterId
-  );
+  Optional<RoadmapSemester> findByRoadmapAndSemester_Id(Roadmap roadmap, Long semesterId);
 }

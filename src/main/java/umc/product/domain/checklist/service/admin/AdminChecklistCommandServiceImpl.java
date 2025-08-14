@@ -28,14 +28,12 @@ public class AdminChecklistCommandServiceImpl implements AdminChecklistCommandSe
   private final RoadmapSemesterRepository roadmapSemesterRepository;
 
   @Override
-  public List<ChecklistCommonResponse> createChecklist(List<ChecklistInfo> checklistList, Roadmap roadmap, Long semesterId) {
-    RoadmapSemester roadmapSemester = roadmapSemesterRepository.findByRoadmapAndSemesterId(roadmap, semesterId)
-        .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
-
+  public List<ChecklistCommonResponse> createChecklists(RoadmapSemester roadmapSemester, int week, List<ChecklistInfo> checklistInfos) {
     List<ChecklistCommonResponse> responses = new ArrayList<>();
 
-    for (ChecklistInfo dto : checklistList) {
-      Checklist checklist = adminChecklistMapper.toChecklistEntity(dto, roadmapSemester);
+    for (ChecklistInfo dto : checklistInfos) {
+      // Mapper를 호출할 때, week 도 함께 넘겨주어 Checklist 엔티티에 저장하도록
+      Checklist checklist = adminChecklistMapper.toChecklistEntity(dto, roadmapSemester, week);
       checklistRepository.save(checklist);
 
       List<ChecklistContent> contents = dto.getContents().stream()

@@ -1,6 +1,8 @@
 package umc.product.domain.roadmap.service;
 
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.entity.RoadmapWeek;
 import umc.product.domain.study.entity.StudyMember;
 
@@ -13,4 +15,6 @@ public interface RoadmapQueryService {
     List<RoadmapWeek> getRoadmapWeeksForWeek(StudyMember studyMember, int week);
 
     Roadmap getRoadmapById(Long roadmapId);
+
+    RoadmapSemester getRoadmapSemester(Long semesterId, Part part);
 }

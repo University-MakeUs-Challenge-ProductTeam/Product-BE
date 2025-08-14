@@ -18,7 +18,9 @@ import umc.product.domain.checklist.service.admin.AdminChecklistCommandService;
 import umc.product.domain.checklist.status.ChecklistErrorStatus;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterService;
@@ -35,14 +37,19 @@ public class AdminChecklistAdviser {
   private final AdminChecklistMapper adminChecklistMapper;
   private final SemesterService semesterService;
   private final ChecklistConverter checklistConverter;
+  private final RoadmapQueryService roadmapQueryService;
 
   @Transactional
   public List<ChecklistCommonResponse> createChecklist(AdminChecklistRequest request) {
-    Roadmap roadmap = roadmapRepository.findByPartAndWeekAndSemesterId(
-        request.getPart(), request.getWeek(), request.getSemesterId()
-    ).orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+    RoadmapSemester roadmapSemester = roadmapQueryService.getRoadmapSemester(
+        request.getSemesterId(), request.getPart()
+    );
 
-    return adminChecklistCommandService.createChecklist(request.getChecklist(), roadmap, request.getSemesterId());
+    return adminChecklistCommandService.createChecklists(
+        roadmapSemester,
+        request.getWeek(),
+        request.getChecklist()
+    );
   }
 
   @Transactional

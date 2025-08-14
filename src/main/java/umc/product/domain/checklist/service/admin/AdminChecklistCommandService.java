@@ -5,9 +5,10 @@ import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest;
 import umc.product.domain.checklist.dto.request.admin.AdminChecklistRequest.ChecklistInfo;
 import umc.product.domain.checklist.dto.response.admin.ChecklistCommonResponse;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
 
 public interface AdminChecklistCommandService {
-  List<ChecklistCommonResponse> createChecklist(List<AdminChecklistRequest.ChecklistInfo> checklistList, Roadmap roadmap, Long semesterId);
+  List<ChecklistCommonResponse> createChecklists(RoadmapSemester roadmapSemester, int week, List<ChecklistInfo> checklist);
 
   ChecklistCommonResponse updateChecklist(Long checklistId, ChecklistInfo request);
 }
