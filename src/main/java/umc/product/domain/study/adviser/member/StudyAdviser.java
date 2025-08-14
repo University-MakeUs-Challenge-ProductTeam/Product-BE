@@ -102,10 +102,14 @@ public class StudyAdviser {
 
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(targetMember, studyId);
 
-        List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
+        List<RoadmapWeek> roadmapWeeksForWeek = roadmapQueryService.getRoadmapWeeksForWeek(studyMember, week);
+
+        List<String> workbookContents = roadmapWeeksForWeek.stream()
+            .map(RoadmapWeek::getSubject)
+            .collect(Collectors.toList());
 
         // StudyMember를 통해 Checklist를 가져오고, week에 맞게 응답값 반환 - querydsl을 통해 N + 1 문제 해결
-        return studyQueryService.getStudyChecklist(studyMember, week, roadmapTitleList);
+        return studyQueryService.getStudyChecklist(studyMember, week, workbookContents);
     }
 
     // 체크리스트 입력

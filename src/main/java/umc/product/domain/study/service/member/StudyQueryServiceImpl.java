@@ -56,10 +56,10 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     @Override
-    public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList) {
+    public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> workbookContents) {
         List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList = studyRepository.getChecklistResponses(studyMember, week);
         boolean postStatus = studyRepository.getPostStatus(studyMember, week);
-        return studyConverter.toStudyWeekCheckListResponse(week, roadmapTitleList, postStatus, checklistResponseList);
+        return studyConverter.toStudyWeekCheckListResponse(week, workbookContents, postStatus, checklistResponseList);
     }
 
     // (나) 붙이는 메서드
