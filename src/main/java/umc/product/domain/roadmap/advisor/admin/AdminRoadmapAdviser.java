@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.enums.Part;
@@ -11,8 +13,10 @@ import umc.product.domain.roadmap.converter.admin.RoadmapConverter;
 import umc.product.domain.roadmap.dto.request.admin.AdminRoadmapRequest;
 import umc.product.domain.roadmap.dto.response.admin.AdminRoadmapResponse;
 import umc.product.domain.roadmap.dto.response.admin.RoadmapCommonResponse;
+import umc.product.domain.roadmap.dto.response.admin.RoadmapInfo;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.repository.RoadmapRepositoryCustom;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.roadmap.service.admin.AdminRoadmapCommandService;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
@@ -81,5 +85,10 @@ public class AdminRoadmapAdviser {
         .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
 
     return roadmapConverter.toAdminRoadmapResponse(roadmap);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<RoadmapInfo> getRoadmapList(Long semesterId, Part part, String keyword, Pageable pageable) {
+    return roadmapRepository.searchRoadmaps(semesterId, part, keyword, pageable);
   }
 }
