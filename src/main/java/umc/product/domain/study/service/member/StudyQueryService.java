@@ -16,6 +16,6 @@ public interface StudyQueryService {
     Study getStudy(Long studyId);
     StudyResponse getStudyResponse(StudyMember studyMember, Roadmap roadmap);
     StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> workbookContents, Long loginId);
-    StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> roadmapTitleList);
+    StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> workbookContents);
     StudyListResponse getStudyInfoList(Member member);
 }

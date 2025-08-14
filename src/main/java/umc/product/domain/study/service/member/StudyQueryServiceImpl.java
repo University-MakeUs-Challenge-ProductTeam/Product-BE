@@ -5,8 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
+import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.study.dto.response.member.*;
 import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
@@ -27,6 +32,8 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
     private final StudyRepository studyRepository;
     private final StudyConverter studyConverter;
+    private final RoadmapRepository roadmapRepository;
+    private final RoadmapSemesterRepository roadmapSemesterRepository;
 
     @Override
     public Study getStudy(Long studyId) {
@@ -47,17 +54,41 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
     @Override
     public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> workbookContents, Long loginId) {
+
+        Semester semester = studyMember.getSemesterPart().getSemester();
+        Part part = studyMember.getSemesterPart().getPart();
+
+        Roadmap roadmap = roadmapRepository.findBySemesterIdAndPart(semester.getId(), part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+        RoadmapSemester roadmapSemester = roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semester.getId())
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
+
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
         List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, loginId);
-        List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), week);
+        List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), roadmapSemester, week);
         return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, workbookContents, studyChecklistList);
     }
 
     @Override
     public StudyWeekChecklistResponse getStudyChecklist(StudyMember studyMember, int week, List<String> workbookContents) {
-        List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList = studyRepository.getChecklistResponses(studyMember, week);
+        // studyMember에서 Semester와 Part 정보를 조회
+        Semester semester = studyMember.getSemesterPart().getSemester();
+        Part part = studyMember.getSemesterPart().getPart();
+
+        // 위 정보를 이용해 이 스터디에 해당하는 Roadmap을 조회
+        Roadmap roadmap = roadmapRepository.findBySemesterIdAndPart(semester.getId(), part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+        // 찾은 Roadmap과 Semester로 최종적으로 필요한 RoadmapSemester 조회
+        RoadmapSemester roadmapSemester = roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semester.getId())
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
+
+        List<StudyWeekChecklistResponse.ChecklistResponse> checklistResponseList =
+            studyRepository.getChecklistResponses(studyMember.getId(), roadmapSemester, week);
+
         boolean postStatus = studyRepository.getPostStatus(studyMember, week);
         return studyConverter.toStudyWeekCheckListResponse(week, workbookContents, postStatus, checklistResponseList);
     }

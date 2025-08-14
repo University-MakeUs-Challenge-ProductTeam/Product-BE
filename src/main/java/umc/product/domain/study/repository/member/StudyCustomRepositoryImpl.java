@@ -3,6 +3,7 @@ package umc.product.domain.study.repository.member;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -12,9 +13,15 @@ import umc.product.domain.checklist.entity.QChecklistMemberAnswer;
 import umc.product.domain.checklist.entity.enums.ChecklistType;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.QMember;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.QRoadmap;
 import umc.product.domain.roadmap.entity.QRoadmapSemester;
+import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
+import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
 import umc.product.domain.semester.entity.QSemesterPart;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.study.dto.response.member.*;
 import umc.product.domain.study.entity.*;
 
@@ -27,6 +34,8 @@ import java.util.List;
 public class StudyCustomRepositoryImpl implements StudyCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final RoadmapRepository roadmapRepository;
+    private final RoadmapSemesterRepository roadmapSemesterRepository;
 
     private final QStudyMember studyMember = QStudyMember.studyMember;
     private final QMember member = QMember.member;
@@ -60,10 +69,10 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public List<StudyWorkbookResponse.StudyChecklistResponse> getStudyChecklists(Long studyMemberId, int week) {
+    public List<StudyWorkbookResponse.StudyChecklistResponse> getStudyChecklists(Long studyMemberId, RoadmapSemester roadmapSemester, int week) {
 
         // 체크리스트 입력 전 -> checkStatus가 전부 다 false -> 빈 리스트 반환
-        Long totalTrueCount = validateCheckStatus(studyMemberId, week);
+        Long totalTrueCount = validateCheckStatus(studyMemberId, roadmapSemester, week);
         if (totalTrueCount == null || totalTrueCount == 0) {
             return Collections.emptyList();
         }
@@ -133,15 +142,16 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                         statusExpression.stringValue()
                 ))
                 .from(checklist)
-                // 해당 체크리스트가 속한 Roadmap의 주차 조건 적용
-                .join(checklist.roadmapSemester, roadmapSemester)
-                .join(roadmapSemester.roadmap, roadmap)
-                .where(roadmap.week.eq(week))
                 // Checklist → ChecklistContent 조인
                 .join(checklist.checklistContentList, checklistContent)
                 // ChecklistContent → ChecklistMemberAnswer (대상 studyMember의 답변만 left join)
                 .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
                 .on(checklistMemberAnswer.studyMember.id.eq(studyMemberId))
+
+                .where(
+                    checklist.roadmapSemester.eq(roadmapSemester), // 1. 부모(RoadmapSemester)가 같은지 확인
+                    checklist.week.eq(week)                        // 2. Checklist 자체의 week가 같은지 확인
+                )
                 .groupBy(checklist.id, checklist.checklistCategory, checklist.checklistType)
                 // HAVING: SELECT 타입인 경우에는 그룹에 응답(selectTotal)이 하나라도 있어야 함,
                 // MULTIPLE 타입은 별도 조건 없이 항상 포함
@@ -155,47 +165,64 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
     }
 
     @Override
-    public List<StudyWeekChecklistResponse.ChecklistResponse> getChecklistResponses(StudyMember studyMember, int week) {
-
+    public List<StudyWeekChecklistResponse.ChecklistResponse> getChecklistResponses(Long studyMemberId, RoadmapSemester roadmapSemester, int week) {
         return jpaQueryFactory
-                .from(checklist)
-                .join(checklist.checklistContentList, checklistContent)
-                .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
-                .on(checklistMemberAnswer.studyMember.id.eq(studyMember.getId()))
-                // Roadmap을 통해 week 조건 맞추기
-                .join(checklist.roadmapSemester, roadmapSemester)
-                .join(roadmapSemester.roadmap, roadmap)
-                .where(roadmap.week.eq(week))
-                // checklistId를 기준으로 그룹화하고, 각 그룹별로 DTO를 직접 생성하여 리스트로 반환
-                .transform(GroupBy.groupBy(checklist.id)
-                        .list(new QStudyWeekChecklistResponse_ChecklistResponse(
-                                checklist.checklistType.stringValue(),
-                                checklist.title,
-                                // 체크리스트 내용 목록 가져오기
-                                GroupBy.list(new QStudyWeekChecklistResponse_ChecklistContentResponse(
-                                        checklistContent.id,
-                                        checklistContent.content,
-                                        checklistMemberAnswer.checkStatus
-                                ))
-                        ))
-                );
+            .from(checklist)
+            .join(checklist.checklistContentList, checklistContent)
+            .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
+            .on(checklistMemberAnswer.studyMember.id.eq(studyMemberId))
+            .where(
+                checklist.roadmapSemester.eq(roadmapSemester), // 1. 상위 서비스가 찾아준 RoadmapSemester와 같은지 확인
+                checklist.week.eq(week)                        // 2. Checklist 자체의 week가 같은지 확인
+            )
+            // 이하 그룹화 및 DTO 변환 로직은 이전과 동일합니다.
+            .transform(GroupBy.groupBy(checklist.id)
+                .list(new QStudyWeekChecklistResponse_ChecklistResponse(
+                    checklist.checklistType.stringValue(),
+                    checklist.title,
+                    GroupBy.list(new QStudyWeekChecklistResponse_ChecklistContentResponse(
+                        checklistContent.id,
+                        checklistContent.content,
+                        checklistMemberAnswer.checkStatus
+                    ))
+                ))
+            );
     }
 
     @Override
     public boolean getPostStatus(StudyMember studyMember, int week) {
-        Long totalTrueCount = validateCheckStatus(studyMember.getId(), week);
-        return totalTrueCount != null && totalTrueCount != 0;
+        Semester semester = studyMember.getSemesterPart().getSemester();
+        Part part = studyMember.getSemesterPart().getPart();
 
+        Optional<Roadmap> roadmapOpt = roadmapRepository.findBySemesterIdAndPart(semester.getId(), part);
+        if (roadmapOpt.isEmpty()) {
+            // 로드맵이 없다는 것은 아직 체크리스트가 하나도 없다는 의미이므로, 게시글 상태는 false
+            return false;
+        }
+
+        Roadmap roadmap = roadmapOpt.get();
+
+        Optional<RoadmapSemester> roadmapSemesterOpt = roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semester.getId());
+        if (roadmapSemesterOpt.isEmpty()) {
+            return false;
+        }
+        RoadmapSemester roadmapSemester = roadmapSemesterOpt.get();
+
+        // 4. 찾아낸 roadmapSemester를 파라미터로 넘겨주어 checkStatus를 검증
+        Long totalTrueCount = validateCheckStatus(studyMember.getId(), roadmapSemester, week);
+
+        return totalTrueCount != null && totalTrueCount != 0;
     }
 
     // 체크리스트 checkStatus 검증
-    private Long validateCheckStatus(Long studyMemberId, int week) {
+    private Long validateCheckStatus(Long studyMemberId, RoadmapSemester roadmapSemester, int week) {
         return jpaQueryFactory
                 .select(checklistMemberAnswer.id.count())
                 .from(checklist)
-                .join(checklist.roadmapSemester, roadmapSemester)
-                .join(roadmapSemester.roadmap, roadmap)
-                .where(roadmap.week.eq(week))
+                .where(
+                    checklist.roadmapSemester.eq(roadmapSemester),
+                    checklist.week.eq(week)
+                )
                 .join(checklist.checklistContentList, checklistContent)
                 .leftJoin(checklistContent.checklistMemberAnswerList, checklistMemberAnswer)
                 .on(checklistMemberAnswer.studyMember.id.eq(studyMemberId)
