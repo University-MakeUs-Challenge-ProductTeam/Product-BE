@@ -10,9 +10,6 @@ import umc.product.domain.semester.entity.Semester;
 public interface AdminRoadmapCommandService {
   Roadmap createRoadmap(String title, Part part);
   void createRoadmapSemester(Roadmap roadmap, Semester semester);
-  void createRoadmapTitles(Roadmap roadmap, List<String> titles);
-
-  void deleteRoadmapsBySemesterAndPart(Long semesterId, Part part);
 
   void createRoadmapWeek(Roadmap roadmap, int week, String subject);
 

@@ -15,8 +15,10 @@ import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.roadmap.service.admin.AdminRoadmapCommandService;
+import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterService;
+import umc.product.global.common.exception.RestApiException;
 
 @Component
 @RequiredArgsConstructor
@@ -74,11 +76,10 @@ public class AdminRoadmapAdviser {
   }
 
   @Transactional(readOnly = true)
-  public List<AdminRoadmapResponse> getRoadmaps(Long semesterId, Part part) {
-    List<Roadmap> roadmaps = roadmapRepository.findAllBySemesterIdAndPart(semesterId, part);
+  public AdminRoadmapResponse getRoadmap(Long semesterId, Part part) {
+    Roadmap roadmap = roadmapRepository.findBySemesterIdAndPart(semesterId, part)
+        .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
 
-    return roadmaps.stream()
-        .map(roadmapConverter::toRoadmapDetailResponse)
-        .toList();
+    return roadmapConverter.toAdminRoadmapResponse(roadmap);
   }
 }

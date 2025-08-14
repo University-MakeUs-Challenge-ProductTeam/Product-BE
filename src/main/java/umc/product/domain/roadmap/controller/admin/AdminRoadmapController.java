@@ -51,11 +51,11 @@ public class AdminRoadmapController {
   @GetMapping
   @Operation(summary = "로드맵 조회 API", description = "기수와 파트로 로드맵을 조회합니다. 이 조회 API는 로드맵 생성 시 '이전 기수 로드맵 불러오기' 사용할 때를 위한 API 입니다.")
   @ApiResponse(responseCode = "200", description = "조회 성공")
-  public BaseResponse<List<AdminRoadmapResponse>> getRoadmaps(
+  public BaseResponse<AdminRoadmapResponse> getRoadmap(
       @RequestParam Long semesterId,
       @RequestParam Part part
   ) {
-    return BaseResponse.onSuccess(adminRoadmapAdviser.getRoadmaps(semesterId, part));
+    return BaseResponse.onSuccess(adminRoadmapAdviser.getRoadmap(semesterId, part));
   }
 
 }
