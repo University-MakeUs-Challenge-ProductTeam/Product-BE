@@ -16,4 +16,5 @@ public interface RoadmapQueryService {
 
     List<RoadmapWeek> getRoadmapWeeksForWeek(StudyMember studyMember, int week);
 
+    Roadmap getRoadmapById(Long roadmapId);
 }

@@ -15,4 +15,6 @@ public interface AdminRoadmapCommandService {
   void deleteRoadmapsBySemesterAndPart(Long semesterId, Part part);
 
   void createRoadmapWeek(Roadmap roadmap, int week, String subject);
+
+  void deleteRoadmapWeeks(Roadmap roadmap);
 }

@@ -71,4 +71,12 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
         // 2. 찾은 roadmap의 ID와 특정 주차(week)를 이용해 필요한 RoadmapWeek 목록만 DB에서 직접 조회
         return roadmapWeekRepository.findAllByRoadmapIdAndWeek(roadmap.getId(), week);
     }
+
+    @Override
+    public Roadmap getRoadmapById(Long roadmapId) {
+        Roadmap roadmap = roadmapRepository.findById(roadmapId)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+        return roadmap;
+    }
 }

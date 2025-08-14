@@ -39,17 +39,17 @@ public class AdminRoadmapController {
     return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
   }
 
-  @PatchMapping
-  @Operation(summary = "기수별 파트 로드맵 수정 API", description = "특정 로드맵의 week, titles를 수정하는 API입니다. 중앙 관리자만 사용 가능합니다.")
+  @PatchMapping("/{roadmapId}")
+  @Operation(summary = "기수별 파트 로드맵 수정 API", description = "ID로 특정 로드맵의 내용을 수정하는 API입니다. 중앙 관리자만 사용 가능합니다.")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "로드맵 수정 성공")
   })
-  public BaseResponse<List<RoadmapCommonResponse>> updateRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
-    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(request));
+  public BaseResponse<RoadmapCommonResponse> updateRoadmap(@PathVariable Long roadmapId, @Valid @RequestBody AdminRoadmapRequest request) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.updateRoadmap(roadmapId, request));
   }
 
   @GetMapping
-  @Operation(summary = "로드맵 조회 API", description = "기수와 파트로 로드맵을 조회합니다.")
+  @Operation(summary = "로드맵 조회 API", description = "기수와 파트로 로드맵을 조회합니다. 이 조회 API는 로드맵 생성 시 '이전 기수 로드맵 불러오기' 사용할 때를 위한 API 입니다.")
   @ApiResponse(responseCode = "200", description = "조회 성공")
   public BaseResponse<List<AdminRoadmapResponse>> getRoadmaps(
       @RequestParam Long semesterId,

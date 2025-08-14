@@ -11,4 +11,6 @@ public interface RoadmapWeekRepository extends JpaRepository<RoadmapWeek, Long> 
   @Query("SELECT rw FROM RoadmapWeek rw WHERE rw.roadmap.id = :roadmapId AND rw.week = :week")
   List<RoadmapWeek> findAllByRoadmapIdAndWeek(@Param("roadmapId") Long roadmapId, @Param("week") int week);
 
+  void deleteAllByRoadmapId(Long roadmapId);
+
 }

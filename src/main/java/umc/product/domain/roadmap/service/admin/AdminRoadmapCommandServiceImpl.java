@@ -65,4 +65,9 @@ public class AdminRoadmapCommandServiceImpl implements AdminRoadmapCommandServic
     roadmapWeekRepository.save(roadmapWeek);
   }
 
+  @Override
+  public void deleteRoadmapWeeks(Roadmap roadmap) {
+    roadmapWeekRepository.deleteAllByRoadmapId(roadmap.getId());
+  }
+
 }
