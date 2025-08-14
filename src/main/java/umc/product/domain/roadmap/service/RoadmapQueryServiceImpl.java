@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.repository.RoadmapRepository;
+import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.status.StudyErrorStatus;
@@ -21,6 +22,20 @@ import java.util.List;
 public class RoadmapQueryServiceImpl implements RoadmapQueryService {
 
     private final RoadmapRepository roadmapRepository;
+
+    @Override
+    public Roadmap getRoadmap(StudyMember studyMember) {
+
+        SemesterPart semesterPart = studyMember.getSemesterPart();
+        Long semesterId = semesterPart.getSemester().getId();
+        Part part = semesterPart.getPart();
+
+        Roadmap roadmap = roadmapRepository.findBySemesterIdAndPart(semesterId, part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+
+        // 3. 조회된 단일 Roadmap 객체를 반환합니다.
+        return roadmap;
+    }
 
     @Override
     public List<Roadmap> getRoadmapList(StudyMember studyMember) {

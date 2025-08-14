@@ -3,7 +3,7 @@ package umc.product.domain.study.converter.member;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
-import umc.product.domain.roadmap.entity.RoadmapTitle;
+import umc.product.domain.roadmap.entity.RoadmapWeek;
 import umc.product.domain.study.dto.response.member.*;
 import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
@@ -15,38 +15,32 @@ import java.util.stream.Collectors;
 @Component
 public class StudyConverter {
 
-    public StudyResponse toStudyResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, List<Roadmap> roadmapList) {
+    public StudyResponse toStudyResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, Roadmap roadmap) {
         Study study = studyMember.getStudy();
 
-        List<StudyResponse.StudyRoadmapResponse> roadmapResponseList = roadmapList.stream()
-                .map(this::toStudyRoadmapResponse)
-                .collect(Collectors.toList());
+        List<StudyResponse.WeeklyRoadmapResponse> weeklyRoadmaps = roadmap.getRoadmapWeekList().stream()
+            .map(roadmapWeek -> StudyResponse.WeeklyRoadmapResponse.builder()
+                .week(roadmapWeek.getWeek())
+                .subjects(List.of(roadmapWeek.getSubject()))
+                .build())
+            .collect(Collectors.toList());
 
-        List<String> roadmapTitleList = roadmapResponseList.stream()
-                .filter(rr -> rr.getWeek() == study.getCurrentWeek())
-                .flatMap(rr -> rr.getTitles().stream())
-                .collect(Collectors.toList());
+        // 현재 주차의 주제 목록
+        List<String> currentWeekSubjects = roadmap.getRoadmapWeekList().stream() // <- 수정된 부분
+            .filter(roadmapWeek -> roadmapWeek.getWeek() == study.getCurrentWeek())
+            .map(RoadmapWeek::getSubject)
+            .collect(Collectors.toList());
 
         return StudyResponse.builder()
-                .studyId(study.getId())
-                .currentWeek(study.getCurrentWeek())
-                .semester(studyMember.getSemesterPart().getSemester().getName())
-                .part(studyMember.getSemesterPart().getPart().toString())
-                .studyName(study.getName())
-                .roadmapTitles(roadmapTitleList)
-                .members(studyMemberResponseList)
-                .roadmaps(roadmapResponseList)
-                .build();
-    }
-
-    public StudyResponse.StudyRoadmapResponse toStudyRoadmapResponse(Roadmap roadmap) {
-        List<String> titles = roadmap.getRoadmapTitleList().stream()
-                .map(RoadmapTitle::getTitle)
-                .collect(Collectors.toList());
-        return StudyResponse.StudyRoadmapResponse.builder()
-                .week(roadmap.getWeek())
-                .titles(titles)
-                .build();
+            .studyId(study.getId())
+            .currentWeek(study.getCurrentWeek())
+            .semester(studyMember.getSemesterPart().getSemester().getName())
+            .part(studyMember.getSemesterPart().getPart().toString())
+            .studyName(study.getName())
+            .currentWeekSubjects(currentWeekSubjects)
+            .members(studyMemberResponseList)
+            .weeklyRoadmaps(weeklyRoadmaps)
+            .build();
     }
 
     public StudyWorkbookResponse toStudyWorkbookResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, int week,

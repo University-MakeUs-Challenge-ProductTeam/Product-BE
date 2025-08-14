@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.status.RoadmapErrorStatus;
 import umc.product.domain.study.dto.response.member.*;
 import umc.product.domain.study.dto.response.member.list.StudyListResponse;
 import umc.product.domain.study.entity.Study;
@@ -34,12 +35,14 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     @Override
-    public StudyResponse getStudyResponse(StudyMember studyMember, List<Roadmap> roadmapList) {
+    public StudyResponse getStudyResponse(StudyMember studyMember, Roadmap roadmap) {
+
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
         List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, studyMember.getSemesterPart().getMember().getId());
-        return studyConverter.toStudyResponse(studyMember, markedstudyMemberResponseList, roadmapList);
+
+        return studyConverter.toStudyResponse(studyMember, markedstudyMemberResponseList, roadmap);
     }
 
     @Override

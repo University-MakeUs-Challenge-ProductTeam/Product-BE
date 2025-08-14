@@ -60,10 +60,10 @@ public class StudyAdviser {
         // 페치 조인을 사용하여 Semesterpart와 Member 미리 가져오기
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(member, studyId);
 
-        // 특정 주차, 파트의 로드맵 가져오기
-        List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);
+        // 스터디에 해당하는 로드맵 가져오기
+        Roadmap roadmap = roadmapQueryService.getRoadmap(studyMember);
 
-        return studyQueryService.getStudyResponse(studyMember, roadmapList);
+        return studyQueryService.getStudyResponse(studyMember, roadmap);
     }
 
     // 주차별 워크북 정보 조회
@@ -135,8 +135,8 @@ public class StudyAdviser {
         }
 
         // 특정 주차, 파트의 로드맵 가져오기
-        List<Roadmap> roadmapList = roadmapQueryService.getRoadmapList(studyMember);
+        Roadmap roadmap = roadmapQueryService.getRoadmap(studyMember);
 
-        return studyQueryService.getStudyResponse(studyMember, roadmapList);
+        return studyQueryService.getStudyResponse(studyMember, roadmap);
     }
 }

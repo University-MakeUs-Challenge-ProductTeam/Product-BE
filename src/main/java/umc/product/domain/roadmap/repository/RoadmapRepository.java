@@ -27,5 +27,8 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
   Optional<Roadmap> findByPartAndWeekAndSemesterId(@Param("part") Part part,
       @Param("week") int week,
       @Param("semesterId") Long semesterId);
+
+  @Query("SELECT r FROM Roadmap r JOIN r.roadmapSemesterList rs WHERE rs.semester.id = :semesterId AND r.part = :part")
+  Optional<Roadmap> findBySemesterIdAndPart(@Param("semesterId") Long semesterId, @Param("part") Part part);
 }
 
