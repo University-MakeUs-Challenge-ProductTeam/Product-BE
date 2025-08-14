@@ -27,25 +27,24 @@ public class AdminRoadmapAdviser {
   private final RoadmapConverter roadmapConverter;
 
   @Transactional
-  public List<RoadmapCommonResponse> createRoadmap(AdminRoadmapRequest request) {
+  public RoadmapCommonResponse createRoadmap(AdminRoadmapRequest request) {
     Semester semester = semesterService.getSemester(request.getSemesterId());
-    List<RoadmapCommonResponse> responses = new ArrayList<>();
 
-    for (Map.Entry<Integer, List<String>> entry : request.getTitlesPerWeek().entrySet()) {
-      int week = entry.getKey();
-      List<String> titles = entry.getValue();
+    Roadmap roadmap = adminRoadmapCommandService.createRoadmap(request.getTitle(), request.getPart());
 
-      Roadmap roadmap = adminRoadmapCommandService.createRoadmap(
-          request.getSemesterId(), request.getPart(), week
-      );
+    adminRoadmapCommandService.createRoadmapSemester(roadmap, semester);
 
-      adminRoadmapCommandService.createRoadmapSemester(roadmap, semester);
-      adminRoadmapCommandService.createRoadmapTitles(roadmap, titles);
+    for (AdminRoadmapRequest.RoadmapWeekRequest weekRequest : request.getWeeklySubjects()) {
+      int week = weekRequest.getWeek();
+      List<String> subjects = weekRequest.getSubjects();
 
-      responses.add(RoadmapCommonResponse.from(roadmap.getId()));
+      // 한 주차에 여러 주제(subject)가 있을 수 있으므로, 중첩 반복문을 사용
+      for (String subject : subjects) {
+        // 부모 roadmap, 주차, 개별 주제를 전달하여 RoadmapWeek를 생성하고 저장
+        adminRoadmapCommandService.createRoadmapWeek(roadmap, week, subject);
+      }
     }
-
-    return responses;
+    return RoadmapCommonResponse.from(roadmap.getId());
   }
 
   @Transactional

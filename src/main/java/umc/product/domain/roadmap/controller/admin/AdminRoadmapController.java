@@ -35,7 +35,7 @@ public class AdminRoadmapController {
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "로드맵 생성 성공")
   })
-  public BaseResponse<List<RoadmapCommonResponse>> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
+  public BaseResponse<RoadmapCommonResponse> createRoadmap(@Valid @RequestBody AdminRoadmapRequest request) {
     return BaseResponse.onSuccess(adminRoadmapAdviser.createRoadmap(request));
   }
 

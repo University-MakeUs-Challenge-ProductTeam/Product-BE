@@ -1,6 +1,8 @@
 package umc.product.domain.roadmap.dto.request.admin;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -23,9 +25,24 @@ public class AdminRoadmapRequest {
   @NotNull
   private Part part;
 
-  @Schema(description = "주차별 워크북 제목 리스트", example = "{\"1\": [\"Figma 설치\"], \"2\": [\"기초 레이아웃\"]}")
-  @NotNull
-  private Map<Integer, List<String>> titlesPerWeek;
+  @Schema(description = "로드맵 제목", example = "BASIC")
+  @NotBlank
+  private String title;
 
+  @Schema(description = "주차별 주제 목록")
+  @Valid
+  private List<RoadmapWeekRequest> weeklySubjects;
+
+  @Getter
+  @Schema(description = "주차별 주제 요청 DTO")
+  public static class RoadmapWeekRequest {
+
+    @Schema(description = "주차", example = "1")
+    @NotNull
+    private Integer week;
+
+    @Schema(description = "해당 주차의 주제 목록", example = "[\"Figma 기본기\", \"Prototyping의 이해\"]")
+    private List<String> subjects;
+  }
 
 }
