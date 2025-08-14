@@ -46,13 +46,13 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     @Override
-    public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> roadmapTitleList, Long loginId) {
+    public StudyWorkbookResponse getStudyWorkbookResponse(StudyMember studyMember, int week, List<String> workbookContents, Long loginId) {
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
         List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
         // 로그인 사용자에 (나) 붙이기
         List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, loginId);
         List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), week);
-        return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, roadmapTitleList, studyChecklistList);
+        return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, workbookContents, studyChecklistList);
     }
 
     @Override

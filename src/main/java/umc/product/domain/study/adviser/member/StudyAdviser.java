@@ -1,11 +1,13 @@
 package umc.product.domain.study.adviser.member;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.checklist.service.member.ChecklistCommandService;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.service.member.MemberService;
 import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapWeek;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.service.SemesterCurrentService;
@@ -80,9 +82,15 @@ public class StudyAdviser {
         // 해당 사용자와 week로 정보 조회
         StudyMember studyMember = studyMemberQueryService.getStudyMemberFetch(targetMember, studyId);
 
-        List<String> roadmapTitleList = roadmapQueryService.getRoadmapTitleList(studyMember, week);
+        // 특정 주차의 RoadmapWeek 객체 목록을 조회
+        List<RoadmapWeek> roadmapWeeksForWeek = roadmapQueryService.getRoadmapWeeksForWeek(studyMember, week);
 
-        return studyQueryService.getStudyWorkbookResponse(studyMember, week, roadmapTitleList, loginMember.getId());
+        // DTO의 workbookContents를 채우기 위해 조회된 RoadmapWeek 목록에서 subject만 추출
+        List<String> workbookContents = roadmapWeeksForWeek.stream()
+            .map(RoadmapWeek::getSubject)
+            .collect(Collectors.toList());
+
+        return studyQueryService.getStudyWorkbookResponse(studyMember, week, workbookContents, loginMember.getId());
     }
 
     // 워크북 체크리스트 조회

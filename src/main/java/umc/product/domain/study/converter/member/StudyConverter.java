@@ -44,13 +44,13 @@ public class StudyConverter {
     }
 
     public StudyWorkbookResponse toStudyWorkbookResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, int week,
-                                                         List<String> roadmapTitleList, List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists) {
+                                                         List<String> workbookContents, List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklists) {
         Member member = studyMember.getSemesterPart().getMember();
 
         return StudyWorkbookResponse.builder()
                 .nickName(member.getNickName())
                 .week(week)
-                .workbookContents(roadmapTitleList)
+                .workbookContents(workbookContents)
                 .members(studyMemberResponseList)
                 .checklists(studyChecklists)
                 .build();
