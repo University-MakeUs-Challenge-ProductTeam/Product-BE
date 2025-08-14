@@ -13,14 +13,17 @@ import umc.product.global.common.base.BaseEntity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RoadmapTitle extends BaseEntity {
+public class RoadmapWeek extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    private int week;
+
+    @Column(nullable = false)
+    private String subject; // 주차별 주제
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roadmap_id", nullable = false)
