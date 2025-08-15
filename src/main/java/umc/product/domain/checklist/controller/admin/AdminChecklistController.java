@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,5 +46,14 @@ public class AdminChecklistController {
   ) {
     return BaseResponse.onSuccess(adminChecklistAdviser.updateChecklists(roadmapId, week, request));
   }
+
+  @DeleteMapping("/{checklistId}")
+  @Operation(summary = "체크리스트 삭제 API", description = "ID로 특정 체크리스트와 하위 항목들을 모두 삭제합니다.")
+  @ApiResponse(responseCode = "200", description = "체크리스트 삭제 성공")
+  public BaseResponse<ChecklistCommonResponse> deleteChecklist(@PathVariable Long checklistId) {
+    Long deletedId = adminChecklistAdviser.deleteChecklist(checklistId);
+    return BaseResponse.onSuccess(ChecklistCommonResponse.from(deletedId));
+  }
+
 
 }
