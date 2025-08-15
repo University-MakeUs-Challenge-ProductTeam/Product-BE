@@ -112,4 +112,11 @@ public class AdminRoadmapAdviser {
 
     return roadmapConverter.toRoadmapDetailResponse(roadmap, allWeeks, allChecklists);
   }
+
+  @Transactional
+  public void deleteRoadmap(Long roadmapId) {
+    Roadmap roadmap = roadmapQueryService.getRoadmapById(roadmapId);
+
+    roadmapRepository.delete(roadmap);
+  }
 }

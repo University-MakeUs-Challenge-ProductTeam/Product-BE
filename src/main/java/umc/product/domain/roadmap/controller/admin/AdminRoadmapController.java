@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,6 +85,14 @@ public class AdminRoadmapController {
       @RequestParam Part part
   ) {
     return BaseResponse.onSuccess(adminRoadmapAdviser.getRoadmapDetail(semesterId, part));
+  }
+
+  @DeleteMapping("/{roadmapId}")
+  @Operation(summary = "로드맵 삭제 API", description = "ID로 특정 로드맵과 하위 데이터들을 모두 삭제합니다.")
+  @ApiResponse(responseCode = "200", description = "로드맵 삭제 성공")
+  public BaseResponse<String> deleteRoadmap(@PathVariable Long roadmapId) {
+    adminRoadmapAdviser.deleteRoadmap(roadmapId);
+    return BaseResponse.onSuccess("로드맵이 성공적으로 삭제되었습니다.");
   }
 
 }
