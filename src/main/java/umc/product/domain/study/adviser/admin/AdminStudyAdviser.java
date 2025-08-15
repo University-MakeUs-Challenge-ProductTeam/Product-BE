@@ -18,9 +18,11 @@ import umc.product.domain.checklist.repository.ChecklistRepository;
 import umc.product.domain.checklist.service.admin.AdminChecklistContentQueryServiceImpl;
 import umc.product.domain.checklist.service.admin.AdminChecklistMemberAnswerCommandServiceImpl;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.OutReason;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.service.admin.AdminMemberService;
+import umc.product.domain.member.service.admin.AdminOutService;
 import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
@@ -32,14 +34,19 @@ import umc.product.domain.semester.service.SemesterService;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.request.admin.AdminWeeklyStatusRequest;
 import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
+import umc.product.domain.study.dto.response.admin.WeeklyStatusCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
+import umc.product.domain.study.entity.WeeklyStudyStatus;
+import umc.product.domain.study.entity.enums.PassStatus;
 import umc.product.domain.study.entity.enums.StudyType;
 import umc.product.domain.study.mapper.admin.AdminStudyUniversityMapper;
 import umc.product.domain.study.repository.admin.AdminStudyRepository;
+import umc.product.domain.study.repository.admin.AdminWeeklyStudyStatusRepository;
 import umc.product.domain.study.repository.member.StudyMemberRepository;
 import umc.product.domain.study.service.admin.*;
 import umc.product.domain.study.service.member.StudyQueryService;
@@ -71,6 +78,8 @@ public class AdminStudyAdviser {
     private final RoadmapQueryService roadmapQueryService;
     private final ChecklistRepository checklistRepository;
     private final ChecklistMemberAnswerRepository checklistMemberAnswerRepository;
+    private final AdminWeeklyStudyStatusRepository adminWeeklyStudyStatusRepository;
+    private final AdminOutService adminOutService;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     // todo - 최적화 필요
@@ -347,4 +356,33 @@ public class AdminStudyAdviser {
     }
 
 
+    @Transactional
+    public WeeklyStatusCommonResponse setWeeklyStatus(Long studyMemberId, int week, AdminWeeklyStatusRequest request) {
+        // 1. 대상이 되는 StudyMember 조회
+        StudyMember studyMember = studyMemberRepository.findById(studyMemberId)
+            .orElseThrow(() -> new RestApiException(StudyErrorStatus.STUDY_MEMBER_NOT_FOUND));
+
+        // 2. 해당 멤버/주차의 WeeklyStudyStatus를 찾거나 없으면 새로 생성
+        WeeklyStudyStatus weeklyStatus = adminWeeklyStudyStatusRepository
+            .findByStudyMemberAndWeek(studyMember, week)
+            .orElse(WeeklyStudyStatus.builder()
+                .studyMember(studyMember)
+                .week(week)
+                .build());
+
+        weeklyStatus.updateStatus(request.getStatus());
+        adminWeeklyStudyStatusRepository.save(weeklyStatus);
+
+        // 3. 만약 설정된 상태가 'OUT'이라면, 'MemberOut' 경고를 부여
+        if (request.getStatus() == PassStatus.OUT) {
+            Member member = studyMember.getSemesterPart().getMember();
+
+            // '스터디 불이행' 사유로 MemberOut을 생성하는 서비스를 호출
+            // 이 서비스 내부에서 3회 누적 시 최종 OUT 처리 로직이 동작
+            adminOutService.postMemberOut(member, OutReason.STUDY_CHECK_NOT_PERFORM);
+        }
+        return WeeklyStatusCommonResponse.builder()
+            .weeklyStatusId(weeklyStatus.getId())
+            .build();
+    }
 }

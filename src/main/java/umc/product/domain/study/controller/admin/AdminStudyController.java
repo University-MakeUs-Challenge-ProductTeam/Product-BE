@@ -19,9 +19,11 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.study.adviser.admin.AdminStudyAdviser;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.request.admin.AdminWeeklyStatusRequest;
 import umc.product.domain.study.dto.response.admin.AdminStudyListResponse;
 import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
+import umc.product.domain.study.dto.response.admin.WeeklyStatusCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -100,6 +102,17 @@ public class AdminStudyController {
     @Operation(summary = "스터디 세부 조회 - 스터디원별 체크리스트 현황 조회 API", description = "특정 스터디의 모든 멤버에 대한 주차별 체크리스트 수행 현황을 조회합니다.")
     public BaseResponse<AdminStudyMemberStatusResponse> getAdminStudyMembersStatus(@PathVariable Long studyId) {
         AdminStudyMemberStatusResponse response = adminStudyAdviser.getStudyMembersStatus(studyId);
+        return BaseResponse.onSuccess(response);
+    }
+
+    @PostMapping("/study-members/{studyMemberId}/weeks/{week}/status")
+    @Operation(summary = "특정인원 전주차 체크리스트 현황 조회 - 주차별 상태 설정 API", description = "특정 스터디원의 특정 주차 상태를 PASS 또는 OUT으로 설정합니다.(OUT 부여)")
+    public BaseResponse<WeeklyStatusCommonResponse> setWeeklyStatus(
+        @PathVariable Long studyMemberId,
+        @PathVariable int week,
+        @Valid @RequestBody AdminWeeklyStatusRequest request
+    ) {
+        WeeklyStatusCommonResponse response = adminStudyAdviser.setWeeklyStatus(studyMemberId, week, request);
         return BaseResponse.onSuccess(response);
     }
 }
