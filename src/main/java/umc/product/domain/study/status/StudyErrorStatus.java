@@ -26,7 +26,7 @@ public enum StudyErrorStatus implements BaseCodeInterface {
     STUDY_MEMBER_SEMESTER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER_SEMESTER404", "현재 학기에 스터디에 참여하는 사용자를 찾을 수 없습니다."),
     STUDY_MEMBER_COUNT_EXCEEDED(HttpStatus.BAD_REQUEST, "STUDY_MEMBER_COUNT400", "스터디 인원이 5명을 초과할 수 없습니다."),
     STUDY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "STUDY400", "해당 기수에 스터디가 이미 존재해 새로운 스터디를 만들 수 없습니다."),
-    ;
+    STUDY_HAS_NO_MEMBERS(HttpStatus.NOT_FOUND, "STUDY_MEMBER404" , "스터디 멤버가 한 명도 없습니다.");
 
     private final HttpStatus httpStatus;
     private final boolean isSuccess = false;

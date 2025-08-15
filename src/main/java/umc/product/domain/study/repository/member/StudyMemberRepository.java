@@ -1,10 +1,12 @@
 package umc.product.domain.study.repository.member;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
+import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
 import java.util.Optional;
@@ -31,4 +33,17 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
     Optional<StudyMember> findStudyMember(
             @Param("semester") Semester semester,
             @Param("member") Member member);
+
+    @Query("SELECT sm FROM StudyMember sm " +
+        "JOIN FETCH sm.semesterPart sp " +
+        "JOIN FETCH sp.member m " +
+        "WHERE sm.study = :study")
+    List<StudyMember> findAllByStudyFetch(@Param("study") Study study);
+
+    @Query("SELECT sm FROM StudyMember sm " +
+        "JOIN FETCH sm.study s " +
+        "JOIN FETCH sm.semesterPart sp " +
+        "JOIN FETCH sp.member m " +
+        "WHERE sm.id = :studyMemberId")
+    Optional<StudyMember> findWithDetailsById(@Param("studyMemberId") Long studyMemberId);
 }

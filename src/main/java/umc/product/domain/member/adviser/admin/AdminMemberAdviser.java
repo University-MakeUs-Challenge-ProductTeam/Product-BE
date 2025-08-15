@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.member.converter.response.MemberConverter;
 import umc.product.domain.member.dto.request.admin.member.*;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
@@ -13,6 +14,7 @@ import umc.product.domain.member.dto.response.member.common.MemberIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.service.admin.AdminCodeService;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.member.service.member.MemberService;
@@ -22,6 +24,7 @@ import umc.product.domain.semester.entity.SemesterPosition;
 import umc.product.domain.semester.service.SemesterPartService;
 import umc.product.domain.semester.service.SemesterPositionService;
 import umc.product.domain.semester.service.SemesterService;
+import umc.product.domain.study.dto.response.admin.MemberSearchInfo;
 import umc.product.domain.university.entity.University;
 import umc.product.domain.university.service.UniversityService;
 import umc.product.global.common.exception.RestApiException;
@@ -44,6 +47,7 @@ public class AdminMemberAdviser {
     private final SemesterPositionService semesterPositionService;
     private final SemesterPartService semesterPartService;
     private final AdminCodeService adminCodeService;
+    private final MemberDslRepository memberRepository;
 
     private final MemberConverter memberConverter;
 
@@ -217,4 +221,17 @@ public class AdminMemberAdviser {
         return targetMember;
     }
 
+    @Transactional(readOnly = true)
+    public Page<MemberSearchInfo> searchMembers(Member adminMember, String keyword, Pageable pageable) {
+        Role adminRole = adminMember.getRole();
+
+        if (adminRole == Role.ADMIN || adminRole == Role.CENTRAL_ADMIN) {
+            // 관리자, 중앙 운영진: 모든 멤버 대상
+            return memberRepository.searchMembers(null, keyword, pageable);
+        } else { // SCHOOL_ADMIN
+            // 학교 관리자: 자기 학교 멤버만 대상
+            Long universityId = adminMember.getUniversity().getId();
+            return memberRepository.searchMembers(universityId, keyword, pageable);
+        }
+    }
 }

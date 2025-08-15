@@ -12,7 +12,9 @@ import umc.product.domain.roadmap.repository.RoadmapRepository;
 import umc.product.domain.roadmap.repository.RoadmapSemesterRepository;
 import umc.product.domain.roadmap.repository.RoadmapWeekRepository;
 import umc.product.domain.roadmap.status.RoadmapErrorStatus;
+import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
+import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.status.StudyErrorStatus;
 import umc.product.global.common.exception.RestApiException;
@@ -74,5 +76,35 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
     public Roadmap getRoadmapBySemesterAndPart(Long semesterId, Part part) {
         return roadmapRepository.findBySemesterIdAndPart(semesterId, part)
             .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+    }
+
+    @Override
+    public Roadmap getRoadmapByStudy(Study study) {
+        // 스터디에 멤버가 한 명도 없는 예외 경우를 처리
+        if (study.getStudyMemberList().isEmpty()) {
+            throw new RestApiException(StudyErrorStatus.STUDY_HAS_NO_MEMBERS); // 예시 예외
+        }
+
+        // 어떤 멤버든 동일한 SemesterPart에 속하므로 첫 번째 멤버를 기준
+        SemesterPart semesterPart = study.getStudyMemberList().get(0).getSemesterPart();
+        Long semesterId = semesterPart.getSemester().getId();
+        Part part = semesterPart.getPart();
+
+        return roadmapRepository.findBySemesterIdAndPart(semesterId, part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+    }
+
+    @Override
+    public RoadmapSemester getRoadmapSemesterByRoadmapAndStudy(Roadmap roadmap, Study study) {
+        if (study.getStudyMemberList().isEmpty()) {
+            throw new RestApiException(StudyErrorStatus.STUDY_HAS_NO_MEMBERS);
+        }
+
+        // 스터디의 기수(Semester) 정보를 가져옵니다.
+        Semester semester = study.getStudyMemberList().get(0).getSemesterPart().getSemester();
+
+        // Roadmap과 Semester로 RoadmapSemester를 조회합니다.
+        return roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semester.getId())
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
     }
 }
