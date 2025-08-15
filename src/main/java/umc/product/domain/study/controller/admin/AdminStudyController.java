@@ -96,7 +96,7 @@ public class AdminStudyController {
         return BaseResponse.onSuccess(AdminStudyListResponse.from(studyPage));
     }
 
-    @GetMapping("/studies/{studyId}/members/status")
+    @GetMapping("/{studyId}/members/status")
     @Operation(summary = "스터디 세부 조회 - 스터디원별 체크리스트 현황 조회 API", description = "특정 스터디의 모든 멤버에 대한 주차별 체크리스트 수행 현황을 조회합니다.")
     public BaseResponse<AdminStudyMemberStatusResponse> getAdminStudyMembersStatus(@PathVariable Long studyId) {
         AdminStudyMemberStatusResponse response = adminStudyAdviser.getStudyMembersStatus(studyId);
