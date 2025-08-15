@@ -16,4 +16,7 @@ public interface ChecklistMemberAnswerRepository extends JpaRepository<Checklist
         "where cma.studyMember = :studyMember " +
         "and ch.week = :week")
     List<ChecklistMemberAnswer> findAllByStudyMemberAndWeek(@Param("studyMember") StudyMember studyMember, @Param("week") int week);
+
+  @Query("SELECT cma FROM ChecklistMemberAnswer cma WHERE cma.studyMember IN :studyMembers")
+  List<ChecklistMemberAnswer> findAllByStudyMembers(List<StudyMember> studyMembers);
 }

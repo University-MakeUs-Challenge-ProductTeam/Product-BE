@@ -4,6 +4,7 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
 import umc.product.domain.roadmap.entity.RoadmapWeek;
+import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface RoadmapQueryService {
     RoadmapSemester getRoadmapSemester(Long semesterId, Part part);
 
     Roadmap getRoadmapBySemesterAndPart(Long semesterId, Part part);
+
+    Roadmap getRoadmapByStudy(Study study);
+
+    RoadmapSemester getRoadmapSemesterByRoadmapAndStudy(Roadmap roadmap, Study study);
 }

@@ -20,6 +20,7 @@ import umc.product.domain.study.adviser.admin.AdminStudyAdviser;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.dto.response.admin.AdminStudyListResponse;
+import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.global.common.base.BaseResponse;
@@ -93,5 +94,12 @@ public class AdminStudyController {
     ) {
         Page<StudyInfo> studyPage = adminStudyAdviser.getStudyList(adminMember, semesterId, part, keyword, pageable);
         return BaseResponse.onSuccess(AdminStudyListResponse.from(studyPage));
+    }
+
+    @GetMapping("/studies/{studyId}/members/status")
+    @Operation(summary = "스터디 세부 조회 - 스터디원별 체크리스트 현황 조회 API", description = "특정 스터디의 모든 멤버에 대한 주차별 체크리스트 수행 현황을 조회합니다.")
+    public BaseResponse<AdminStudyMemberStatusResponse> getAdminStudyMembersStatus(@PathVariable Long studyId) {
+        AdminStudyMemberStatusResponse response = adminStudyAdviser.getStudyMembersStatus(studyId);
+        return BaseResponse.onSuccess(response);
     }
 }

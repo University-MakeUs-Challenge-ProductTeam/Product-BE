@@ -1,11 +1,20 @@
 package umc.product.domain.study.adviser.admin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import umc.product.domain.checklist.entity.Checklist;
 import umc.product.domain.checklist.entity.ChecklistContent;
+import umc.product.domain.checklist.entity.ChecklistMemberAnswer;
+import umc.product.domain.checklist.entity.enums.ChecklistType;
+import umc.product.domain.checklist.repository.ChecklistMemberAnswerRepository;
+import umc.product.domain.checklist.repository.ChecklistRepository;
 import umc.product.domain.checklist.service.admin.AdminChecklistContentQueryServiceImpl;
 import umc.product.domain.checklist.service.admin.AdminChecklistMemberAnswerCommandServiceImpl;
 import umc.product.domain.member.entity.Member;
@@ -13,6 +22,9 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.member.status.AuthErrorStatus;
+import umc.product.domain.roadmap.entity.Roadmap;
+import umc.product.domain.roadmap.entity.RoadmapSemester;
+import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.service.SemesterPartService;
@@ -20,6 +32,7 @@ import umc.product.domain.semester.service.SemesterService;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.entity.Study;
@@ -27,6 +40,7 @@ import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.entity.enums.StudyType;
 import umc.product.domain.study.mapper.admin.AdminStudyUniversityMapper;
 import umc.product.domain.study.repository.admin.AdminStudyRepository;
+import umc.product.domain.study.repository.member.StudyMemberRepository;
 import umc.product.domain.study.service.admin.*;
 import umc.product.domain.study.service.member.StudyQueryService;
 import umc.product.domain.study.status.StudyErrorStatus;
@@ -53,6 +67,10 @@ public class AdminStudyAdviser {
     private final AdminStudyUniversityMapper adminStudyUniversityMapper;
     private final AdminStudyMemberQueryServiceImpl adminStudyMemberQueryService;
     private final AdminStudyRepository adminStudyRepository;
+    private final StudyMemberRepository studyMemberRepository;
+    private final RoadmapQueryService roadmapQueryService;
+    private final ChecklistRepository checklistRepository;
+    private final ChecklistMemberAnswerRepository checklistMemberAnswerRepository;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     // todo - 최적화 필요
@@ -189,4 +207,144 @@ public class AdminStudyAdviser {
             throw new RestApiException(AuthErrorStatus.INVALID_ROLE);
         }
     }
+
+    public AdminStudyMemberStatusResponse getStudyMembersStatus(Long studyId) {
+        // 1. 기준이 되는 Study와, 해당 스터디에 속한 모든 StudyMember를 조회합 (N+1 방지 위해 fetch join 사용)
+        Study study = studyQueryService.getStudy(studyId);
+        List<StudyMember> studyMembers = studyMemberRepository.findAllByStudyFetch(study);
+
+        // 2. 스터디의 Roadmap 구조(총 몇 주차인지, 각 주차별 체크리스트 구성)를 조회합니다.
+        Roadmap roadmap = roadmapQueryService.getRoadmapByStudy(study);
+        RoadmapSemester roadmapSemester = roadmapQueryService.getRoadmapSemesterByRoadmapAndStudy(roadmap, study);
+        List<Checklist> allChecklists = checklistRepository.findAllByRoadmapSemester(roadmapSemester);
+
+        // 3. 이 스터디의 '모든' 멤버가 제출한 '모든' 답변(ChecklistMemberAnswer)을 한 번의 쿼리로 가져옵니다.
+        List<ChecklistMemberAnswer> allAnswers = checklistMemberAnswerRepository.findAllByStudyMembers(studyMembers);
+
+        // 4. 조회한 데이터를 가공하여 최종 DTO를 조립합니다.
+        List<AdminStudyMemberStatusResponse.MemberStatusInfo> memberStatusInfos =
+            buildMemberStatusInfos(study, studyMembers, allChecklists, allAnswers);
+
+        return AdminStudyMemberStatusResponse.builder()
+            .members(memberStatusInfos)
+            .build();
+    }
+
+    private List<AdminStudyMemberStatusResponse.MemberStatusInfo> buildMemberStatusInfos(
+        Study study, List<StudyMember> studyMembers, List<Checklist> allChecklists, List<ChecklistMemberAnswer> allAnswers) {
+
+        // 로드맵의 총 주차 수 계산
+        int totalWeeks = allChecklists.stream().mapToInt(Checklist::getWeek).max().orElse(0);
+        int currentWeek = study.getCurrentWeek();
+
+        Map<Long, List<ChecklistMemberAnswer>> answersByMemberId = allAnswers.stream()
+            .collect(Collectors.groupingBy(answer -> answer.getStudyMember().getId()));
+        Map<Integer, List<Checklist>> checklistsByWeek = allChecklists.stream()
+            .collect(Collectors.groupingBy(Checklist::getWeek));
+
+        return studyMembers.stream().map(member -> {
+            List<AdminStudyMemberStatusResponse.WeeklyChecklistStatus> weeklyStatuses = new ArrayList<>();
+            List<ChecklistMemberAnswer> memberAnswers = answersByMemberId.getOrDefault(member.getId(), Collections.emptyList());
+
+            // 1주차부터 마지막 주차까지 순회하며 상태 계산합니다.
+            for (int week = 1; week <= totalWeeks; week++) {
+                String status;
+                if (week > currentWeek) {
+                    // 요구사항: 미래 주차는 "-" 로 표기
+                    status = "FUTURE";
+                } else {
+                    // 과거 또는 현재 주차는 상태를 계산합니다.
+                    status = calculateWeeklyStatus(memberAnswers, checklistsByWeek.getOrDefault(week, Collections.emptyList()));
+                }
+                weeklyStatuses.add(new AdminStudyMemberStatusResponse.WeeklyChecklistStatus(week, status));
+            }
+
+            return AdminStudyMemberStatusResponse.MemberStatusInfo.builder()
+                .studyMemberId(member.getId())
+                .memberName(member.getSemesterPart().getMember().getName())
+                .nickname(member.getSemesterPart().getMember().getNickName())
+                .part(member.getSemesterPart().getPart().name())
+                .roleInStudy(member.getStudyRole().getName()) // "스터디 리더", "스터디원"
+                .weeklyChecklistStatuses(weeklyStatuses)
+                .build();
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 한 멤버의 한 주차에 대한 모든 답변과 체크리스트 구조를 바탕으로,
+     * 해당 주차의 최종 상태(YES, NO, PARTIAL)를 계산하는 메서드
+     */
+    private String calculateWeeklyStatus(List<ChecklistMemberAnswer> memberAnswersForTotal, List<Checklist> checklistsForWeek) {
+        // 1. 사전 조건 확인
+        if (checklistsForWeek.isEmpty()) {
+            return "NO_CHECKLIST"; // 해당 주차에 체크리스트가 없는 경우
+        }
+
+        // 이 멤버가 이번 주에 답변한 내용만 필터링
+        Set<Long> checklistIdsForWeek = checklistsForWeek.stream().map(Checklist::getId).collect(Collectors.toSet());
+        List<ChecklistMemberAnswer> memberAnswersForWeek = memberAnswersForTotal.stream()
+            .filter(answer -> checklistIdsForWeek.contains(answer.getChecklistContent().getChecklist().getId()))
+            .toList();
+
+        if (memberAnswersForWeek.isEmpty()) {
+            return "NO"; // 체크리스트는 있지만 답변이 하나도 없는 경우
+        }
+
+        // 2. 각 체크리스트별 상태를 계산하여 리스트에 담기
+        List<String> individualStatuses = checklistsForWeek.stream()
+            .map(checklist -> calculateSingleChecklistStatus(checklist, memberAnswersForWeek))
+            .toList();
+
+        // 3. 계산된 개별 상태들을 종합하여 주차의 최종 상태를 결정
+        if (individualStatuses.contains("PARTIAL") || (individualStatuses.contains("YES") && individualStatuses.contains("NO"))) {
+            return "PARTIAL"; // 하나라도 PARTIAL이 있거나, YES와 NO가 섞여있으면 PARTIAL
+        } else if (individualStatuses.stream().allMatch(s -> s.equals("YES"))) {
+            return "YES"; // 모든 체크리스트가 YES이면 YES
+        } else {
+            return "NO"; // 그 외 (전부 NO이거나 답변이 없는 경우 등)
+        }
+    }
+
+    /**
+     * 개별 체크리스트 하나의 상태를 계산하는 헬퍼 메서드
+     */
+    private String calculateSingleChecklistStatus(Checklist checklist, List<ChecklistMemberAnswer> memberAnswersForWeek) {
+        // 이 체크리스트에 해당하는 답변들만 필터링
+        Set<Long> contentIds = checklist.getChecklistContentList().stream().map(ChecklistContent::getId).collect(Collectors.toSet());
+        List<ChecklistMemberAnswer> relevantAnswers = memberAnswersForWeek.stream()
+            .filter(answer -> contentIds.contains(answer.getChecklistContent().getId()))
+            .toList();
+
+        if (relevantAnswers.isEmpty()) {
+            return "NO";
+        }
+
+        // SELECT 타입 상태 계산
+        if (checklist.getChecklistType() == ChecklistType.SELECT) {
+            boolean hasPositiveAnswer = relevantAnswers.stream()
+                .anyMatch(answer -> answer.isCheckStatus() &&
+                    (answer.getChecklistContent().getContent().equals("네, 참석했어요") ||
+                        answer.getChecklistContent().getContent().equals("네, 모두 채웠어요")));
+            if (hasPositiveAnswer) return "YES";
+
+            boolean hasNegativeAnswer = relevantAnswers.stream()
+                .anyMatch(answer -> answer.isCheckStatus() &&
+                    (answer.getChecklistContent().getContent().equals("아니요, 참석하지 못 했어요") ||
+                        answer.getChecklistContent().getContent().equals("아니요, 다 채우지 못 했어요")));
+            if (hasNegativeAnswer) return "NO";
+
+            // MULTIPLE 타입 상태 계산
+        } else if (checklist.getChecklistType() == ChecklistType.MULTIPLE) {
+            long totalOptions = checklist.getChecklistContentList().size();
+            long checkedCount = relevantAnswers.stream().filter(ChecklistMemberAnswer::isCheckStatus).count();
+
+            if (checkedCount == 0) return "NO";
+            if (checkedCount == totalOptions) return "YES";
+            return "PARTIAL";
+        }
+
+        return "NO"; // 기본값은 NO
+    }
+
+
 }
