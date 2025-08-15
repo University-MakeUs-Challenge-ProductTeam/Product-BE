@@ -69,4 +69,10 @@ public class RoadmapQueryServiceImpl implements RoadmapQueryService {
         return roadmapSemesterRepository.findByRoadmapAndSemester_Id(roadmap, semesterId)
             .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
     }
+
+    @Override
+    public Roadmap getRoadmapBySemesterAndPart(Long semesterId, Part part) {
+        return roadmapRepository.findBySemesterIdAndPart(semesterId, part)
+            .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_NOT_FOUND));
+    }
 }

@@ -87,4 +87,13 @@ public class AdminChecklistAdviser {
     }
   }
 
+  @Transactional
+  public Long deleteChecklist(Long checklistId) {
+    Checklist checklist = checklistRepository.findById(checklistId)
+        .orElseThrow(() -> new RestApiException(ChecklistErrorStatus.CHECKLIST_NOT_FOUND));
+
+    checklistRepository.delete(checklist);
+
+    return checklistId;
+  }
 }

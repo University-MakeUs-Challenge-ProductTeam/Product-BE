@@ -17,4 +17,7 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
 
   @Query("SELECT c.id FROM Checklist c JOIN c.roadmapSemester rs JOIN rs.roadmap r WHERE r.id = :roadmapId AND c.week = :week")
   Set<Long> findAllIdsByRoadmapIdAndWeek(@Param("roadmapId") Long roadmapId, int week);
+
+  @Query("SELECT ch FROM Checklist ch JOIN FETCH ch.checklistContentList WHERE ch.roadmapSemester = :roadmapSemester")
+  List<Checklist> findAllByRoadmapSemesterFetch(@Param("roadmapSemester") RoadmapSemester roadmapSemester);
 }
