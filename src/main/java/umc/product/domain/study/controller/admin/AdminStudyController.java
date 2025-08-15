@@ -22,6 +22,7 @@ import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.dto.request.admin.AdminWeeklyStatusRequest;
 import umc.product.domain.study.dto.response.admin.AdminStudyListResponse;
 import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
+import umc.product.domain.study.dto.response.admin.MemberWorkbookResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.admin.WeeklyStatusCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
@@ -106,13 +107,23 @@ public class AdminStudyController {
     }
 
     @PostMapping("/study-members/{studyMemberId}/weeks/{week}/status")
-    @Operation(summary = "특정인원 전주차 체크리스트 현황 조회 - 주차별 상태 설정 API", description = "특정 스터디원의 특정 주차 상태를 PASS 또는 OUT으로 설정합니다.(OUT 부여)")
+    @Operation(summary = "특정인원 전주차 체크리스트 현황 조회 - 주차별 상태 설정 API", description = "특정 스터디원의 특정 주차 상태를 PASS 또는 OUT으로 설정합니다.(OUT 부여) 상태는 PENDING（평가대기）, PASS(통과), OUT(아웃) 으로 구분됩니다.")
     public BaseResponse<WeeklyStatusCommonResponse> setWeeklyStatus(
         @PathVariable Long studyMemberId,
         @PathVariable int week,
         @Valid @RequestBody AdminWeeklyStatusRequest request
     ) {
         WeeklyStatusCommonResponse response = adminStudyAdviser.setWeeklyStatus(studyMemberId, week, request);
+        return BaseResponse.onSuccess(response);
+    }
+
+    @GetMapping("/study-members/{studyMemberId}/workbook")
+    @Operation(summary = "특정 스터디원의 주차별 워크북 상세 조회 API", description = "운영진이 특정 스터디원의 주차별 워크북 내용과 답변 현황, 통과 여부를 상세 조회합니다.")
+    public BaseResponse<MemberWorkbookResponse> getMemberWorkbook(
+        @PathVariable Long studyMemberId,
+        @RequestParam int week
+    ) {
+        MemberWorkbookResponse response = adminStudyAdviser.getMemberWorkbook(studyMemberId, week);
         return BaseResponse.onSuccess(response);
     }
 }

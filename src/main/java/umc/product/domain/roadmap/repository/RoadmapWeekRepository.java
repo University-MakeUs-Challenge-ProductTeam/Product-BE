@@ -15,4 +15,6 @@ public interface RoadmapWeekRepository extends JpaRepository<RoadmapWeek, Long> 
   void deleteAllByRoadmapId(Long roadmapId);
 
   List<RoadmapWeek> findAllByRoadmap(Roadmap roadmap);
+
+  List<RoadmapWeek> findAllByRoadmapAndWeek(Roadmap roadmap, int week);
 }

@@ -3,6 +3,7 @@ package umc.product.domain.study.adviser.admin;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,16 +27,20 @@ import umc.product.domain.member.service.admin.AdminOutService;
 import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapSemester;
+import umc.product.domain.roadmap.entity.RoadmapWeek;
+import umc.product.domain.roadmap.repository.RoadmapWeekRepository;
 import umc.product.domain.roadmap.service.RoadmapQueryService;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.service.SemesterPartService;
 import umc.product.domain.semester.service.SemesterService;
+import umc.product.domain.study.converter.member.StudyConverter;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.dto.request.admin.AdminWeeklyStatusRequest;
 import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
+import umc.product.domain.study.dto.response.admin.MemberWorkbookResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.admin.WeeklyStatusCommonResponse;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
@@ -80,6 +85,9 @@ public class AdminStudyAdviser {
     private final ChecklistMemberAnswerRepository checklistMemberAnswerRepository;
     private final AdminWeeklyStudyStatusRepository adminWeeklyStudyStatusRepository;
     private final AdminOutService adminOutService;
+    private final RoadmapWeekRepository roadmapWeekRepository;
+    private final AdminWeeklyStudyStatusRepository weeklyStudyStatusRepository;
+    private final StudyConverter studyConverter;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     // todo - 최적화 필요
@@ -384,5 +392,26 @@ public class AdminStudyAdviser {
         return WeeklyStatusCommonResponse.builder()
             .weeklyStatusId(weeklyStatus.getId())
             .build();
+    }
+
+    @Transactional(readOnly = true)
+    public MemberWorkbookResponse getMemberWorkbook(Long studyMemberId, int week) {
+        // 1. PathVariable로 받은 studyMemberId로 StudyMember를 즉시 조회합니다.
+        StudyMember studyMember = studyMemberRepository.findWithDetailsById(studyMemberId) // fetch join하는 메서드로 가정
+            .orElseThrow(() -> new RestApiException(StudyErrorStatus.STUDY_MEMBER_NOT_FOUND));
+
+        // 2. studyMember를 통해 Study, Roadmap, RoadmapSemester 등을 찾아냅니다.
+        Study study = studyMember.getStudy();
+        Roadmap roadmap = roadmapQueryService.getRoadmapByStudy(study);
+        RoadmapSemester roadmapSemester = roadmapQueryService.getRoadmapSemesterByRoadmapAndStudy(roadmap, study);
+
+        // 3. 이하 로드맵 주제, 체크리스트, 답변, 주차별 상태를 조회하는 로직은 이전과 동일합니다.
+        List<RoadmapWeek> roadmapWeeks = roadmapWeekRepository.findAllByRoadmapAndWeek(roadmap, week);
+        List<Checklist> checklists = checklistRepository.findAllByRoadmapSemesterAndWeekFetch(roadmapSemester, week);
+        List<ChecklistMemberAnswer> memberAnswers = checklistMemberAnswerRepository.findAllByStudyMemberAndWeek(studyMember, week);
+        Optional<WeeklyStudyStatus> weeklyStatus = weeklyStudyStatusRepository.findByStudyMemberAndWeek(studyMember, week);
+
+        // 4. 조회한 모든 데이터를 컨버터에 넘겨 최종 DTO로 조립합니다.
+        return studyConverter.toMemberWorkbookResponse(studyMember, week, weeklyStatus.orElse(null), roadmapWeeks, checklists, memberAnswers);
     }
 }

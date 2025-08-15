@@ -20,4 +20,9 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
 
   @Query("SELECT ch FROM Checklist ch JOIN FETCH ch.checklistContentList WHERE ch.roadmapSemester = :roadmapSemester")
   List<Checklist> findAllByRoadmapSemesterFetch(@Param("roadmapSemester") RoadmapSemester roadmapSemester);
+
+  @Query("SELECT ch FROM Checklist ch " +
+      "LEFT JOIN FETCH ch.checklistContentList " + // checklistContentList를 fetch join
+      "WHERE ch.roadmapSemester = :roadmapSemester AND ch.week = :week")
+  List<Checklist> findAllByRoadmapSemesterAndWeekFetch(@Param("roadmapSemester") RoadmapSemester roadmapSemester, @Param("week") int week);
 }
