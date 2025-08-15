@@ -1,13 +1,18 @@
 package umc.product.domain.study.adviser.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import umc.product.domain.checklist.entity.ChecklistContent;
 import umc.product.domain.checklist.service.admin.AdminChecklistContentQueryServiceImpl;
 import umc.product.domain.checklist.service.admin.AdminChecklistMemberAnswerCommandServiceImpl;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
+import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.service.admin.AdminMemberService;
+import umc.product.domain.member.status.AuthErrorStatus;
 import umc.product.domain.semester.entity.Semester;
 import umc.product.domain.semester.entity.SemesterPart;
 import umc.product.domain.semester.service.SemesterPartService;
@@ -15,11 +20,13 @@ import umc.product.domain.semester.service.SemesterService;
 import umc.product.domain.study.dto.request.admin.AdminStudyMemberRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.domain.study.entity.Study;
 import umc.product.domain.study.entity.StudyMember;
 import umc.product.domain.study.entity.enums.StudyType;
 import umc.product.domain.study.mapper.admin.AdminStudyUniversityMapper;
+import umc.product.domain.study.repository.admin.AdminStudyRepository;
 import umc.product.domain.study.service.admin.*;
 import umc.product.domain.study.service.member.StudyQueryService;
 import umc.product.domain.study.status.StudyErrorStatus;
@@ -45,6 +52,7 @@ public class AdminStudyAdviser {
     private final StudyQueryService studyQueryService;
     private final AdminStudyUniversityMapper adminStudyUniversityMapper;
     private final AdminStudyMemberQueryServiceImpl adminStudyMemberQueryService;
+    private final AdminStudyRepository adminStudyRepository;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     // todo - 최적화 필요
@@ -163,5 +171,22 @@ public class AdminStudyAdviser {
         Study study = studyQueryService.getStudy(studyId);
         adminStudyCommandService.deleteStudy(study);
         return StudyCommonResponse.from(studyId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StudyInfo> getStudyList(Member adminMember, Long semesterId, Part part, String keyword, Pageable pageable) {
+        Role adminRole = adminMember.getRole();
+
+        if (adminRole == Role.ADMIN || adminRole == Role.CENTRAL_ADMIN) {
+            // 관리자 또는 중앙 운영진: 모든 스터디 조회
+            return adminStudyRepository.searchStudies(semesterId, part, keyword, null, pageable);
+        } else if (adminRole == Role.SCHOOL_ADMIN) {
+            // 학교 관리자: 자기 학교의 스터디만 조회
+            Long universityId = adminMember.getUniversity().getId();
+            return adminStudyRepository.searchStudies(semesterId, part, keyword, universityId, pageable);
+        } else {
+            // 그 외의 역할은 접근 권한 없음
+            throw new RestApiException(AuthErrorStatus.INVALID_ROLE);
+        }
     }
 }

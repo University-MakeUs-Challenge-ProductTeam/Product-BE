@@ -8,12 +8,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.member.entity.Member;
+import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.study.adviser.admin.AdminStudyAdviser;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
+import umc.product.domain.study.dto.response.admin.AdminStudyListResponse;
+import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.member.StudyCommonResponse;
 import umc.product.global.common.base.BaseResponse;
 import umc.product.global.config.security.auth.CurrentMember;
@@ -73,5 +80,18 @@ public class AdminStudyController {
     public BaseResponse<StudyCommonResponse> deleteStudy(@PathVariable Long studyId) {
         // 스터디를 삭제하면서 StudyMember, StudyUniversity, StudyAttendance, ChecklistStudyMember 같이 삭제
         return BaseResponse.onSuccess(adminStudyAdviser.deleteStudy(studyId));
+    }
+
+    @GetMapping
+    @Operation(summary = "스터디 목록 조회 API", description = "운영진 권한별로 스터디 목록을 검색, 필터링, 페이징하여 조회합니다.")
+    public BaseResponse<AdminStudyListResponse> getStudyList(
+        @CurrentMember Member adminMember,
+        @RequestParam(required = false) Long semesterId,
+        @RequestParam(required = false) Part part,
+        @RequestParam(required = false) String keyword,
+        @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<StudyInfo> studyPage = adminStudyAdviser.getStudyList(adminMember, semesterId, part, keyword, pageable);
+        return BaseResponse.onSuccess(AdminStudyListResponse.from(studyPage));
     }
 }
