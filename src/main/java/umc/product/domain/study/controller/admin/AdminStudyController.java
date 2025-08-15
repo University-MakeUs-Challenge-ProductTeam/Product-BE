@@ -14,14 +14,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import umc.product.domain.member.adviser.admin.AdminMemberAdviser;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.study.adviser.admin.AdminStudyAdviser;
 import umc.product.domain.study.dto.request.admin.AdminStudyModifyRequest;
 import umc.product.domain.study.dto.request.admin.AdminStudyRequest;
 import umc.product.domain.study.dto.request.admin.AdminWeeklyStatusRequest;
+import umc.product.domain.study.dto.response.admin.AdminMemberSearchResponse;
 import umc.product.domain.study.dto.response.admin.AdminStudyListResponse;
 import umc.product.domain.study.dto.response.admin.AdminStudyMemberStatusResponse;
+import umc.product.domain.study.dto.response.admin.MemberSearchInfo;
 import umc.product.domain.study.dto.response.admin.MemberWorkbookResponse;
 import umc.product.domain.study.dto.response.admin.StudyInfo;
 import umc.product.domain.study.dto.response.admin.WeeklyStatusCommonResponse;
@@ -37,6 +40,7 @@ import umc.product.global.config.security.auth.CurrentMember;
 public class AdminStudyController {
 
     private final AdminStudyAdviser adminStudyAdviser;
+    private final AdminMemberAdviser adminMemberAdviser;
 
     @PostMapping()
     @Operation(summary = "스터디 생성 API", description = "관리자가 스터디를 생성하는 API입니다. 참여 인원은 최대 5명입니다.")
@@ -125,5 +129,16 @@ public class AdminStudyController {
     ) {
         MemberWorkbookResponse response = adminStudyAdviser.getMemberWorkbook(studyMemberId, week);
         return BaseResponse.onSuccess(response);
+    }
+
+    @GetMapping("/members/search")
+    @Operation(summary = "스터디원 추가를 위한 멤버 조회 API", description = "닉네임/이름으로 멤버를 검색하고, 권한에 따라 필터링하여 조회합니다.")
+    public BaseResponse<AdminMemberSearchResponse> searchMembers(
+        @CurrentMember Member adminMember,
+        @RequestParam(required = false) String keyword,
+        @PageableDefault(size = 5) Pageable pageable // 정렬은 QueryDSL에서 직접 처리
+    ) {
+        Page<MemberSearchInfo> memberPage = adminMemberAdviser.searchMembers(adminMember, keyword, pageable);
+        return BaseResponse.onSuccess(AdminMemberSearchResponse.from(memberPage));
     }
 }

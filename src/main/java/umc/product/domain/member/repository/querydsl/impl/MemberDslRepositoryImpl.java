@@ -1,12 +1,24 @@
 package umc.product.domain.member.repository.querydsl.impl;
 
+import static umc.product.domain.member.entity.QMember.member;
+import static umc.product.domain.semester.entity.QSemester.semester;
+import static umc.product.domain.semester.entity.QSemesterPart.semesterPart;
+import static umc.product.domain.university.entity.QUniversity.university;
+
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.member.dto.request.admin.register.AdminRegisterListRequest;
 import umc.product.domain.member.entity.Member;
@@ -17,6 +29,10 @@ import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
 import umc.product.domain.member.repository.querydsl.MemberDslRepository;
 import umc.product.domain.member.entity.enums.Status;
+import umc.product.domain.semester.entity.QSemester;
+import umc.product.domain.semester.entity.QSemesterPart;
+import umc.product.domain.study.dto.response.admin.MemberSearchInfo;
+import umc.product.domain.study.dto.response.admin.QMemberSearchInfo;
 import umc.product.domain.university.entity.QUniversity;
 import umc.product.domain.university.entity.University;
 
@@ -29,9 +45,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MemberDslRepositoryImpl implements MemberDslRepository {
     private final JPAQueryFactory jpaQueryFactory;
-    private final QMember qMember = QMember.member;
+    private final QMember qMember = member;
     private final QMemberLoginInfo qMemberLoginInfo = QMemberLoginInfo.memberLoginInfo;
-    private final QUniversity qUniversity = QUniversity.university;
+    private final QUniversity qUniversity = university;
 
     @Override
     public boolean existById(Long memberId) {
@@ -252,5 +268,66 @@ public class MemberDslRepositoryImpl implements MemberDslRepository {
                 .from(qMember)
                 .where(builder)
                 .fetchOne();
+    }
+
+    @Override
+    public Page<MemberSearchInfo> searchMembers(Long universityId, String keyword, Pageable pageable) {
+
+        QSemester semesterSub = new QSemester("semesterSub");
+        QSemesterPart semesterPartSub = new QSemesterPart("semesterPartSub");
+        Expression<Integer> maxGeneration = JPAExpressions
+            .select(semesterSub.name.castToNum(Integer.class).max())
+            .from(semesterPartSub)
+            .join(semesterPartSub.semester, semesterSub)
+            .where(semesterPartSub.member.id.eq(member.id));
+
+        // 메인 쿼리: 데이터 목록을 조회합니다.
+        List<MemberSearchInfo> content = jpaQueryFactory
+            .select(new QMemberSearchInfo(
+                member.id,
+                member.nickName,
+                member.name,
+                university.name,
+                semesterPart.part,
+                semester.name
+            ))
+            .from(member)
+            .join(member.university, university)
+            .join(member.memberSemesterPart, semesterPart)
+            .join(semesterPart.semester, semester)
+            .where(
+                universityIdEq(universityId),
+                keywordContains(keyword),
+                semester.name.castToNum(Integer.class).eq(maxGeneration)
+            )
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(semester.name.castToNum(Integer.class).desc(), member.createdAt.desc())
+            .fetch();
+
+        // Count 쿼리: 전체 개수를 조회합니다.
+        JPAQuery<Long> countQuery = jpaQueryFactory
+            .select(member.count())
+            .from(member)
+            .join(member.university, university)
+            .where(
+                universityIdEq(universityId),
+                keywordContains(keyword)
+            );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    // 학교 ID로 필터링하는 동적 조건
+    private BooleanExpression universityIdEq(Long universityId) {
+        return universityId != null ? university.id.eq(universityId) : null;
+    }
+
+    // 키워드로 필터링하는 동적 조건 (닉네임 또는 이름)
+    private BooleanExpression keywordContains(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
+        return member.nickName.containsIgnoreCase(keyword).or(member.name.containsIgnoreCase(keyword));
     }
 }

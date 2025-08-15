@@ -7,6 +7,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.LoginType;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.study.dto.response.admin.MemberSearchInfo;
 import umc.product.domain.university.entity.University;
 
 import java.util.List;
@@ -33,4 +34,6 @@ public interface MemberDslRepository {
     Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
     boolean existsMemberByClientId(String clientId);
     long countMemberByFilter(Member member, Long semesterId, Role role, Part part);
+
+    Page<MemberSearchInfo> searchMembers(Long universityId, String keyword, Pageable pageable);
 }
