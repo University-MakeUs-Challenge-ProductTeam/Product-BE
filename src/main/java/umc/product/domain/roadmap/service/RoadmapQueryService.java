@@ -17,4 +17,6 @@ public interface RoadmapQueryService {
     Roadmap getRoadmapById(Long roadmapId);
 
     RoadmapSemester getRoadmapSemester(Long semesterId, Part part);
+
+    Roadmap getRoadmapBySemesterAndPart(Long semesterId, Part part);
 }

@@ -1,12 +1,17 @@
 package umc.product.domain.roadmap.converter.admin;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import umc.product.domain.checklist.entity.Checklist;
+import umc.product.domain.checklist.entity.ChecklistContent;
 import umc.product.domain.roadmap.dto.response.admin.AdminRoadmapResponse;
+import umc.product.domain.roadmap.dto.response.admin.RoadmapDetailResponse;
 import umc.product.domain.roadmap.entity.Roadmap;
 import umc.product.domain.roadmap.entity.RoadmapWeek;
 
@@ -41,4 +46,48 @@ public class RoadmapConverter {
         .build();
   }
 
+  public RoadmapDetailResponse toRoadmapDetailResponse(Roadmap roadmap, List<RoadmapWeek> allWeeks, List<Checklist> allChecklists) {
+    Map<Integer, List<String>> subjectsByWeek = allWeeks.stream()
+        .collect(Collectors.groupingBy(
+            RoadmapWeek::getWeek,
+            Collectors.mapping(RoadmapWeek::getSubject, Collectors.toList())
+        ));
+
+    Map<Integer, List<Checklist>> checklistsByWeek = allChecklists.stream()
+        .collect(Collectors.groupingBy(Checklist::getWeek));
+
+    int maxWeek = Math.max(
+        subjectsByWeek.keySet().stream().max(Integer::compareTo).orElse(0),
+        checklistsByWeek.keySet().stream().max(Integer::compareTo).orElse(0)
+    );
+
+    List<RoadmapDetailResponse.WeeklyDetail> weeklyDetails = IntStream.rangeClosed(1, maxWeek)
+        .mapToObj(week -> {
+          List<String> subjects = subjectsByWeek.getOrDefault(week, Collections.emptyList());
+          List<Checklist> checklists = checklistsByWeek.getOrDefault(week, Collections.emptyList());
+
+          List<RoadmapDetailResponse.ChecklistResponse> checklistResponses = checklists.stream()
+              .map(checklist -> RoadmapDetailResponse.ChecklistResponse.builder()
+                  .category(checklist.getChecklistCategory().name())
+                  .title(checklist.getTitle())
+                  .contents(checklist.getChecklistContentList().stream()
+                      .map(ChecklistContent::getContent)
+                      .collect(Collectors.toList()))
+                  .build())
+              .collect(Collectors.toList());
+
+          return RoadmapDetailResponse.WeeklyDetail.builder()
+              .week(week)
+              .subjects(subjects)
+              .checklists(checklistResponses)
+              .build();
+        })
+        .collect(Collectors.toList());
+
+    return RoadmapDetailResponse.builder()
+        .roadmapTitle(roadmap.getTitle())
+        .part(roadmap.getPart().name())
+        .weeklyDetails(weeklyDetails)
+        .build();
+  }
 }

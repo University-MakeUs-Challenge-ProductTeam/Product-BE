@@ -25,6 +25,7 @@ import umc.product.domain.roadmap.dto.request.admin.AdminRoadmapRequest;
 import umc.product.domain.roadmap.dto.response.admin.AdminRoadmapListResponse;
 import umc.product.domain.roadmap.dto.response.admin.AdminRoadmapResponse;
 import umc.product.domain.roadmap.dto.response.admin.RoadmapCommonResponse;
+import umc.product.domain.roadmap.dto.response.admin.RoadmapDetailResponse;
 import umc.product.domain.roadmap.dto.response.admin.RoadmapInfo;
 import umc.product.global.common.base.BaseResponse;
 
@@ -74,6 +75,15 @@ public class AdminRoadmapController {
   ) {
     Page<RoadmapInfo> roadmapPage = adminRoadmapAdviser.getRoadmapList(semesterId, part, keyword, pageable);
     return BaseResponse.onSuccess(AdminRoadmapListResponse.from(roadmapPage));
+  }
+
+  @GetMapping("/detail")
+  @Operation(summary = "로드맵 상세 조회 API", description = "기수와 파트로 로드맵의 모든 주차별 주제와 체크리스트를 조회합니다.")
+  public BaseResponse<RoadmapDetailResponse> getRoadmapDetail(
+      @RequestParam Long semesterId,
+      @RequestParam Part part
+  ) {
+    return BaseResponse.onSuccess(adminRoadmapAdviser.getRoadmapDetail(semesterId, part));
   }
 
 }
