@@ -73,11 +73,12 @@ public class AdminEventServiceImpl implements AdminEventService {
     public Event updateEvent(Member writer, Long eventId, EventUpdateRequest request, List<MultipartFile> newImages){
         Event event = eventService.getEvent(eventId);
         Semester semester = semesterService.getSemester(request.getSemesterId());
+        List<Semester> allowedSemesters = semesterService.getSemesters(request.getAllowedSemesterIds());
 
         // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         EventParamValidator.validModify(event.getWriter().getId(), writer.getId());
 
-        updateEventInfo(event, request, semester);
+        updateEventInfo(event, request, semester, allowedSemesters);
         adminEventImageService.updateEventImages(event, request.getExistingImages(), newImages);
 
         return event;
@@ -137,16 +138,19 @@ public class AdminEventServiceImpl implements AdminEventService {
         return eventRepository.save(newEvent);
     }
 
-    private void updateEventInfo(Event event, EventUpdateRequest request, Semester semester) {
+    private void updateEventInfo(Event event, EventUpdateRequest request, Semester semester, List<Semester> allowedSemester) {
         event.updateInfo(
                 request.getTitle(),
                 request.getContent(),
                 request.getEventType(),
                 semester,
-                request.getEventStartDate(),
-                request.getEventEndDate(),
+                request.getEventDate(),
+                request.getEventTime(),
                 request.getLocation(),
-                request.getMaxParticipants()
+                request.getMaxParticipants(),
+                allowedSemester,
+                request.getAllowedPartList(),
+                request.getAllowedRoleList()
         );
     }
 

@@ -35,8 +35,6 @@ public class Event extends BaseEntity {
 
     private LocalTime eventTime;  // 행사 소요 시간
 
-    private LocalDate checkDeadLine; // 행사 체크 마감 기한
-
     private String location;  // 행사 장소 (지도 검색 결과)
 
     private Integer maxParticipants;  // 최대 인원 (선택)
@@ -79,7 +77,8 @@ public class Event extends BaseEntity {
     }
 
     public void updateInfo(String title, String content, EventType eventType, Semester semester,
-                           LocalDate startDate, LocalTime endDate, String location, Integer maxParticipants) {
+                           LocalDate startDate, LocalTime endDate, String location, Integer maxParticipants,
+                           List<Semester> allowedSemesterList, List<Part> allowedPartList, List<Role> allowedRoleList) {
         this.title = title;
         this.content = content;
         this.eventType = eventType;
@@ -88,6 +87,20 @@ public class Event extends BaseEntity {
         this.eventTime = endDate;
         this.location = location;
         this.maxParticipants = maxParticipants;
+
+        if (allowedSemesterList != null) {
+            this.allowedSemesterList.addAll(allowedSemesterList);
+        }
+
+        this.allowedPartList.clear();
+        if (allowedPartList != null) {
+            this.allowedPartList.addAll(allowedPartList);
+        }
+
+        this.allowedRoleList.clear();
+        if (allowedRoleList != null) {
+            this.allowedRoleList.addAll(allowedRoleList);
+        }
     }
 
     public String getThumbnail() {
