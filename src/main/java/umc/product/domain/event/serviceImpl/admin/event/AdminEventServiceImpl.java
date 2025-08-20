@@ -113,11 +113,10 @@ public class AdminEventServiceImpl implements AdminEventService {
     ){
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> events = eventDslRepository.findByFilter(pageable, month, semester, eventType);
+
         return events.map(event -> {
             int count = eventParticipationRepository.countByEvent(event);
-            //todo 연관 공지 추가 하기.
-            //int noticeCount = eventNoticeRepository.countByEvent(event);
-            return eventConverter.toAdminEventSummaryResponse(event, count, 1); // 내부에서 DTO 변환용
+            return eventConverter.toAdminEventSummaryResponse(event, 1, count);
         });
     }
 

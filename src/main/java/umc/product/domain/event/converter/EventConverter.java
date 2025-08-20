@@ -30,8 +30,7 @@ public class EventConverter {
     public AdminEventSummaryResponse toAdminEventSummaryResponse(Event event, Integer connectedNotices, Integer participants) {
         return AdminEventSummaryResponse.builder()
                 .eventId(event.getId())
-                .eventStartDate(event.getEventStartDate())
-                .eventEndDate(event.getEventEndDate())
+                .eventDate(event.getEventDate())
                 .location(event.getLocation())
                 .thumbnail(event.getThumbnail())
                 .connectedNotices(connectedNotices)

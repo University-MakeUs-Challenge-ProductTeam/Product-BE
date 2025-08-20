@@ -39,6 +39,9 @@ public class Event extends BaseEntity {
 
     private Integer maxParticipants;  // 최대 인원 (선택)
 
+//    @OneToMany(mappedBy = "event")
+//    private List<Notice> notices = new ArrayList<>(); // 연결된 공지 정보
+
     @OneToMany
     @JoinColumn(name = "allowed_semester_id")
     private List<Semester> allowedSemesterList = new ArrayList<>();  // 행사 확인 가능 기수
