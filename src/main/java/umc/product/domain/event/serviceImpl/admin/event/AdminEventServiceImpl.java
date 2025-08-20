@@ -13,18 +13,14 @@ import umc.product.domain.event.dto.request.event.EventUpdateRequest;
 import umc.product.domain.event.dto.response.event.AdminEventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
-import umc.product.domain.event.entity.event.EventRegistrationSettings;
 import umc.product.domain.event.entity.event.EventType;
-import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.mapper.EventMapper;
 import umc.product.domain.event.repository.jpa.event.EventImageRepository;
 import umc.product.domain.event.repository.jpa.event.EventRepository;
 import umc.product.domain.event.repository.jpa.participation.EventParticipationRepository;
 import umc.product.domain.event.repository.querydsl.EventDslRepository;
 import umc.product.domain.event.service.member.event.EventService;
-import umc.product.domain.event.service.admin.form.AdminEventFormService;
 import umc.product.domain.event.service.admin.event.AdminEventImageService;
-import umc.product.domain.event.service.admin.event.AdminEventRegistrationSettingService;
 import umc.product.domain.event.service.admin.event.AdminEventService;
 import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
@@ -39,8 +35,6 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final AdminEventImageService adminEventImageService;
-    private final AdminEventFormService adminEventFormService;
-    private final AdminEventRegistrationSettingService adminEventRegistrationSettingService;
     private final SemesterService semesterService;
     private final EventService eventService;
     private final EventImageRepository eventImageRepository;
@@ -58,15 +52,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     ){
         Semester semester = semesterService.getSemester(request.getSemesterId());
 
-        Event newEvent = createAndSaveEvent(request, semester, writer, eventImages);
+        List<Semester> allowedSemesters = semesterService.getSemesters(request.getAllowedSemesterIds());
 
-        //행사 신청 폼 생성
-        EventForm newEventForm = adminEventFormService.createForm(newEvent, request.getForm());
-        newEvent.setEventForm(newEventForm);
-
-        //행사 신청 조건 생성
-        EventRegistrationSettings newEventRegistrationSettings = adminEventRegistrationSettingService.createEventRegistrationSettings(request.getRegistrationSettings(), newEvent);
-        newEvent.setEventRegistrationSettings(newEventRegistrationSettings);
+        Event newEvent = createAndSaveEvent(request, semester, writer, allowedSemesters);
 
         //이미지 S3 저장
         if(eventImages !=null && !eventImages.isEmpty()){
@@ -90,8 +78,6 @@ public class AdminEventServiceImpl implements AdminEventService {
         EventParamValidator.validModify(event.getWriter().getId(), writer.getId());
 
         updateEventInfo(event, request, semester);
-        adminEventFormService.updateForm(event, request.getForm());
-        adminEventRegistrationSettingService.updateeEventRegistrationSettings(request.getRegistrationSettings(), event);
         adminEventImageService.updateEventImages(event, request.getExistingImages(), newImages);
 
         return event;
@@ -146,8 +132,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     }
 
 
-    private Event createAndSaveEvent(EventRequest request, Semester semester, Member writer, List<MultipartFile> eventImages) {
-        Event newEvent = eventMapper.toEvent(request,semester,writer);
+    private Event createAndSaveEvent(EventRequest request, Semester semester, Member writer, List<Semester> allowedSemester) {
+        Event newEvent = eventMapper.toEvent(request,semester,writer, allowedSemester);
         return eventRepository.save(newEvent);
     }
 

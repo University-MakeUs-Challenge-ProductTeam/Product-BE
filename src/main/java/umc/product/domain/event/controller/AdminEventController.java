@@ -126,7 +126,7 @@ public class AdminEventController {
     public BaseResponse<ParticipationIdResponse> updateParticipationStatus(
             @RequestParam(name = "participationId") @PathVariable Long participationId,
             @RequestParam(name = "status") ParticipationStatus status
-
+    
     ){
         return BaseResponse.onSuccess(adminEventAdviser.updateParticipationStatus(participationId, status));
     }

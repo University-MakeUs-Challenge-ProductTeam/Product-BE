@@ -9,8 +9,6 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.form.EventForm;
 import umc.product.domain.event.entity.form.EventFormQuestion;
 import umc.product.domain.event.entity.form.ResponseType;
-import umc.product.domain.event.entity.participation.CancelReason;
-import umc.product.domain.event.entity.participation.EventFormAnswer;
 import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.event.mapper.EventParticipationMapper;
 import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;

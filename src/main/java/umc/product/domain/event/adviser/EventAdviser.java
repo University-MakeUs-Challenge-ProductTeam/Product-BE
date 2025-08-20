@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.EventConverter;
-import umc.product.domain.event.converter.EventFormConverter;
 import umc.product.domain.event.converter.EventParticipationConverter;
 import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
 import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
