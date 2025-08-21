@@ -7,15 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.EventAdviser;
-import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
-import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
-import umc.product.domain.member.entity.Member;
+import umc.product.domain.event.entity.event.EventType;
 import umc.product.global.common.base.BaseResponse;
-import umc.product.global.config.security.auth.CurrentMember;
-
-import java.util.List;
 
 @Tag(name = "챌린저용 행사 API", description = "챌린저용 행사 관련 API")
 @RestController
@@ -25,7 +20,7 @@ public class EventController {
 
     private final EventAdviser eventAdviser;
 
-    @Operation(summary = "행사 조회 API", description = "최신순으로 행사 조회")
+    @Operation(summary = "행사 목록 조회 API", description = "최신순으로 행사 조회")
     @Parameters(value = {
             @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
             @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
@@ -36,6 +31,21 @@ public class EventController {
             @RequestParam int size
     ){
         return BaseResponse.onSuccess(eventAdviser.inquiryEvents(page, size));
+    }
+
+    @Operation(summary = "행사 타입별 목록 조회 API", description = "(중앙/지부/학교)행사 타입별 조회")
+    @Parameters(value = {
+            @Parameter(name = "type", description = "행사 조회 타입(중앙/지부/학교)"),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/list/type")
+    public BaseResponse<EventPagingResponse<EventSummaryResponse>> inquiryEventsByEventType(
+            @RequestParam EventType type,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        return BaseResponse.onSuccess(eventAdviser.inquiryEventsByEventType(type, page, size));
     }
 
     @Operation(summary = "행사 검색 API", description = "제목, 내용 내의 키워드 검색")

@@ -12,26 +12,11 @@ import umc.product.domain.member.entity.Member;
 @Component
 public class EventParticipationMapper {
 
-    public EventParticipation toParticipationEvent(Member member, Event event, EventForm eventForm) {
+    public EventParticipation toParticipationEvent(Member member, Event event) {
         return EventParticipation.builder()
                 .participationMember(member)
                 .event(event)
-                .eventForm(eventForm)
                 .build();
     }
 
-    public EventFormAnswer toEventFormAnswer(EventParticipation eventParticipation, EventFormQuestion question, EventFormAnswerRequest request, String filePath) {
-        return EventFormAnswer.builder()
-                .eventParticipation(eventParticipation)
-                .question(question)
-                .answerText(request.getAnswerText())
-                .filePath(filePath)
-                .build();
-    }
-
-    public CancelReason toCancelReason(ParticipationCancelRequest request){
-        return CancelReason.builder()
-                .content(request.getReason())
-                .build();
-    }
 }

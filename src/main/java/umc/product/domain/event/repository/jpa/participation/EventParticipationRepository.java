@@ -18,6 +18,4 @@ public interface EventParticipationRepository extends JpaRepository<EventPartici
 
     int countByEvent(Event event);
     Page<EventParticipation> findAllByEvent(Event event, Pageable pageable);
-    EventParticipation findByEvent(Event event);
-
 }
