@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.EventAdviser;
+import umc.product.domain.event.dto.response.event.EventDetailResponse;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.EventType;
@@ -61,6 +62,14 @@ public class EventController {
             @RequestParam(name = "size", defaultValue = "10") int size
     ){
         return BaseResponse.onSuccess(eventAdviser.inquiryEventsByKeyword(keyword, page, size));
+    }
+
+    @Operation(summary = "이벤트 상세 조회 API", description = "특정 이벤트 상세조회")
+    @GetMapping("/{eventId}/detail")
+    public BaseResponse<EventDetailResponse> inquiryEventDetail(
+            @Parameter(description = "조회할 이벤트 id") @PathVariable("eventId") Long eventId
+    ) {
+        return BaseResponse.onSuccess(eventAdviser.inquiryEventDetail(eventId));
     }
 
 }

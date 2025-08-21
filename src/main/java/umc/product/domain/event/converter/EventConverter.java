@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventImage;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -61,5 +64,23 @@ public class EventConverter {
                 .createdAt(event.getCreatedAt())
                 .thumbnail(event.getThumbnail())
                 .build();
+    }
+
+    public EventDetailResponse toEventDetailResponse(Event event){
+        return EventDetailResponse.builder()
+                .eventId(event.getId())
+                .title(event.getTitle())
+                .content(event.getContent())
+                .eventType(event.getEventType())
+                .eventDate(event.getEventDate())
+                .eventTime(event.getEventTime())
+                .location(event.getLocation())
+                .createdAt(event.getCreatedAt())
+                .images(toImageUrls(event.getImages()))
+                .build();
+    }
+
+    private List<String> toImageUrls(List<EventImage> images) {
+        return images.stream().map(EventImage::getUrl).toList();
     }
 }

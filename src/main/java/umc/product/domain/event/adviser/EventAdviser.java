@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.EventConverter;
+import umc.product.domain.event.dto.response.event.EventDetailResponse;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
@@ -37,5 +38,12 @@ public class EventAdviser {
 
         return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
     }
+
+    public EventDetailResponse inquiryEventDetail(Long eventId){
+        Event event = eventService.getEvent(eventId);
+
+        return eventConverter.toEventDetailResponse(event);
+    }
+
 
 }

@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.event.entity.event.EventType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -24,26 +26,17 @@ public class EventDetailResponse {
     @Schema(description = "행사 유형 (UNIVERSITY: 학교, DEPARTMENT: 지부, CENTRAL: 중앙)", example = "UNIVERSITY")
     private EventType eventType;
 
-    @Schema(description = "행사 시작 시간", example = "2025-12-31T00:00")
-    private LocalDateTime eventStartDate;
+    @Schema(description = "행사 일자", example = "2025-12-31")
+    private LocalDate eventDate;
 
-    @Schema(description = "행사 종료 시간", example = "2025-12-31T00:00")
-    private LocalDateTime eventEndDate;
+    @Schema(description = "행사 시간", example = "00:00")
+    private LocalTime eventTime;
 
-    @Schema(description = "행사 장소", example = "8기 데모데이를 개최합니다.")
+    @Schema(description = "행사 장소", example = "프론트원")
     private String location;
 
     @Schema(description = "행사 공지 시간", example = "2025-12-31T00:00")
     private LocalDateTime createdAt;
-
-    @Schema(description = "행사 신청 시작 시간", example = "2025-12-31T00:00")
-    private LocalDateTime registrationStartDate;
-
-    @Schema(description = "행사 신청 마감 시간", example = "2025-12-31T00:00")
-    private LocalDateTime registrationEndDate;
-
-    @Schema(description = "행사 취소 신청 마감일", example = "2025-12-31T00:00")
-    private LocalDateTime cancellationDeadline;
 
     @Schema(description = "행사 이미지 URL 목록", example = "[\"url1\", \"url2\"]")
     private List<String> images;
