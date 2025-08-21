@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.response.event.EventDetailResponse;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
+import umc.product.domain.event.dto.response.event.EventReviewIdResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventType;
@@ -43,6 +44,11 @@ public class EventAdviser {
         Event event = eventService.getEvent(eventId);
 
         return eventConverter.toEventDetailResponse(event);
+    }
+
+    public EventReviewIdResponse createReview(Long eventId, Member member, String content){
+
+        return new EventReviewIdResponse(eventService.createEventReview(eventId, member, content).getId());
     }
 
 

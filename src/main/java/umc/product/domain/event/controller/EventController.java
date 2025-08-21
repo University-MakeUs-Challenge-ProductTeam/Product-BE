@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.EventAdviser;
 import umc.product.domain.event.dto.response.event.EventDetailResponse;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
+import umc.product.domain.event.dto.response.event.EventReviewIdResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
 import umc.product.domain.event.entity.event.EventType;
+import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
+import umc.product.global.config.security.auth.CurrentMember;
 
 @Tag(name = "챌린저용 행사 API", description = "챌린저용 행사 관련 API")
 @RestController
@@ -64,12 +67,25 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.inquiryEventsByKeyword(keyword, page, size));
     }
 
-    @Operation(summary = "이벤트 상세 조회 API", description = "특정 이벤트 상세조회")
+    @Operation(summary = "행사 상세 조회 API", description = "특정 이벤트 상세조회")
     @GetMapping("/{eventId}/detail")
     public BaseResponse<EventDetailResponse> inquiryEventDetail(
             @Parameter(description = "조회할 이벤트 id") @PathVariable("eventId") Long eventId
     ) {
         return BaseResponse.onSuccess(eventAdviser.inquiryEventDetail(eventId));
+    }
+
+    @Operation(summary = "행사 리뷰 생성 API", description = "행사 리뷰 생성")
+    @PostMapping("/{eventId}/review")
+    @Parameters(value = {
+            @Parameter(name = "content", description = "리뷰 내용")
+    })
+    public BaseResponse<EventReviewIdResponse> createReview(
+            @CurrentMember Member member,
+            @Parameter(description = "이벤트 id") @PathVariable("eventId") Long eventId,
+            @RequestParam(name = "content") String content
+    ) {
+        return BaseResponse.onSuccess(eventAdviser.createReview(eventId, member, content));
     }
 
 }
