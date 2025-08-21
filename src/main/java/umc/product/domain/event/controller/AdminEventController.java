@@ -40,7 +40,7 @@ public class AdminEventController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<EventIdResponse> createEvent(
             @CurrentMember Member member,
-            @Parameter(description = "행사 이미지 파일들(없을 시 사용 x)") @RequestPart List<MultipartFile> eventImages,
+            @Parameter(description = "행사 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
             @Parameter(description = "행사 등록 요청 json") @Valid @RequestPart EventRequest request
     ) {
         return BaseResponse.onSuccess(adminEventAdviser.createEvent(member,eventImages, request));
@@ -51,14 +51,14 @@ public class AdminEventController {
     public BaseResponse<EventIdResponse> updateEvent(
             @CurrentMember Member member,
             @Parameter(description = "수정할 행사 id") @PathVariable Long eventId,
-            @Parameter(description = "행사 이미지 파일들(없을 시 사용 x)") @RequestPart List<MultipartFile> eventImages,
+            @Parameter(description = "행사 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
             @Parameter(description = "행사 등록 요청 json") @Valid @RequestPart EventUpdateRequest request
     ) {
         return BaseResponse.onSuccess(adminEventAdviser.updateEvent(member, eventId, eventImages, request));
     }
 
     @Operation(summary = "행사 삭제 API", description = "작성자만 삭제 가능")
-    @DeleteMapping(value = "/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @DeleteMapping(value = "/{eventId}")
     public BaseResponse<EventIdResponse> deleteEvent(
             @CurrentMember Member member,
             @Parameter(description = "삭제할 행사 id") @PathVariable Long eventId

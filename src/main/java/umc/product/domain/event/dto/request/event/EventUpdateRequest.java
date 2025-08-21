@@ -27,7 +27,10 @@ public class EventUpdateRequest {
     @NotBlank(message = "행사 내용은 필수 입력값입니다.")
     private String content;
 
-    @Schema(description = "행사 타입(학교, 지부, 중앙 중 택 1)", example = "학교")
+    @Schema(
+            description = "행사 타입 (UNIVERSITY, DEPARTMENT, CENTRAL 중 택 1)",
+            example = "UNIVERSITY"
+    )
     @NotBlank(message = "행사 타입은 필수 입력값입니다.")
     private EventType eventType;
 
