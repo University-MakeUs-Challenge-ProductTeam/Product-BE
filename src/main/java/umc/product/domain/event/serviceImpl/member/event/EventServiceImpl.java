@@ -75,9 +75,19 @@ public class EventServiceImpl implements EventService {
         return eventReview;
     }
 
-//    @Override
-//    @Transactional
-//    public EventReview
+    @Override
+    @Transactional
+    public Long deleteEventReview(Member member, Long reviewId){
+
+        EventReview eventReview = eventReviewRepository.getEventReview(reviewId);
+
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
+        EventParamValidator.validModify(eventReview.getWriter().getId(), member.getId());
+
+        eventReviewRepository.delete(eventReview);
+        return reviewId;
+    }
+
 
 
 }

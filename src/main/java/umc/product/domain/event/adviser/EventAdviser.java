@@ -55,5 +55,7 @@ public class EventAdviser {
         return new EventReviewIdResponse(eventService.updateEventReview(member, reviewId, content).getId());
     }
 
-
+    public EventReviewIdResponse deleteReview(Member member, Long reviewId){
+        return new EventReviewIdResponse(eventService.deleteEventReview(member, reviewId));
+    }
 }
