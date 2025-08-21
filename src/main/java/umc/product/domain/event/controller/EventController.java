@@ -88,4 +88,17 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.createReview(eventId, member, content));
     }
 
+    @Operation(summary = "행사 리뷰 수정 API", description = "행사 리뷰 수정")
+    @PatchMapping("/{eventReviewId}")
+    @Parameters(value = {
+            @Parameter(name = "content", description = "리뷰 내용")
+    })
+    public BaseResponse<EventReviewIdResponse> updateReview(
+            @CurrentMember Member member,
+            @Parameter(description = "이벤트 id") @PathVariable("eventReviewId") Long eventReviewId,
+            @RequestParam(name = "content") String content
+    ) {
+        return BaseResponse.onSuccess(eventAdviser.updateReview(member, eventReviewId, content));
+    }
+
 }

@@ -13,6 +13,7 @@ import umc.product.domain.event.mapper.EventReviewMapper;
 import umc.product.domain.event.repository.jpa.event.EventRepository;
 import umc.product.domain.event.repository.jpa.event.EventReviewRepository;
 import umc.product.domain.event.service.member.event.EventService;
+import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
 
 @Service
@@ -60,6 +61,23 @@ public class EventServiceImpl implements EventService {
         EventReview newEventReview = eventReviewMapper.toEventReview(event, member, content);
         return eventReviewRepository.save(newEventReview);
     }
+
+    @Override
+    @Transactional
+    public EventReview updateEventReview(Member member, Long reviewId, String content){
+
+        EventReview eventReview = eventReviewRepository.getEventReview(reviewId);
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
+        EventParamValidator.validModify(eventReview.getWriter().getId(), member.getId());
+
+        eventReview.updateReview(content);
+
+        return eventReview;
+    }
+
+//    @Override
+//    @Transactional
+//    public EventReview
 
 
 }

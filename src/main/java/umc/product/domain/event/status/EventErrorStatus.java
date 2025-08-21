@@ -14,6 +14,9 @@ public enum EventErrorStatus implements BaseCodeInterface {
     //EVENT
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "행사를 찾을 수 없습니다."),
 
+    //EVENT_REVIEW
+    EVENT_REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT_REVIEW401", "행사 댓글을 찾을 수 없습니다."),
+
     //EVENT_PARTICIPATION
     EVENT_PARTICIPATION_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT_PARTICIPATION401", "행사 참여 정보를 찾을 수 없습니다.");
 

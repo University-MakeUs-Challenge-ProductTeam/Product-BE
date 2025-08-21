@@ -51,5 +51,9 @@ public class EventAdviser {
         return new EventReviewIdResponse(eventService.createEventReview(eventId, member, content).getId());
     }
 
+    public EventReviewIdResponse updateReview(Member member, Long reviewId, String content){
+        return new EventReviewIdResponse(eventService.updateEventReview(member, reviewId, content).getId());
+    }
+
 
 }
