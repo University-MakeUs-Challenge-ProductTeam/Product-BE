@@ -44,15 +44,12 @@ public class EventConverter {
         return AdminEventDetailResponse.builder()
                 .eventId(event.getId())
                 .content(event.getContent())
-                .eventStartDate(event.getEventStartDate())
-                .eventEndDate(event.getEventEndDate())
+                .eventDate(event.getEventDate())
+                .eventTime(event.getEventTime())
                 .location(event.getLocation())
                 .thumbnail(event.getThumbnail())
                 .eventType(event.getEventType())
                 .participants(participants)
-                .registrationStartDate(event.getRegistrationSettings().getRegistrationStartDate())
-                .registrationEndDate(event.getRegistrationSettings().getRegistrationEndDate())
-                .cancellationDeadline(event.getRegistrationSettings().getCancellationDeadline())
                 .maxParticipants(event.getMaxParticipants())
                 .build();
     }
