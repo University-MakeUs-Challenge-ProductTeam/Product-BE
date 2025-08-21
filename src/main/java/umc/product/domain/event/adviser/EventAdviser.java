@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.EventConverter;
-import umc.product.domain.event.dto.response.event.EventDetailResponse;
-import umc.product.domain.event.dto.response.event.EventPagingResponse;
-import umc.product.domain.event.dto.response.event.EventReviewIdResponse;
-import umc.product.domain.event.dto.response.event.EventSummaryResponse;
+import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventReview;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.member.entity.Member;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -42,8 +42,11 @@ public class EventAdviser {
 
     public EventDetailResponse inquiryEventDetail(Long eventId){
         Event event = eventService.getEvent(eventId);
-
-        return eventConverter.toEventDetailResponse(event);
+        List<EventReview> reviews = eventService.inquiryEventReviews(eventId);
+        List<EventReviewResponse> reviewResponses = reviews.stream()
+                .map(eventConverter::toEventReviewResponse)
+                .toList();
+        return eventConverter.toEventDetailResponse(event, reviewResponses);
     }
 
     public EventReviewIdResponse createReview(Long eventId, Member member, String content){

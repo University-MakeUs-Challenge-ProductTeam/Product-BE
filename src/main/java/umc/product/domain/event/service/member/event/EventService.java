@@ -16,4 +16,5 @@ public interface EventService {
     EventReview createEventReview(Long eventId, Member member, String content);
     EventReview updateEventReview(Member member, Long reviewId, String content);
     Long deleteEventReview(Member member, Long reviewId);
+    List<EventReview> inquiryEventReviews(Long eventId);
 }

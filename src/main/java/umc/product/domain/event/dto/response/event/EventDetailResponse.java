@@ -41,5 +41,5 @@ public class EventDetailResponse {
     @Schema(description = "행사 이미지 URL 목록", example = "[\"url1\", \"url2\"]")
     private List<String> images;
 
-    //todo 후기 목록 추가
+    private List<EventReviewResponse> reviews;
 }

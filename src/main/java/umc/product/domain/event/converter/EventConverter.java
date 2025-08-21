@@ -6,7 +6,11 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventImage;
+import umc.product.domain.event.entity.event.EventReview;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.SemesterPart;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -66,7 +70,7 @@ public class EventConverter {
                 .build();
     }
 
-    public EventDetailResponse toEventDetailResponse(Event event){
+    public EventDetailResponse toEventDetailResponse(Event event, List<EventReviewResponse> reviews){
         return EventDetailResponse.builder()
                 .eventId(event.getId())
                 .title(event.getTitle())
@@ -77,7 +81,29 @@ public class EventConverter {
                 .location(event.getLocation())
                 .createdAt(event.getCreatedAt())
                 .images(toImageUrls(event.getImages()))
+                .reviews(reviews)
                 .build();
+    }
+
+    public EventReviewResponse toEventReviewResponse(EventReview review) {
+
+        Member writer = review.getWriter();
+
+        //작성자의 활동 기수와 파트 정보
+        SemesterPart latestSemesterPart = writer.getMemberSemesterPart().stream()
+                .max(Comparator.comparing(SemesterPart::getCreatedAt))
+                .orElse(null);
+
+
+        return EventReviewResponse.builder()
+                .id(review.getId())
+                .name(writer.getNickName())
+                .part(latestSemesterPart != null ? latestSemesterPart.getSemester().getName() : null)
+                .semester(latestSemesterPart != null ? latestSemesterPart.getPart().name() : null)
+                .createdAt(review.getCreatedAt())
+                .content(review.getContent())
+                .build();
+
     }
 
     private List<String> toImageUrls(List<EventImage> images) {

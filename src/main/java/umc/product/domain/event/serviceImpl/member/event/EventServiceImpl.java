@@ -16,6 +16,8 @@ import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -88,6 +90,11 @@ public class EventServiceImpl implements EventService {
         return reviewId;
     }
 
+    @Override
+    public List<EventReview> inquiryEventReviews(Long eventId){
+
+        return eventReviewRepository.findAllByEventId(eventId);
+    }
 
 
 }
