@@ -7,11 +7,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.EventAdviser;
-import umc.product.domain.event.dto.request.form.EventFormAnswerRequest;
 import umc.product.domain.event.dto.request.participation.ParticipationCancelRequest;
 import umc.product.domain.event.dto.response.event.EventPagingResponse;
 import umc.product.domain.event.dto.response.event.EventSummaryResponse;
-import umc.product.domain.event.dto.response.form.EventFormResponse;
 import umc.product.domain.event.dto.response.participation.ParticipationIdResponse;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -55,32 +53,4 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.inquiryEventsByKeyword(keyword, page, size));
     }
 
-    @Operation(summary = "행사 신청 폼 조회 API", description = "특정 행사의 신청 폼 조회")
-    @Parameters(value = {
-            @Parameter(name = "eventId", description = "조회하고 싶은 행사 ID"),
-    })
-    @GetMapping
-    public BaseResponse<EventFormResponse> inquiryEventForm(
-            @RequestParam(name = "eventId") Long eventId
-    ){
-        return BaseResponse.onSuccess(eventAdviser.inquiryEventForm(eventId));
-    }
-
-    @Operation(summary = "행사 신청 API", description = "챌린저용 행사 신청 API")
-    @PostMapping("/apply")
-    public BaseResponse<ParticipationIdResponse> applyEvent(
-            @CurrentMember Member member,
-            @Parameter(description = "질문 답변 json") @RequestPart List<EventFormAnswerRequest> answerList
-    ){
-        return BaseResponse.onSuccess(eventAdviser.applyEvent(member, answerList));
-    }
-
-    @Operation(summary = "행사 취소 API", description = "챌린저용 행사 취소 API")
-    @PostMapping("/cancel")
-    public BaseResponse<ParticipationIdResponse> cancelParticipation(
-            @CurrentMember Member member,
-            @RequestBody ParticipationCancelRequest request
-    ){
-        return BaseResponse.onSuccess(eventAdviser.cancelParticipation(member, request));
-    }
 }
