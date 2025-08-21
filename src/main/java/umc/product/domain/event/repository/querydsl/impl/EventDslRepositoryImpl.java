@@ -52,7 +52,7 @@ public class EventDslRepositoryImpl implements EventDslRepository {
     }
 
     private BooleanExpression eqMonth(Integer month) {
-        return (month != null) ? event.eventStartDate.month().eq(month) : null;
+        return (month != null) ? event.eventDate.month().eq(month) : null;
     }
 
     private BooleanExpression eqSemester(String semester) {

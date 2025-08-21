@@ -12,12 +12,10 @@ public interface EventParticipationRepository extends JpaRepository<EventPartici
 
     default EventParticipation getEventParticipation(Long participationId) {
         return findById(participationId)
-                .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_FORM_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_PARTICIPATION_NOT_FOUND));
     }
 
 
     int countByEvent(Event event);
     Page<EventParticipation> findAllByEvent(Event event, Pageable pageable);
-    EventParticipation findByEvent(Event event);
-
 }

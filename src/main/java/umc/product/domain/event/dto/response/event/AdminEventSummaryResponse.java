@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import umc.product.domain.event.entity.event.EventType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -13,11 +13,8 @@ public class AdminEventSummaryResponse {
     @Schema(description = "행사 ID", example = "1")
     private Long eventId;
 
-    @Schema(description = "행사 시작 시간", example = "2025-07-03T14:30:00")
-    private LocalDateTime eventStartDate;
-
-    @Schema(description = "행사 종료 시간", example = "2025-07-03T14:30:00")
-    private LocalDateTime eventEndDate;
+    @Schema(description = "행사 날짜", example = "2025-07-03")
+    private LocalDate eventDate;
 
     @Schema(description = "행사 장소 (지도 검색 결과)", example = "서울특별시 마포구 마포대로 122")
     private String location;

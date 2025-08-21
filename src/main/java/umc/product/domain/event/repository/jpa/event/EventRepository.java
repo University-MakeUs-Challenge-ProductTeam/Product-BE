@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.status.EventErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 
@@ -16,6 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                 .orElseThrow(() -> new RestApiException(EventErrorStatus.EVENT_NOT_FOUND));
     }
 
+    Page<Event> findAllByEventType(EventType eventType, Pageable pageable);
     Page<Event> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     @Query("""

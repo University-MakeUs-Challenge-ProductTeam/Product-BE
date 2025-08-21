@@ -5,6 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventImage;
+import umc.product.domain.event.entity.event.EventReview;
+import umc.product.domain.member.entity.Member;
+import umc.product.domain.semester.entity.SemesterPart;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,8 +37,7 @@ public class EventConverter {
     public AdminEventSummaryResponse toAdminEventSummaryResponse(Event event, Integer connectedNotices, Integer participants) {
         return AdminEventSummaryResponse.builder()
                 .eventId(event.getId())
-                .eventStartDate(event.getEventStartDate())
-                .eventEndDate(event.getEventEndDate())
+                .eventDate(event.getEventDate())
                 .location(event.getLocation())
                 .thumbnail(event.getThumbnail())
                 .connectedNotices(connectedNotices)
@@ -45,15 +51,12 @@ public class EventConverter {
         return AdminEventDetailResponse.builder()
                 .eventId(event.getId())
                 .content(event.getContent())
-                .eventStartDate(event.getEventStartDate())
-                .eventEndDate(event.getEventEndDate())
+                .eventDate(event.getEventDate())
+                .eventTime(event.getEventTime())
                 .location(event.getLocation())
                 .thumbnail(event.getThumbnail())
                 .eventType(event.getEventType())
                 .participants(participants)
-                .registrationStartDate(event.getRegistrationSettings().getRegistrationStartDate())
-                .registrationEndDate(event.getRegistrationSettings().getRegistrationEndDate())
-                .cancellationDeadline(event.getRegistrationSettings().getCancellationDeadline())
                 .maxParticipants(event.getMaxParticipants())
                 .build();
     }
@@ -65,5 +68,45 @@ public class EventConverter {
                 .createdAt(event.getCreatedAt())
                 .thumbnail(event.getThumbnail())
                 .build();
+    }
+
+    public EventDetailResponse toEventDetailResponse(Event event, List<EventReviewResponse> reviews){
+        return EventDetailResponse.builder()
+                .eventId(event.getId())
+                .title(event.getTitle())
+                .content(event.getContent())
+                .eventType(event.getEventType())
+                .eventDate(event.getEventDate())
+                .eventTime(event.getEventTime())
+                .location(event.getLocation())
+                .createdAt(event.getCreatedAt())
+                .images(toImageUrls(event.getImages()))
+                .reviews(reviews)
+                .build();
+    }
+
+    public EventReviewResponse toEventReviewResponse(EventReview review) {
+
+        Member writer = review.getWriter();
+
+        //작성자의 활동 기수와 파트 정보
+        SemesterPart latestSemesterPart = writer.getMemberSemesterPart().stream()
+                .max(Comparator.comparing(SemesterPart::getCreatedAt))
+                .orElse(null);
+
+
+        return EventReviewResponse.builder()
+                .id(review.getId())
+                .name(writer.getNickName())
+                .part(latestSemesterPart != null ? latestSemesterPart.getSemester().getName() : null)
+                .semester(latestSemesterPart != null ? latestSemesterPart.getPart().name() : null)
+                .createdAt(review.getCreatedAt())
+                .content(review.getContent())
+                .build();
+
+    }
+
+    private List<String> toImageUrls(List<EventImage> images) {
+        return images.stream().map(EventImage::getUrl).toList();
     }
 }

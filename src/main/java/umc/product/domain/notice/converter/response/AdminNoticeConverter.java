@@ -39,7 +39,7 @@ public class AdminNoticeConverter {
                 )
                 .readCount(readCount)
                 .hasEvent(notice.getEvent() != null)
-                .eventDate(notice.getEvent() != null ? notice.getEvent().getEventStartDate().toString() : null)
+                .eventDate(notice.getEvent() != null ? notice.getEvent().getEventDate().toString() : null)
                 .imageUrl(notice.getImages())
                 .build();
     }

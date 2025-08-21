@@ -43,7 +43,7 @@ public class NoticeDslRepositoryImpl implements NoticeDslRepository {
                         req.target() != null ? notice.target.eq(req.target()) : null,
                         req.semesterIds() != null ? ns.semester.id.in(req.semesterIds()) : null,
                         req.parts() != null ? np.part.in(req.parts()) : null,
-                        req.eventMonth() != null ? event.eventStartDate.month().eq(req.eventMonth()) : null
+                        req.eventMonth() != null ? event.eventDate.month().eq(req.eventMonth()) : null
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

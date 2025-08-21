@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.event.entity.participation.ParticipationStatus;
-import umc.product.domain.event.repository.jpa.form.EventFormAnswerRepository;
 import umc.product.domain.event.repository.jpa.participation.EventParticipationRepository;
 import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.event.service.admin.participation.AdminEventParticipationService;
@@ -19,7 +18,6 @@ public class AdminEventParticipationServiceImpl implements AdminEventParticipati
 
     private final EventParticipationRepository eventParticipationRepository;
     private final EventService eventService;
-    private final EventFormAnswerRepository eventFormAnswerRepository;
 
     @Override
     public int countByEvent(Event event) {
@@ -46,7 +44,6 @@ public class AdminEventParticipationServiceImpl implements AdminEventParticipati
 
         EventParticipation eventParticipation = eventParticipationRepository.getEventParticipation(participationId);
 
-        eventFormAnswerRepository.disconnectAnswersFromParticipation(participationId);
         eventParticipationRepository.delete(eventParticipation);
 
         return eventParticipation;
@@ -65,10 +62,6 @@ public class AdminEventParticipationServiceImpl implements AdminEventParticipati
         return eventParticipation;
     }
 
-
-    public EventParticipation getParticipationEventByEvent(Event event){
-        return eventParticipationRepository.findByEvent(event);
-    }
 
     public Page<EventParticipation> getParticipationEventsByEvent(Event event, Pageable pageable){
         return eventParticipationRepository.findAllByEvent(event, pageable);

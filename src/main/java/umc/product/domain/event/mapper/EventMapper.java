@@ -6,20 +6,25 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.semester.entity.Semester;
 
+import java.util.List;
+
 @Component
 public class EventMapper {
 
-    public Event toEvent(EventRequest request, Semester semester, Member writer) {
+    public Event toEvent(EventRequest request, Semester semester, Member writer, List<Semester> allowedSemesters) {
         return Event.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .eventType(request.getEventType())
                 .semester(semester)
-                .eventStartDate(request.getEventStartDate())
-                .eventEndDate(request.getEventEndDate())
+                .eventDate(request.getEventDate())
+                .eventTime(request.getEventTime())
                 .location(request.getLocation())
                 .maxParticipants(request.getMaxParticipants())
                 .writer(writer)
+                .allowedSemesterList(allowedSemesters)
+                .allowedPartList(request.getAllowedPartList())
+                .allowedRoleList(request.getAllowedRoleList())
                 .build();
     }
 }
