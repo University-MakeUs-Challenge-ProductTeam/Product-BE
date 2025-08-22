@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.redis.core.index.Indexed;
 import umc.product.domain.member.entity.enums.OutReason;
+import umc.product.domain.study.entity.WeeklyStudyStatus;
 import umc.product.global.common.base.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -29,5 +30,9 @@ public class MemberOut extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "weekly_study_status_id", nullable = true)
+    private WeeklyStudyStatus weeklyStudyStatus;
 }
 

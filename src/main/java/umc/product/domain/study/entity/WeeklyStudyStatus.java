@@ -1,5 +1,6 @@
 package umc.product.domain.study.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,11 +11,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.product.domain.member.entity.MemberOut;
 import umc.product.domain.study.entity.enums.PassStatus;
 
 @Entity
@@ -39,6 +42,9 @@ public class WeeklyStudyStatus {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private PassStatus status;
+
+  @OneToOne(mappedBy = "weeklyStudyStatus", cascade = CascadeType.ALL)
+  private MemberOut memberOut;
 
   public void updateStatus(PassStatus status) {
     this.status = status;
