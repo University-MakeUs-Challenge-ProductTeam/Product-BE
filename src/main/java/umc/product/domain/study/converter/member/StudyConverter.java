@@ -1,5 +1,8 @@
 package umc.product.domain.study.converter.member;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 import umc.product.domain.checklist.entity.Checklist;
@@ -24,18 +27,22 @@ public class StudyConverter {
     public StudyResponse toStudyResponse(StudyMember studyMember, List<StudyMemberResponse> studyMemberResponseList, Roadmap roadmap) {
         Study study = studyMember.getStudy();
 
-        List<StudyResponse.WeeklyRoadmapResponse> weeklyRoadmaps = roadmap.getRoadmapWeekList().stream()
-            .map(roadmapWeek -> StudyResponse.WeeklyRoadmapResponse.builder()
-                .week(roadmapWeek.getWeek())
-                .subjects(List.of(roadmapWeek.getSubject()))
+        Map<Integer, List<String>> subjectsPerWeek = roadmap.getRoadmapWeekList().stream()
+            .collect(Collectors.groupingBy(
+                RoadmapWeek::getWeek, // 'week' 필드로 그룹핑
+                Collectors.mapping(RoadmapWeek::getSubject, Collectors.toList()) // 각 그룹의 'subject'를 리스트로 모음
+            ));
+
+        List<StudyResponse.WeeklyRoadmapResponse> weeklyRoadmaps = subjectsPerWeek.entrySet().stream()
+            .map(entry -> StudyResponse.WeeklyRoadmapResponse.builder()
+                .week(entry.getKey())
+                .subjects(entry.getValue())
                 .build())
+            .sorted(Comparator.comparingInt(StudyResponse.WeeklyRoadmapResponse::getWeek)) // 주차 순서대로 정렬
             .collect(Collectors.toList());
 
         // 현재 주차의 주제 목록
-        List<String> currentWeekSubjects = roadmap.getRoadmapWeekList().stream() // <- 수정된 부분
-            .filter(roadmapWeek -> roadmapWeek.getWeek() == study.getCurrentWeek())
-            .map(RoadmapWeek::getSubject)
-            .collect(Collectors.toList());
+        List<String> currentWeekSubjects = subjectsPerWeek.getOrDefault(study.getCurrentWeek(), Collections.emptyList());
 
         return StudyResponse.builder()
             .studyId(study.getId())

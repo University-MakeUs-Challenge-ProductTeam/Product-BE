@@ -22,6 +22,7 @@ import umc.product.domain.member.entity.Member;
 import umc.product.domain.member.entity.enums.OutReason;
 import umc.product.domain.member.entity.enums.Part;
 import umc.product.domain.member.entity.enums.Role;
+import umc.product.domain.member.repository.jpa.MemberOutJpaRepository;
 import umc.product.domain.member.service.admin.AdminMemberService;
 import umc.product.domain.member.service.admin.AdminOutService;
 import umc.product.domain.member.status.AuthErrorStatus;
@@ -88,6 +89,7 @@ public class AdminStudyAdviser {
     private final RoadmapWeekRepository roadmapWeekRepository;
     private final AdminWeeklyStudyStatusRepository weeklyStudyStatusRepository;
     private final StudyConverter studyConverter;
+    private final MemberOutJpaRepository memberOutJpaRepository;
 
     // 스터디 생성 - 하나의 영속성으로 관리
     // todo - 최적화 필요
@@ -376,19 +378,35 @@ public class AdminStudyAdviser {
             .orElse(WeeklyStudyStatus.builder()
                 .studyMember(studyMember)
                 .week(week)
+                .status(PassStatus.PENDING)
                 .build());
 
-        weeklyStatus.updateStatus(request.getStatus());
-        adminWeeklyStudyStatusRepository.save(weeklyStatus);
+        // 상태 변경 전, 기존 상태를 저장
+        PassStatus oldStatus = weeklyStatus.getStatus();
+        PassStatus newStatus = request.getStatus();
 
-        // 3. 만약 설정된 상태가 'OUT'이라면, 'MemberOut' 경고를 부여
-        if (request.getStatus() == PassStatus.OUT) {
+        // 상태가 실제로 변경되었을 때만 로직 수행
+        if (oldStatus != newStatus) {
+            // 1. WeeklyStudyStatus의 상태를 먼저 업데이트
+            weeklyStatus.updateStatus(newStatus);
+
             Member member = studyMember.getSemesterPart().getMember();
 
-            // '스터디 불이행' 사유로 MemberOut을 생성하는 서비스를 호출
-            // 이 서비스 내부에서 3회 누적 시 최종 OUT 처리 로직이 동작
-            adminOutService.postMemberOut(member, OutReason.STUDY_CHECK_NOT_PERFORM);
+            // 2. [OUT 부여] PENDING/PASS -> OUT으로 변경된 경우
+            if (newStatus == PassStatus.OUT) {
+                // MemberOut 생성 서비스를 호출하고, 어떤 weeklyStatus 때문인지 연결고리를 남깁니다.
+                adminOutService.postMemberOutForStudy(member, OutReason.STUDY_CHECK_NOT_PERFORM, weeklyStatus);
+
+                // 3. [OUT 취소] OUT -> PENDING/PASS로 변경된 경우
+            } else if (oldStatus == PassStatus.OUT) {
+                // 이 weeklyStatus와 연결된 MemberOut을 찾아서 삭제합니다.
+                memberOutJpaRepository.findByWeeklyStudyStatus(weeklyStatus)
+                    .ifPresent(memberOut -> adminOutService.deleteMemberOut(member, memberOut.getId()));
+            }
         }
+
+        weeklyStudyStatusRepository.save(weeklyStatus);
+
         return WeeklyStatusCommonResponse.builder()
             .weeklyStatusId(weeklyStatus.getId())
             .build();
