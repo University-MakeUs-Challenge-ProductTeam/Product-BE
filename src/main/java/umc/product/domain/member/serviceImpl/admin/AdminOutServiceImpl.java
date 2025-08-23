@@ -10,6 +10,7 @@ import umc.product.domain.member.entity.enums.Status;
 import umc.product.domain.member.mapper.MemberOutMapper;
 import umc.product.domain.member.repository.jpa.MemberOutJpaRepository;
 import umc.product.domain.member.service.admin.AdminOutService;
+import umc.product.domain.study.entity.WeeklyStudyStatus;
 import umc.product.global.common.exception.RestApiException;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AdminOutServiceImpl implements AdminOutService {
 
     private final MemberOutMapper memberOutMapper;
 
+
     @Transactional
     @Override
     public MemberOut postMemberOut(
@@ -33,11 +35,27 @@ public class AdminOutServiceImpl implements AdminOutService {
         MemberOut memberOut = memberOutMapper.toMemberOut(member, outReason);
         member.addMemberOut(memberOut);
 
-        //삭제 되지 않은 out 개수 counting
+        return applyOutAndCheckThreshold(member, memberOut);
+    }
+
+    @Transactional
+    @Override
+    public MemberOut postMemberOutForStudy(Member member, OutReason outReason, WeeklyStudyStatus weeklyStatus) {
+        // 매퍼를 통해 weeklyStatus가 포함된 MemberOut을 생성
+        MemberOut memberOut = memberOutMapper.toMemberOut(member, outReason, weeklyStatus);
+        // 공통 로직을 처리하는 private 메서드를 호출
+        return applyOutAndCheckThreshold(member, memberOut);
+    }
+
+    private MemberOut applyOutAndCheckThreshold(Member member, MemberOut memberOut) {
+        member.addMemberOut(memberOut);
         List<MemberOut> memberOutList = member.getMemberOutList().stream()
-                .filter(memberOut1 -> memberOut1.getDeletedAt() == null)
-                .collect(Collectors.toList());
-        if(memberOutList.size() >= 3) member.setStatus(Status.OUT);
+            .filter(memberOut1 -> memberOut1.getDeletedAt() == null)
+            .collect(Collectors.toList());
+
+        if (memberOutList.size() >= 3) {
+            member.setStatus(Status.OUT);
+        }
         return memberOut;
     }
 
