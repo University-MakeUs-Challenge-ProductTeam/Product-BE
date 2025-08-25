@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.product.domain.member.entity.Member;
 import umc.product.domain.notice.converter.response.NoticeConverter;
+import umc.product.domain.notice.dto.request.NoticeSearchRequest;
 import umc.product.domain.notice.dto.response.member.NoticeCheckResponse;
 import umc.product.domain.notice.dto.response.member.NoticeDetailResponse;
 import umc.product.domain.notice.dto.response.member.NoticeResponse;
@@ -116,5 +117,31 @@ public class NoticeAdviser {
         noticeMemberService.markAsChecked(noticeMember);
         
         return noticeConverter.toNoticeCheckResponse(noticeMember);
+    }
+
+    public NoticeListResponse searchNotices(Member member, NoticeSearchRequest request, Pageable pageable) {
+        // 공지 검색 (페이징 포함)
+        Page<Notice> noticePage = noticeService.searchNotices(request, pageable);
+        
+        // Fetch Join을 사용하여 한 번의 쿼리로 모든 NoticeMember 조회
+        List<NoticeMember> noticeMembers = noticeMemberService.getNoticeMembersByNoticeInAndMemberWithFetchJoin(noticePage.getContent(), member);
+        
+        // NoticeMember를 Map으로 변환하여 빠른 조회 가능하도록 함
+        Map<Long, NoticeMember> noticeMemberMap = noticeMembers.stream()
+                .collect(Collectors.toMap(
+                    nm -> nm.getNotice().getId(),
+                    nm -> nm
+                ));
+        
+        // 각 공지에 대해 사용자의 열람 여부 확인하여 NoticeResponse 리스트 생성
+        List<NoticeResponse> noticeResponseList = noticePage.getContent().stream()
+                .map(notice -> {
+                    NoticeMember noticeMember = noticeMemberMap.get(notice.getId());
+                    Boolean isRead = noticeMember != null ? noticeMember.getIsRead() : false;
+                    return noticeConverter.toNoticeResponse(notice, isRead);
+                })
+                .collect(Collectors.toList());
+        
+        return noticeConverter.toNoticeListResponse(noticeResponseList);
     }
 } 

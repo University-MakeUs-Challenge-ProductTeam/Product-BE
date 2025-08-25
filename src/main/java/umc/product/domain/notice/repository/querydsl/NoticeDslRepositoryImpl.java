@@ -4,12 +4,14 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import umc.product.domain.event.entity.event.QEvent;
 import umc.product.domain.notice.dto.request.admin.AdminNoticeListRequest;
+import umc.product.domain.notice.dto.request.NoticeSearchRequest;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.notice.entity.QNotice;
 import umc.product.domain.notice.entity.QNoticePart;
@@ -18,6 +20,7 @@ import umc.product.domain.notice.entity.QNoticeSemester;
 import java.util.List;
 
 @Repository
+@Primary
 @RequiredArgsConstructor
 public class NoticeDslRepositoryImpl implements NoticeDslRepository {
 
@@ -57,13 +60,35 @@ public class NoticeDslRepositoryImpl implements NoticeDslRepository {
         return new PageImpl<>(content, pageable, total);
     }
 
+    // 일반 사용자용 공지 검색
+    @Override
+    public Page<Notice> searchNotices(NoticeSearchRequest req, Pageable pageable) {
+        QNotice notice = QNotice.notice;
+
+        JPQLQuery<Notice> query = queryFactory
+                .select(notice)
+                .from(notice)
+                .where(
+                        keywordContains(req.keyword(), notice),
+                        req.target() != null ? notice.target.eq(req.target()) : null
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(notice.noticeDate.desc());
+
+        List<Notice> content = query.fetch();
+        long total = query.fetchCount();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
     // 키워드 검색 조건 (제목, 본문, 해시태그)
     private BooleanExpression keywordContains(String keyword, QNotice notice) {
         if (keyword == null || keyword.isBlank()) return null;
 
         return notice.title.containsIgnoreCase(keyword)
                 .or(notice.content.containsIgnoreCase(keyword))
-                .or(notice.hashtags.containsIgnoreCase(keyword));
+                .or(notice.hashtags.isNotNull().and(notice.hashtags.containsIgnoreCase(keyword)));
     }
 
 }
