@@ -44,7 +44,9 @@ public class EventServiceImpl implements EventService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return eventRepository.findAllByEventType(type, pageable);
+        return type != null
+                ? eventRepository.findAllByEventType(type, pageable)
+                : eventRepository.findAll(pageable);
     }
 
     @Override
