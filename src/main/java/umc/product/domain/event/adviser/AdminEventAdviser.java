@@ -19,6 +19,7 @@ import umc.product.domain.event.entity.event.Event;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.entity.participation.EventParticipation;
 import umc.product.domain.event.entity.participation.ParticipationStatus;
+import umc.product.domain.event.repository.jpa.event.EventMemberRepository;
 import umc.product.domain.event.service.admin.event.AdminEventService;
 import umc.product.domain.event.service.admin.participation.AdminEventParticipationService;
 import umc.product.domain.member.entity.Member;
@@ -33,6 +34,7 @@ public class AdminEventAdviser {
     private final EventConverter eventConverter;
     private final AdminEventParticipationService adminEventParticipationService;
     private final EventParticipationConverter eventParticipationConverter;
+    private final EventMemberRepository eventMemberRepository;
 
     public EventIdResponse createEvent(Member writer, List<MultipartFile> eventImages, EventRequest request) {
 
@@ -70,7 +72,10 @@ public class AdminEventAdviser {
         Event event = adminEventService.inquiryEventDetail(eventId);
         int participantCount = adminEventParticipationService.countByEvent(event);
 
-        return eventConverter.toAdminEventDetailResponse(event, participantCount);
+        Long readCount = eventMemberRepository.countByEventAndIsReadTrue(event);
+        Long checkCount = eventMemberRepository.countByEventAndIsCheckedTrue(event);
+
+        return eventConverter.toAdminEventDetailResponse(event, participantCount, readCount, checkCount);
     }
 
     public ParticipationPagingResponse<AdminParticipationMemberResponse> inquiryParticipationMembers(Long eventId, int page, int size) {

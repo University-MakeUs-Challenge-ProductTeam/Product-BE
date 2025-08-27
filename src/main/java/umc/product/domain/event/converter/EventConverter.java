@@ -47,7 +47,7 @@ public class EventConverter {
                 .build();
     }
 
-    public AdminEventDetailResponse toAdminEventDetailResponse(Event event, Integer participants) {
+    public AdminEventDetailResponse toAdminEventDetailResponse(Event event, Integer participants, Long readCount, Long checkCount) {
         return AdminEventDetailResponse.builder()
                 .eventId(event.getId())
                 .content(event.getContent())
@@ -58,6 +58,8 @@ public class EventConverter {
                 .eventType(event.getEventType())
                 .participants(participants)
                 .maxParticipants(event.getMaxParticipants())
+                .checkCount(checkCount)
+                .readCount(readCount)
                 .build();
     }
 
@@ -70,7 +72,7 @@ public class EventConverter {
                 .build();
     }
 
-    public EventDetailResponse toEventDetailResponse(Event event, List<EventReviewResponse> reviews){
+    public EventDetailResponse toEventDetailResponse(Event event, List<EventReviewResponse> reviews, Boolean isChecked){
         return EventDetailResponse.builder()
                 .eventId(event.getId())
                 .title(event.getTitle())
@@ -82,6 +84,7 @@ public class EventConverter {
                 .createdAt(event.getCreatedAt())
                 .images(toImageUrls(event.getImages()))
                 .reviews(reviews)
+                .isChecked(isChecked)
                 .build();
     }
 
