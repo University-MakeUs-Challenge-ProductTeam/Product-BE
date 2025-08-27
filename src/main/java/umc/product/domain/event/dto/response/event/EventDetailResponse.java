@@ -42,4 +42,7 @@ public class EventDetailResponse {
     private List<String> images;
 
     private List<EventReviewResponse> reviews;
+
+    @Schema(description = "행사 열람 체크 여부", example = "false")
+    private Boolean isChecked;
 }

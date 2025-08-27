@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 import umc.product.domain.event.converter.EventConverter;
 import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.Event;
+import umc.product.domain.event.entity.event.EventMember;
 import umc.product.domain.event.entity.event.EventReview;
 import umc.product.domain.event.entity.event.EventType;
+import umc.product.domain.event.service.member.event.EventMemberService;
 import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.member.entity.Member;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class EventAdviser {
     private final EventService eventService;
     private final EventConverter eventConverter;
+    private final EventMemberService eventMemberService;
 
     public EventPagingResponse<EventSummaryResponse> inquiryEvents(int page, int size){
 
@@ -40,13 +43,14 @@ public class EventAdviser {
         return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
     }
 
-    public EventDetailResponse inquiryEventDetail(Long eventId){
+    public EventDetailResponse inquiryEventDetail(Long eventId, Long memberId){
         Event event = eventService.getEvent(eventId);
         List<EventReview> reviews = eventService.inquiryEventReviews(eventId);
         List<EventReviewResponse> reviewResponses = reviews.stream()
                 .map(eventConverter::toEventReviewResponse)
                 .toList();
-        return eventConverter.toEventDetailResponse(event, reviewResponses);
+        EventMember eventMember = eventMemberService.markAsRead(eventId, memberId);//행사 열람
+        return eventConverter.toEventDetailResponse(event, reviewResponses,eventMember.getIsChecked());
     }
 
     public EventReviewIdResponse createReview(Long eventId, Member member, String content){
@@ -60,5 +64,9 @@ public class EventAdviser {
 
     public EventReviewIdResponse deleteReview(Member member, Long reviewId){
         return new EventReviewIdResponse(eventService.deleteEventReview(member, reviewId));
+    }
+
+    public EventMemberIdResponse markAsChecked(Long eventId, Long memberId){
+        return new EventMemberIdResponse(eventMemberService.markAsChecked(eventId, memberId).getId());
     }
 }

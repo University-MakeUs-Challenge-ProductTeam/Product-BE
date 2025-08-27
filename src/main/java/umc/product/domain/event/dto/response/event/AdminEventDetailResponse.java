@@ -43,5 +43,9 @@ public class AdminEventDetailResponse {
     @Schema(description = "최대 참여 인원 제한 수", example = "120")
     private Integer maxParticipants;
 
-    //todo 행사 후기 추가하기.
+    @Schema(description = "열람 인원 수", example = "80")
+    private Long readCount;
+
+    @Schema(description = "체크 인원 수", example = "50")
+    private Long checkCount;
 }

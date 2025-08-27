@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.product.domain.event.adviser.EventAdviser;
-import umc.product.domain.event.dto.response.event.EventDetailResponse;
-import umc.product.domain.event.dto.response.event.EventPagingResponse;
-import umc.product.domain.event.dto.response.event.EventReviewIdResponse;
-import umc.product.domain.event.dto.response.event.EventSummaryResponse;
+import umc.product.domain.event.dto.response.event.*;
 import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.member.entity.Member;
 import umc.product.global.common.base.BaseResponse;
@@ -70,9 +67,10 @@ public class EventController {
     @Operation(summary = "행사 상세 조회 API", description = "특정 이벤트 상세조회")
     @GetMapping("/{eventId}/detail")
     public BaseResponse<EventDetailResponse> inquiryEventDetail(
+            @CurrentMember Member member,
             @Parameter(description = "조회할 이벤트 id") @PathVariable("eventId") Long eventId
     ) {
-        return BaseResponse.onSuccess(eventAdviser.inquiryEventDetail(eventId));
+        return BaseResponse.onSuccess(eventAdviser.inquiryEventDetail(eventId, member.getId()));
     }
 
     @Operation(summary = "행사 리뷰 생성 API", description = "행사 리뷰 생성")
@@ -110,4 +108,12 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.deleteReview(member, eventReviewId));
     }
 
+    @Operation(summary= "행사 열람 체크 API", description = "행사 열람 수동 체크 API")
+    @PostMapping("/{eventId}/check")
+    public BaseResponse<EventMemberIdResponse> markAsChecked(
+            @CurrentMember Member member,
+            @Parameter(description = "열람 체크할 행사 Id") @PathVariable Long eventId
+    ){
+        return BaseResponse.onSuccess(eventAdviser.markAsChecked(eventId, member.getId()));
+    }
 }
