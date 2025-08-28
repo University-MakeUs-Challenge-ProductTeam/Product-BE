@@ -64,6 +64,21 @@ public class EventController {
         return BaseResponse.onSuccess(eventAdviser.inquiryEventsByKeyword(keyword, page, size));
     }
 
+    @Operation(summary = "다가오는 행사 조회 API", description = "4주 이내 있는 행사 조회")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/upcoming")
+    public BaseResponse<EventPagingResponse<EventSummaryResponse>> inquiryUpcomingEventsByKeyword(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ){
+        return BaseResponse.onSuccess(eventAdviser.inquiryUpcomingEvents(page, size));
+    }
+
+
+
     @Operation(summary = "행사 상세 조회 API", description = "특정 이벤트 상세조회")
     @GetMapping("/{eventId}/detail")
     public BaseResponse<EventDetailResponse> inquiryEventDetail(

@@ -13,6 +13,7 @@ public interface EventService {
     Page<Event> inquiryEvents(int page, int size);
     Page<Event> inquiryEventsByKeyword(String keyword, int page, int size);
     Page<Event> inquiryEventsByEventType(EventType type, int page, int size);
+    Page<Event> inquiryUpcomingEvents(int page, int size);
     EventReview createEventReview(Long eventId, Member member, String content);
     EventReview updateEventReview(Member member, Long reviewId, String content);
     Long deleteEventReview(Member member, Long reviewId);
