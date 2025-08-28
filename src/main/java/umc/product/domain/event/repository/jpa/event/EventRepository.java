@@ -10,6 +10,8 @@ import umc.product.domain.event.entity.event.EventType;
 import umc.product.domain.event.status.EventErrorStatus;
 import umc.product.global.common.exception.RestApiException;
 
+import java.time.LocalDate;
+
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     default Event getEvent(Long eventId) {
@@ -19,6 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findAllByEventType(EventType eventType, Pageable pageable);
     Page<Event> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<Event> findAllByEventDateBetween(LocalDate start, LocalDate end, Pageable pageable);
+
 
     @Query("""
         SELECT e FROM Event e

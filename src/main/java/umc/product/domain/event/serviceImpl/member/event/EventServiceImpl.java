@@ -16,6 +16,7 @@ import umc.product.domain.event.service.member.event.EventService;
 import umc.product.domain.event.validator.EventParamValidator;
 import umc.product.domain.member.entity.Member;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -55,6 +56,17 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(page, size);
 
         return eventRepository.searchByKeyword(keyword, pageable);
+    }
+
+    @Override
+    public Page<Event> inquiryUpcomingEvents(int page, int size){
+
+        LocalDate today = LocalDate.now();
+        LocalDate fourWeeks = today.plusWeeks(4);
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return eventRepository.findAllByEventDateBetween(today, fourWeeks, pageable);
     }
 
     @Override

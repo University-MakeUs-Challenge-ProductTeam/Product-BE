@@ -43,6 +43,13 @@ public class EventAdviser {
         return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
     }
 
+    public EventPagingResponse<EventSummaryResponse> inquiryUpcomingEvents(int page, int size){
+
+        Page<Event> eventPage = eventService.inquiryUpcomingEvents(page, size);
+
+        return eventConverter.toEventPagingResponse(eventPage.map(eventConverter::toEventSummaryResponse));
+    }
+
     public EventDetailResponse inquiryEventDetail(Long eventId, Long memberId){
         Event event = eventService.getEvent(eventId);
         List<EventReview> reviews = eventService.inquiryEventReviews(eventId);
