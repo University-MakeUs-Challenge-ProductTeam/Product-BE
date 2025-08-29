@@ -63,7 +63,7 @@ public class EventRequest {
                     "- DESIGN\n" +
                     "- WEB\n" +
                     "- PLAN",
-            example = "[\"SPRING\", \"WEB\"]"
+            example = "[\"ANDROID\", \"IOS\", \"SPRING\", \"NODE\", \"DESIGN\", \"WEB\", \"PLAN\"]"
     )
     private List<Part> allowedPartList;
 
@@ -76,7 +76,8 @@ public class EventRequest {
                     "- UNIVERSITY_STAFF: 교내 운영진 (파트장 등)\n" +
                     "- CHALLENGER: 일반 챌린저\n" +
                     "- GUEST: 비회원",
-            example = "[\"CHALLENGER\", \"UNIVERSITY_STAFF\"]"
+            example = "[\"ADMIN\", \"CENTRAL_ADMIN\", \"SCHOOL_ADMIN\", \"BRANCH_STAFF\", " +
+                    "\"UNIVERSITY_STAFF\", \"CHALLENGER\", \"GUEST\"]"
     )
     private List<Role> allowedRoleList;
 }
