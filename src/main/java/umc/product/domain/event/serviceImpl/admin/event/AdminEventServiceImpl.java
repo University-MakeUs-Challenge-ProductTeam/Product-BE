@@ -50,9 +50,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     public Event createEvent(
             Member writer, List<MultipartFile> eventImages, EventRequest request
     ){
-        Semester semester = semesterService.getSemester(request.getSemesterId());
+        Semester semester = semesterService.getSemesterByName(request.getSemester());
 
-        List<Semester> allowedSemesters = semesterService.getSemesters(request.getAllowedSemesterIds());
+        List<Semester> allowedSemesters = semesterService.getSemestersByName(request.getAllowedSemester());
 
         Event newEvent = createAndSaveEvent(request, semester, writer, allowedSemesters);
 
