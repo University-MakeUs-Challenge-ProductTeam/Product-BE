@@ -34,8 +34,8 @@ public class EventRequest {
     @NotBlank(message = "행사 타입은 필수 입력값입니다.")
     private EventType eventType;
 
-    @Schema(description = "학기 아이디", example = "1")
-    private Long semesterId;
+    @Schema(description = "행사 개최 학기", example = "9기")
+    private String semester;
 
     @Schema(description = "행사 일자", example = "2025-07-03")
     @Future(message = "행사 일자의 경우, 과거 날짜를 선택할 수 없습니다.")
@@ -51,8 +51,8 @@ public class EventRequest {
     @Schema(description = "참여 최대 인원", example = "120")
     private Integer maxParticipants;
 
-    @Schema(description = "참여 가능 학기 ID 목록", example = "[1, 2]")
-    private List<Long> allowedSemesterIds;
+    @Schema(description = "참여 가능 학기 목록", example = "[\"8기\", \"9기\"]")
+    private List<String> allowedSemester;
 
     @Schema(
             description = "참여 가능 파트 목록\n\n" +

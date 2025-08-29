@@ -60,8 +60,19 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
+    public Semester getSemesterByName(String name) {
+        return semesterJpaRepository.findByName(name)
+                .orElseThrow(() -> new RestApiException(EMPTY_SEMESTER));
+    }
+
+    @Override
     public List<Semester> getSemesters(List<Long> semesterIds) {
         return semesterJpaRepository.findAllById(semesterIds);
+    }
+
+    @Override
+    public List<Semester> getSemestersByName(List<String> names) {
+        return semesterJpaRepository.findAllByNameIn(names);
     }
   
     @Override

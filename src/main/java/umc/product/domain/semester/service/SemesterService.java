@@ -12,6 +12,8 @@ public interface SemesterService {
     <T> Map<Long, Semester> findSemesterListForModify(List<T> list, Function<T, Long> idExtractor);
     Semester findRecentSemester();
     Semester getSemester(Long semesterId);
+    Semester getSemesterByName(String name);
     List<Semester> getSemesters(List<Long> semesterIds);
+    List<Semester> getSemestersByName(List<String> semesterNames);
     List<Semester> getSemestersByIdsOrEmpty(List<Long> semesterIdList);
 }
