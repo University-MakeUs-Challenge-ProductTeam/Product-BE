@@ -42,7 +42,7 @@ public class EventController {
     })
     @GetMapping("/list/type")
     public BaseResponse<EventPagingResponse<EventSummaryResponse>> inquiryEventsByEventType(
-            @RequestParam EventType type,
+            @RequestParam(required = false) EventType type,
             @RequestParam int page,
             @RequestParam int size
     ){

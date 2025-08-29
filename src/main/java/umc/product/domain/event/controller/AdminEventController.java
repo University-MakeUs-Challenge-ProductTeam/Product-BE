@@ -78,7 +78,7 @@ public class AdminEventController {
     public BaseResponse<EventPagingResponse<AdminEventSummaryResponse>> inquiryEventsByFilter(
             @RequestParam(name = "month") Integer month,
             @RequestParam(name = "semester") String semester,
-            @RequestParam(name = "eventType") EventType eventType,
+            @RequestParam(name = "eventType", required = false) EventType eventType,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size
     ) {
