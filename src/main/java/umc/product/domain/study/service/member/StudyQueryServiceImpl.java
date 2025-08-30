@@ -1,5 +1,6 @@
 package umc.product.domain.study.service.member;
 
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,11 +66,14 @@ public class StudyQueryServiceImpl implements StudyQueryService {
             .orElseThrow(() -> new RestApiException(RoadmapErrorStatus.ROADMAP_SEMESTER_NOT_FOUND));
 
         // N + 1 문제를 해결하기 위해 querydsl을 사용하여 StudyMemberResponse 조회
-        List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
-        // 로그인 사용자에 (나) 붙이기
-        List<StudyMemberResponse> markedstudyMemberResponseList = mark(studyMemberResponseList, loginId);
+//        List<StudyMemberResponse> studyMemberResponseList = studyRepository.getStudyMembers(studyMember.getStudy());
+        StudyMemberResponse singleMemberResponse = studyRepository.getSingleStudyMember(studyMember.getId(), week);
+
+        List<StudyMemberResponse> singleMemberList = Collections.singletonList(singleMemberResponse);
+        List<StudyMemberResponse> markedMemberList = mark(singleMemberList, loginId);
+
         List<StudyWorkbookResponse.StudyChecklistResponse> studyChecklistList = studyRepository.getStudyChecklists(studyMember.getId(), roadmapSemester, week);
-        return studyConverter.toStudyWorkbookResponse(studyMember, markedstudyMemberResponseList, week, workbookContents, studyChecklistList);
+        return studyConverter.toStudyWorkbookResponse(studyMember, markedMemberList, week, workbookContents, studyChecklistList);
     }
 
     @Override

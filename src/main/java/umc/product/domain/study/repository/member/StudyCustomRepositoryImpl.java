@@ -1,5 +1,7 @@
 package umc.product.domain.study.repository.member;
 
+import static umc.product.domain.university.entity.QUniversity.university;
+
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -257,6 +259,27 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                                 GroupBy.list(participant.nickName)
                         ))
                 );
+    }
+
+    @Override
+    public StudyMemberResponse getSingleStudyMember(Long studyMemberId, int targetWeek) {
+        return jpaQueryFactory
+            .select(new QStudyMemberResponse(
+                member.id,
+                member.university.name,
+                member.nickName,
+                studyAttendance.checkStatus.stringValue()
+            ))
+            .from(studyMember)
+            .join(studyMember.semesterPart, semesterPart)
+            .join(semesterPart.member, member)
+            .join(member.university, university)
+            // 출석 정보를 위해 LEFT JOIN을 사용
+            .leftJoin(studyAttendance)
+            .on(studyAttendance.studyMember.id.eq(studyMemberId)
+                .and(studyAttendance.week.eq(targetWeek)))
+            .where(studyMember.id.eq(studyMemberId))
+            .fetchOne();
     }
 
 }
