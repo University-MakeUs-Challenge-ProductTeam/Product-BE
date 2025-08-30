@@ -18,5 +18,6 @@ public interface StudyCustomRepository {
     List<StudyWeekChecklistResponse.ChecklistResponse> getChecklistResponses(Long studyMemberId, RoadmapSemester roadmapSemester, int week);
     boolean getPostStatus(StudyMember studyMember, int week);
     List<StudyInfoResponse> getStudyInfoList(Member loginMember);
+    StudyMemberResponse getSingleStudyMember(Long studyMemberId, int targetWeek);
 
 }
