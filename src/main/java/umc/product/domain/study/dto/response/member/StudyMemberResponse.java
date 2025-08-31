@@ -2,12 +2,15 @@ package umc.product.domain.study.dto.response.member;
 
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import umc.product.domain.study.entity.enums.StudyRole;
 
 @Schema(description = "스터디 멤버 정보")
 @Getter
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class StudyMemberResponse {
 
     @Schema(description = "사용자 id", example = "1")
@@ -26,11 +29,11 @@ public class StudyMemberResponse {
     private boolean isLeader;
 
     @QueryProjection
-    public StudyMemberResponse(Long memberId, String university, String nickName, String attendance, Boolean isLeader) {
+    public StudyMemberResponse(Long memberId, String university, String nickName, String attendance, StudyRole studyRole) {
         this.memberId = memberId;
         this.university = university;
         this.nickName = nickName;
         this.attendance = attendance;
-        this.isLeader = isLeader;
+        this.isLeader = (studyRole == StudyRole.LEADER);
     }
 }
