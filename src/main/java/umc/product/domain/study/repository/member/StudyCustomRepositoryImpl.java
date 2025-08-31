@@ -58,7 +58,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                         member.id,
                         member.university.name,
                         member.nickName,
-                        studyAttendance.checkStatus.stringValue()
+                        studyAttendance.checkStatus.stringValue(),
+                        studyMember.studyRole
                 ))
                 .from(studyMember)
                 .join(studyMember.semesterPart, semesterPart)
@@ -268,7 +269,8 @@ public class StudyCustomRepositoryImpl implements StudyCustomRepository {
                 member.id,
                 member.university.name,
                 member.nickName,
-                studyAttendance.checkStatus.stringValue()
+                studyAttendance.checkStatus.stringValue(),
+                studyMember.studyRole
             ))
             .from(studyMember)
             .join(studyMember.semesterPart, semesterPart)
