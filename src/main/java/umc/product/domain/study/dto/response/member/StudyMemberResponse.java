@@ -22,11 +22,15 @@ public class StudyMemberResponse {
     @Schema(description = "출석 상태", example = "UNSET")
     private String attendance;
 
+    @Schema(description = "스터디장 여부", example = "true")
+    private boolean isLeader;
+
     @QueryProjection
-    public StudyMemberResponse(Long memberId, String university, String nickName, String attendance) {
+    public StudyMemberResponse(Long memberId, String university, String nickName, String attendance, Boolean isLeader) {
         this.memberId = memberId;
         this.university = university;
         this.nickName = nickName;
         this.attendance = attendance;
+        this.isLeader = isLeader;
     }
 }
