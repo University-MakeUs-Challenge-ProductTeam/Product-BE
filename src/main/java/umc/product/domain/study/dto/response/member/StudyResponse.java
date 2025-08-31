@@ -37,6 +37,8 @@ public class StudyResponse {
     @Schema(description = "스터디 전체 목차")
     private List<WeeklyRoadmapResponse> weeklyRoadmaps;
 
+    @Schema(description = "스터디장 여부", example = "true")
+    private boolean isLeader;
 
     @Schema(description = "주차별 로드맵 상세 정보")
     @Getter
