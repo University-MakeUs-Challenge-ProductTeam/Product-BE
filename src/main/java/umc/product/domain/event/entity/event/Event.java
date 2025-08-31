@@ -29,6 +29,7 @@ public class Event extends BaseEntity {
 
     private String content; // 행사 내용
 
+    @Enumerated(EnumType.STRING)
     private EventType eventType; // 행사 타입(중앙/지부/학교)
 
     private LocalDate eventDate;  // 행사 일자
@@ -47,12 +48,12 @@ public class Event extends BaseEntity {
     private List<Semester> allowedSemesterList = new ArrayList<>();  // 행사 확인 가능 기수
 
     @ElementCollection
-    @CollectionTable(name = "event_allowed_parts", joinColumns = @JoinColumn(name = "registration_settings_id"))
+    @CollectionTable(name = "event_allowed_parts", joinColumns = @JoinColumn(name = "event_id"))
     @Enumerated(EnumType.STRING)
     private List<Part> allowedPartList = new ArrayList<>();  // 행사 확인 가능 파트
 
     @ElementCollection
-    @CollectionTable(name = "event_allowed_roles", joinColumns = @JoinColumn(name = "registration_settings_id"))
+    @CollectionTable(name = "event_allowed_roles", joinColumns = @JoinColumn(name = "event_id"))
     @Enumerated(EnumType.STRING)
     private List<Role> allowedRoleList = new ArrayList<>();  // 행사 확인 가능 직책
 
@@ -71,6 +72,9 @@ public class Event extends BaseEntity {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventParticipation> participationEventList = new ArrayList<>(); // 이벤트를 참여 멤버
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventReview> eventReviewList = new ArrayList<>();
+
     public void changeImages(List<EventImage> eventImages) {
         this.images.clear(); // 기존 이미지 제거
         this.images.addAll(eventImages);
@@ -82,6 +86,7 @@ public class Event extends BaseEntity {
     public void updateInfo(String title, String content, EventType eventType, Semester semester,
                            LocalDate startDate, LocalTime endDate, String location, Integer maxParticipants,
                            List<Semester> allowedSemesterList, List<Part> allowedPartList, List<Role> allowedRoleList) {
+
         this.title = title;
         this.content = content;
         this.eventType = eventType;
