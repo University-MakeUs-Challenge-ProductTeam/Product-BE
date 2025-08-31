@@ -102,8 +102,8 @@ public class EventConverter {
         return EventReviewResponse.builder()
                 .id(review.getId())
                 .name(writer.getNickName())
-                .part(latestSemesterPart != null ? latestSemesterPart.getSemester().getName() : null)
-                .semester(latestSemesterPart != null ? latestSemesterPart.getPart().name() : null)
+                .part(latestSemesterPart != null ? latestSemesterPart.getPart().name() : null)
+                .semester(latestSemesterPart != null ? latestSemesterPart.getSemester().getName() : null)
                 .createdAt(review.getCreatedAt())
                 .content(review.getContent())
                 .build();
