@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 import umc.product.domain.member.entity.Member;
+import umc.product.global.common.base.BaseEntity;
 
 @Entity
 @Builder
@@ -11,7 +12,7 @@ import umc.product.domain.member.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted_at is null")
-public class EventMember {
+public class EventMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
