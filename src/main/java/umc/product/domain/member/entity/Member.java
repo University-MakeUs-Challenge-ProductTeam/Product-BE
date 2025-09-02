@@ -22,6 +22,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@Where(clause = "deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     // todo: 엔티티 추가되면 매핑 추가
