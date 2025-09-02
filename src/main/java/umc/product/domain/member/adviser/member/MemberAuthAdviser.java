@@ -120,6 +120,9 @@ public class MemberAuthAdviser {
     public MemberIdResponse withdrawal(
             Member member
     ) {
-        return memberAuthService.withdrawal(member);
+
+        Member persistedMember = memberService.findById(member.getId()); // 회원 존재 여부 확인
+
+        return memberAuthService.withdrawal(persistedMember);
     }
 }
