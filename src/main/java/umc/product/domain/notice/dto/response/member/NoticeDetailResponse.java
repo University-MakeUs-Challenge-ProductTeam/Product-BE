@@ -19,6 +19,7 @@ public record NoticeDetailResponse(
     Long readCount,
     Long unreadCount,
     Boolean isRead,
+    Boolean isChecked,
     LocalDateTime checkDeadline,
     LocalDateTime noticeDate
 ) {
