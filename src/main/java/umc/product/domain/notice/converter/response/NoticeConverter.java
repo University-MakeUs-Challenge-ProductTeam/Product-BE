@@ -8,6 +8,7 @@ import umc.product.domain.notice.dto.response.member.list.NoticeListResponse;
 import umc.product.domain.notice.entity.Notice;
 import umc.product.domain.noticeMember.entity.NoticeMember;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -26,7 +27,16 @@ public class NoticeConverter {
                 .title(notice.getTitle())
                 .target(notice.getTarget())
                 .isRead(isRead)
+                .noticeDate(notice.getNoticeDate())
+                .images(splitByComma(notice.getImages()))
                 .build();
+    }
+
+    private List<String> splitByComma(String raw) {
+        if (raw == null || raw.isBlank()) return List.of();
+        return Arrays.stream(raw.split(","))
+                .map(String::trim)
+                .toList();
     }
     
     public NoticeListResponse toNoticeListResponse(List<NoticeResponse> noticeResponseList) {
@@ -41,9 +51,13 @@ public class NoticeConverter {
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .target(notice.getTarget())
+                .hashtags(splitByComma(notice.getHashtags()))
+                .images(splitByComma(notice.getImages()))
+                .event(notice.getEvent())
                 .checkDeadline(notice.getCheckDeadline())
                 .noticeDate(notice.getCreatedAt())
                 .isRead(noticeMember != null ? noticeMember.getIsRead() : false)
+                .isChecked(noticeMember != null ? noticeMember.getIsChecked() : false)
                 .readCount(readCount)
                 .unreadCount(unreadCount)
                 .build();
